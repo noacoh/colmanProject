@@ -42,6 +42,10 @@ module.exports = {
         userSchema: joi.object.keys({
             firstName: joi.string().required(),
             lastName: joi.string().required()
+        }),
+        userOptionalSchema:joi.object.keys({
+            firstName: joi.string(),
+            lastName: joi.string()
         })
     }
 };
