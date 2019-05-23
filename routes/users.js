@@ -9,7 +9,9 @@ router.route(':/userId')
     .get(UserController.getUser)
     .put(UserController.replaceUser)
     .patch(UserController.updateUser)
-    .delete();
 
+router.route(':/userId/courses')
+    .get(UserController.getUserCourses)
+    .post(UserController.enlistUserToCourse)
 module.exports = router;
 
