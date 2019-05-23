@@ -8,5 +8,12 @@ router.route('/')
 router.route('/:courseId')
     .get(CoursesController.getCourse)
     .put(CoursesController.replaceCourse)
+<<<<<<< HEAD
     .patch(CoursesController.updateCourse);
 module.exports = router;
+=======
+    .patch(CoursesController.updateCourse)
+
+module.exports = router;
+
+>>>>>>> c483af13be8c9dfa557a6a4419ee4bfd11b1cff4

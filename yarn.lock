@@ -1034,6 +1034,11 @@ isobject@^3.0.0, isobject@^3.0.1:
   resolved "https://registry.yarnpkg.com/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
   integrity sha1-TkMekrEalzFjaqH5yNHMvP2reN8=
 
+joy@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/joy/-/joy-0.1.1.tgz#69a7f201739ebf69dd063e6d109e0865746fffd4"
+  integrity sha1-aafyAXOev2ndBj5tEJ4IZXRv/9Q=
+
 kareem@2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/kareem/-/kareem-2.3.0.tgz#ef33c42e9024dce511eeaf440cd684f3af1fc769"
