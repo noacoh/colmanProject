@@ -6,19 +6,19 @@ module.exports = {
         res.status(200).json(courses);
     },
     newCourse: async (req, res, next) => {
-        const newCourse = new Course(req.body);
+        const newCourse = new Course(req.value.body);
         const course = await newCourse.save();
         res.status(201).json(course);
     },
     getCourse: async (req, res, next) => {
-        const { courseId } = req.params;
+        const { courseId } = req.value.params;
         const course = await Course.findById(courseId);
         res.status(200).json(course);
     },
     replaceCourse: async (req, res, next) => {
         // enforce request.body contains all the fields
-        const { courseId } = req.params;
-        const newCourse = new Course(req.body);
+        const { courseId } = req.value.params;
+        const newCourse = new Course(req.value.body);
         const result = await Course.findByIdAndUpdate(courseId, newCourse);
         res.status(200).json({
             success: true,
@@ -27,8 +27,8 @@ module.exports = {
     },
     updateCourse: async (req, res, next) => {
         // req.body may contain any number of fields
-        const { courseId } = req.params;
-        const newCourse = new Course(req.body);
+        const { courseId } = req.value.params;
+        const newCourse = new Course(req.value.body);
         const result = await Course.findByIdAndUpdate(courseId, newCourse);
         res.status(200).json({
             success: true,

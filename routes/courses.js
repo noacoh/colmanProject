@@ -1,19 +1,21 @@
-const CoursesController = require('../controllers/courses');
 const router = require('express-promise-router')();
+const { validateParam, validateBody,  schemas } = require('../helpers/routeHelpers');
 
+const CoursesController = require('../controllers/courses');
 router.route('/')
     .get(CoursesController.index)
-    .post(CoursesController.newCourse);
+    .post(validateBody(schemas.courseSchema),
+        CoursesController.newCourse);
 
 router.route('/:courseId')
-    .get(CoursesController.getCourse)
-    .put(CoursesController.replaceCourse)
-<<<<<<< HEAD
-    .patch(CoursesController.updateCourse);
-module.exports = router;
-=======
-    .patch(CoursesController.updateCourse)
+    .get(validateParam(schemas.idSchema, 'courseId'),
+        CoursesController.getCourse)
+    .put(validateParam(schemas.idSchema, 'courseId'),
+        validateBody(schemas.courseSchema),
+        CoursesController.replaceCourse)
+    .patch(validateParam(schemas.idSchema, 'courseId'),
+        validateBody(schemas.courseOptionalSchema),
+        CoursesController.updateCourse);
 
 module.exports = router;
 
->>>>>>> c483af13be8c9dfa557a6a4419ee4bfd11b1cff4

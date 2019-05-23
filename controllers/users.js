@@ -44,8 +44,7 @@ module.exports = {
     },
     enlistUserToCourse: async (req, res, next) => {
         // req.body may contain any number of fields
-        const { userId } = req.value.params;
-        const { courseId } = req.body;
+        const { userId, courseId } = req.value.params;
         // Get user
         const user = await User.findById(userId);
         // Get Course
