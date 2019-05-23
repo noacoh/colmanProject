@@ -8,7 +8,8 @@ mongoose.connect("mongodb://localhost/name of the db");
 const app = express();
 
 // Routes
-const courses = require('./routes/courses')
+const courses = require('./routes/courses');
+const users = require('./routes/users');
 
 // Middlewares
 app.use(logger('dev'));
@@ -16,6 +17,7 @@ app.use(bodyParser.json());
 
 // Routes
 app.use('/courses', courses);
+app.use('/users', users);
 
 // Catch 404 Errors and forward them to error handler
 app.use((req, res, next) => {

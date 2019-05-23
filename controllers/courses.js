@@ -24,7 +24,6 @@ module.exports = {
             success: true,
             message: 'Course replaced successfully'
         });
-
     },
     updateCourse: async (req, res, next) => {
         // req.body may contain any number of fields
