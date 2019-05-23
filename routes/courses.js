@@ -9,7 +9,6 @@ router.route(':/courseId')
     .get(CoursesController.getCourse)
     .put(CoursesController.replaceCourse)
     .patch(CoursesController.updateCourse)
-    .delete();
 
 module.exports = router;
 
