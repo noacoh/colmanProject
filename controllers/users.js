@@ -39,7 +39,7 @@ module.exports = {
     getUserCourses: async (req, res, next) => {
         // req.body may contain any number of fields
         const { userId } = req.params;
-        const user = await User.findById(userId);
+        const user = await User.findById(userId).populate('courses');
         res.status(200).json(user.courses);
     },
     enlistUserToCourse: async (req, res, next) => {
