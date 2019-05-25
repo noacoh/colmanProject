@@ -39,21 +39,35 @@ module.exports = {
         idSchema: joi.object().keys({
             param: joi.string().regex(/^[0-9a-fA-F]{24}$/).required()
         }),
-        userSchema: joi.object.keys({
+        userSchema: joi.object().keys({
             firstName: joi.string().required(),
             lastName: joi.string().required()
         }),
-        userOptionalSchema:joi.object.keys({
+        userOptionalSchema:joi.object().keys({
             firstName: joi.string(),
             lastName: joi.string()
         }),
-        courseSchema: joi.object.keys({
+        courseSchema: joi.object().keys({
             title: joi.string().required(),
             year: joi.number().required()
         }),
-        courseOptionalSchema: joi.object.keys({
+        courseOptionalSchema: joi.object().keys({
             title: joi.string(),
             year: joi.number()
+        }),
+        taskSchema: joi.object().keys({
+            title: joi.string().required(),
+            filePath: joi.string().required(),
+            solutionPath: joi.string().required(),
+            created: joi.date().required(),
+            deadline: joi.date().required()
+        }),
+        taskOptionalSchema: joi.object().keys({
+            title: joi.string(),
+            filePath: joi.string(),
+            solutionPath: joi.string(),
+            created: joi.date(),
+            deadline: joi.date()
         })
     }
 };

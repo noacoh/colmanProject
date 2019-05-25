@@ -3,7 +3,7 @@ const logger = require('morgan');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
-mongoose.connect("mongodb://localhost:27017/submission_system");
+mongoose.connect("mongodb://localhost:27017/submission_system",  { useNewUrlParser: true });
 
 const app = express();
 

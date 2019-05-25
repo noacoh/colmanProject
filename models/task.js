@@ -3,12 +3,16 @@ const Schema = mongoose.Schema;
 
 const taskSchema = new Schema({
     id: Number,
-    courseId: Number,
     title: String,
     filePath: String,
     solutionPath: String,
     created: Date,
-    deadline: Date
+    deadline: Date,
+    course: [{
+        type: Schema.Types.ObjectId,
+        ref: 'course'
+    }]
+
 });
 const Task = mongoose.model('task', taskSchema);
 module.exports = Task;

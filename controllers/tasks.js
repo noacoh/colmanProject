@@ -1,21 +1,32 @@
 const Task = require('../models/task');
 
 module.exports = {
-  index: async (req, res, next) => {
-    try{
+    index: async (req, res, next) => {
         const tasks = await Task.find({});
         res.status(200).json(tasks);
-    } catch(err){
-          next(err);}
   },
     newTask: async (req, res, next) => {
-      try{
-      const newTask = new Task(req.body);
-      console.log('new task', newTask);
+      const newTask = new Task(req.value.body);
       const task = await newTask.save();
       res.status(201).json(task);
-      }catch(err){
-          next(err);
-      }
+      },
+    getTask: async (req, res, next) => {
+        const { taskId } = req.value.params;
+        const task = await Task.findById(taskId);
+        res.status(200).json(task);
+    },
+    replaceTask: async (req, res, next) => {
+        //need a complete object with all params
+        const { taskId } = req.value.params;
+        const newTask = req.value.body;
+        await Task.findByIdAndUpdate(taskId, newTask);
+        res.status(200).json({ success: true });
+    },
+    updateTask: async (req, res, next) => {
+        //can update specific fields
+        const { taskId } = req.value.params;
+        const newTask = req.value.body;
+        await Task.findByIdAndUpdate(taskId, newTask);
+        res.status(200).json({ success: true });
     }
 };
