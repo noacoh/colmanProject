@@ -2,6 +2,7 @@ const express = require('express');
 const logger = require('morgan');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const helmet = require('helmet');
 
 mongoose.connect("mongodb://localhost:27017/submission_system");
 
@@ -13,6 +14,7 @@ const users = require('./routes/users');
 const tasks = require('./routes/tasks');
 
 // Middlewares
+app.use(helmet());
 app.use(logger('dev'));
 app.use(bodyParser.json());
 
