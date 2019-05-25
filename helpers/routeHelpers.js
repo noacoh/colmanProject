@@ -70,7 +70,8 @@ module.exports = {
             submissionDate: joi.string().required(),
             grade: joi.number().required(),
             filePath: joi.string().required(),
-
+            task: joi.string().regex(/^[0-9a-fA-F]{24}$/).required(),
+            student: joi.string().regex(/^[0-9a-fA-F]{24}$/).required()
         }),
         taskOptionalSchema: joi.object().keys({
             title: joi.string(),
@@ -78,7 +79,6 @@ module.exports = {
             solutionPath: joi.string(),
             created: joi.date(),
             deadline: joi.date()
-        })
         }),
         authenticationSchema: joi.object.keys({
             identityNumber: joi.string().regex(/^[0-9]{9}$/).required(),

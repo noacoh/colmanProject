@@ -20,4 +20,8 @@ router.route('/:taskId')
     .delete(validateParam(schemas.idSchema, 'taskId'),
         TasksController.deleteTask);
 
+router.route('/:taskId/submissions')
+    .get(validateParam(schemas.idSchema, 'taskId'),
+        TasksController.getTaskSubmission);
+
 module.exports = router;

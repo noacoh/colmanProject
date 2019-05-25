@@ -42,5 +42,11 @@ module.exports = {
             success: true,
             message: 'Task was removed successfully'
         })
+    },
+    getTaskSubmission: async (req, res, next) => {
+        const { taskId } = req.value.params;
+        const task = await Task.findById(taskId).populate('submissions');
+        res.status(200).json(task.studentSubmissions);
     }
+
 };

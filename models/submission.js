@@ -6,14 +6,14 @@ const
     submissionDate: Date,
     grade: Number,
     filePath: String,
-    task: [{
+    task: {
         type: Schema.Types.ObjectId,
         ref: 'task'
-    }],
-    student: [{
+    },
+    student: {
         type: Schema.Types.ObjectId,
-        ref: 'user'
-    }]
+        ref: 'student'
+    }
 });
 const Submission = mongoose.model('submission', submissionSchema);
 module.exports = Submission;

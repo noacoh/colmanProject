@@ -12,12 +12,4 @@ router.route('/:submissionId')
         validateBody(schemas.submissionSchema)],
         SubmissionController.getSubmission);
 
-router.route('/:taskId/submissions')
-    .get(validateParam(schemas.idSchema, 'taskId'),
-        SubmissionController.getTaskSubmissions);
-
-router.route('/:userId/submissions')
-    .get(validateParam(schemas.idSchema, 'userId'),
-        SubmissionController.getUserSubmissions);
-
 module.exports = router;

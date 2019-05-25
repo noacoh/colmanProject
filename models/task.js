@@ -12,7 +12,7 @@ const taskSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'course'
     }],
-    submissions: [{
+    studentSubmissions: [{
         type: Schema.Types.ObjectId,
         ref: 'submission'
     }]
