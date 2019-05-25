@@ -1,6 +1,5 @@
 const JWT = require('jsonwebtoken');
 const User = require('../models/user');
-const Course = require('../models/course');
 const { JWT_SECRET } = require('../configuration');
 
 signToken = user => {
@@ -52,27 +51,5 @@ module.exports = {
             success: true,
             message: 'User updated successfully'
         });
-    },
-    getUserCourses: async (req, res, next) => {
-        // req.body may contain any number of fields
-        const { userId } = req.value.params;
-        const user = await User.findById(userId).populate('courses');
-        res.status(200).json(user.courses);
-    },
-    enlistUserToCourse: async (req, res, next) => {
-        // req.body may contain any number of fields
-        const { userId, courseId } = req.value.params;
-        // Get user
-        const user = await User.findById(userId);
-        // Get Course
-        const course = await Course.findById(courseId);
-        user.courses.push(course);
-        await user.save();
-        course.enlisted.push(user);
-        course.save();
-        res.status(200).json({
-            success: true,
-            message: `Enlisted ${user.firstName} ${user.lastName} to '${course.title}' course successfully`
-        })
-    },
+    }
 };

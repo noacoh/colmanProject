@@ -6,7 +6,7 @@ const courseSchema = new Schema({
     year: Number,
     enlisted: {
         type: Schema.Types.ObjectId,
-        ref: 'user'
+        ref: 'student'
     }
 });
 
