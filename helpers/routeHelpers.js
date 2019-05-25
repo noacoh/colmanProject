@@ -41,11 +41,13 @@ module.exports = {
         }),
         userSchema: joi.object.keys({
             firstName: joi.string().required(),
-            lastName: joi.string().required()
+            lastName: joi.string().required(),
+            identityNumber: joi.string().regex(/^[0-9]{9}$/).required()
         }),
         userOptionalSchema:joi.object.keys({
             firstName: joi.string(),
-            lastName: joi.string()
+            lastName: joi.string(),
+            identityNumber: joi.string().regex(/^[0-9]{9}$/)
         }),
         courseSchema: joi.object.keys({
             title: joi.string().required(),
