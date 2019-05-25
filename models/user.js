@@ -20,10 +20,11 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
-    courses: [{
-        type: Schema.Types.ObjectId,
-        ref: 'course'
-    }]
+    isAdmin: {
+        type: Boolean,
+        required: true,
+        default: false
+    }
 });
 
 userSchema.pre('save', async function(next) {
