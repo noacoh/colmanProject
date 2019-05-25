@@ -18,15 +18,8 @@ module.exports = {
         res.status(200).json(users);
     },
     signIn: async (req, res, next) => {
-        const { identityNumber, password } = req.value.body;
-        const user = await User.find({
-            identityNumber: identityNumber,
-            password:password
-        });
-        const token = signToken(user)
-        res.status(200).json({
-            token: token
-        });
+        const token = signToken(req.user);
+        res.status(200).json({ token });
     },
     secret: async (req, res, next) => {
     },

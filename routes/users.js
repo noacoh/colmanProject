@@ -4,7 +4,11 @@ const passportConf = require('../passport')
 const { validateParam, validateBody,  schemas } = require('../helpers/routeHelpers');
 
 const UserController = require('../controllers/users');
-router.route('/')
+const passportSignIn = passport.authenticate('local', {session: false});
+const passportJWT = passport.authenticate('jwt', {session: false});
+
+
+    router.route('/')
     .get(UserController.index)
     .post(validateBody(schemas.userSchema),
         UserController.newUser);
@@ -13,10 +17,14 @@ router.route('/')
 //     .post(UserController.signUp);
 
 router.route('/signin')
-    .post(UserController.signIn);
+    .post(validateBody(schemas.authenticationSchema),
+        passportSignIn,
+        UserController.signIn);
 
 router.route('/secret')
-    .get(passport.authenticate('jwt', {session: false}), UserController.secret);
+    .get(validateBody(schemas.authenticationSchema),
+        passportJWT,
+        UserController.secret);
 
 router.route('/:userId')
     .get(validateParam(schemas.idSchema, 'userId'), UserController.getUser)

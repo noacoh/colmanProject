@@ -19,7 +19,7 @@ passport.use(new JwtStrategy({
         }
         done(user, true)
     } catch(err) {
-        done(err,false);
+        done(err, false);
     }
 }));
 
@@ -28,12 +28,19 @@ passport.use(new LocalStrategy({
     usernameField: 'identityNumber',
 
 }, async (identityNumber, password, done) => {
-    const user = await User.findOne({ identityNumber: identityNumber });
-    if (!user) {
-        // user not found
-        return done(null, false);
+    try {
+        const user = await User.findOne({ identityNumber: identityNumber });
+        if (!user) {
+            // user not found
+            return done(null, false);
+        }
+        const isMatch = await user.isValidPassword(password);
+        if (!isMatch) {
+            // password do not match
+            return done(null, false);
+        }
+        done(user, true);
+    } catch (err) {
+        done(err, false);
     }
-    // check if the password is correct
-    // if not, handle it
-    // otherwise, return the user
 }));
