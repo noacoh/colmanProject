@@ -2,6 +2,7 @@ const express = require('express');
 const logger = require('morgan');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const helmet = require('helmet');
 
 mongoose.connect("mongodb://localhost/name of the db");
 
@@ -12,6 +13,7 @@ const courses = require('./routes/courses');
 const users = require('./routes/users');
 
 // Middlewares
+app.use(helmet());
 app.use(logger('dev'));
 app.use(bodyParser.json());
 
