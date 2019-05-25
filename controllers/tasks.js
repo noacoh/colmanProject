@@ -20,13 +20,27 @@ module.exports = {
         const { taskId } = req.value.params;
         const newTask = req.value.body;
         await Task.findByIdAndUpdate(taskId, newTask);
-        res.status(200).json({ success: true });
+        res.status(200).json({
+            success: true,
+            message: 'Task was replaced successfully'
+        });
     },
     updateTask: async (req, res, next) => {
         //can update specific fields
         const { taskId } = req.value.params;
         const newTask = req.value.body;
         await Task.findByIdAndUpdate(taskId, newTask);
-        res.status(200).json({ success: true });
+        res.status(200).json({
+            success: true,
+            message: 'Task was updated successfully'
+        });
+    },
+    deleteTask: async (req, res, next) => {
+        const { taskId } = req.value.params;
+        await Task.findByIdAndRemove(taskId);
+        res.status(200).json({
+            success: true,
+            message: 'Task was removed successfully'
+        })
     }
 };

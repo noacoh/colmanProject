@@ -62,6 +62,12 @@ module.exports = {
             created: joi.date().required(),
             deadline: joi.date().required()
         }),
+        submissionSchema: joi.object().keys({
+            submissionDate: joi.string().required(),
+            grade: joi.number().required(),
+            filePath: joi.string().required(),
+
+        }),
         taskOptionalSchema: joi.object().keys({
             title: joi.string(),
             filePath: joi.string(),

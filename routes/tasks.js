@@ -16,6 +16,8 @@ router.route('/:taskId')
         TasksController.replaceTask)
     .patch([validateParam(schemas.idSchema, 'taskId'),
         validateParam(schemas.taskOptionalSchema)],
-        TasksController.updateTask);
+        TasksController.updateTask)
+    .delete(validateParam(schemas.idSchema, 'taskId'),
+        TasksController.deleteTask);
 
 module.exports = router;

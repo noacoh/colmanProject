@@ -11,6 +11,10 @@ const taskSchema = new Schema({
     course: [{
         type: Schema.Types.ObjectId,
         ref: 'course'
+    }],
+    submissions: [{
+        type: Schema.Types.ObjectId,
+        ref: 'submission'
     }]
 
 });
