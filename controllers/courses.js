@@ -6,6 +6,13 @@ module.exports = {
         res.status(200).json(courses);
     },
     newCourse: async (req, res, next) => {
+        const resourceRequester = req.user;
+        if (!resourceRequester.isAdmin) {
+            res.status(401).json({
+                success: false,
+                message: "Unauthorised"
+            })
+        }
         const newCourse = new Course(req.value.body);
         const course = await newCourse.save();
         res.status(201).json(course);
@@ -16,6 +23,13 @@ module.exports = {
         res.status(200).json(course);
     },
     replaceCourse: async (req, res, next) => {
+        const resourceRequester = req.user;
+        if (!resourceRequester.isAdmin) {
+            res.status(401).json({
+                success: false,
+                message: "Unauthorised"
+            })
+        }
         // enforce request.body contains all the fields
         const { courseId } = req.value.params;
         const newCourse = new Course(req.value.body);
@@ -26,6 +40,13 @@ module.exports = {
         });
     },
     updateCourse: async (req, res, next) => {
+        const resourceRequester = req.user;
+        if (!resourceRequester.isAdmin) {
+            res.status(401).json({
+                success: false,
+                message: "Unauthorised"
+            })
+        }
         // req.body may contain any number of fields
         const { courseId } = req.value.params;
         const newCourse = new Course(req.value.body);

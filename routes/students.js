@@ -3,8 +3,8 @@ const passport = require('passport');
 const passportConf = require('../passport')
 const { validateParam, validateBody,  schemas } = require('../helpers/routeHelpers');
 
-const StudentController = require('../controllers/students');
 const passportJWT = passport.authenticate('jwt', {session: false});
+const StudentController = require('../controllers/students');
 
 router.route('/')
     .get(StudentController.index);
@@ -22,5 +22,6 @@ router.route('/:studentId/courses/:courseId')
         validateParam(schemas.idSchema, 'courseId'),
         passportJWT,
         StudentController.enlistStudentToCourse);
+
 module.exports = router;
 

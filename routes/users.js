@@ -33,14 +33,14 @@ router.route('/:userId')
     .patch(validateParam(schemas.idSchema, 'userId'),
         validateBody(schemas.userOptionalSchema),
         UserController.updateUser);
-
+/*
 router.route(':/userId/courses')
-    .get(validateParam(schemas.idSchema, 'userId'),
-        UserController.getUserCourses);
+    .get(validateParam(schemas.idSchema, 'userId'), UserController.getUserCourses);
 
 router.route('/:userId/courses/:courseId')
     .post(validateParam(schemas.idSchema, 'userId'),
         validateParam(schemas.idSchema, 'courseId'),
-        UserController.enlistUserToCourse);
+        UserController.enlistUserToCourse);*/
+
 module.exports = router;
 

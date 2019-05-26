@@ -6,6 +6,13 @@ module.exports = {
         res.status(200).json(submissions);
     },
     getSubmission: async (req, res, next) => {
+        const resourceRequester = req.user;
+        if (!resourceRequester.isAdmin) {
+            res.status(401).json({
+                success: false,
+                message: "Unauthorised"
+            })
+        }
         const { submissionId } = req.value.params;
         const submission = await Submission.findById(submissionId);
         res.status(200).json(submission);

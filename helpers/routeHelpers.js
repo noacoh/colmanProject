@@ -80,7 +80,7 @@ module.exports = {
             created: joi.date(),
             deadline: joi.date()
         }),
-        authenticationSchema: joi.object.keys({
+        authenticationSchema: joi.object().keys({
             identityNumber: joi.string().regex(/^[0-9]{9}$/).required(),
             password: joi.string().required()
         }),

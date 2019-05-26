@@ -4,7 +4,9 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 
-mongoose.connect("mongodb://localhost:27017/submission_system",  { useNewUrlParser: true });
+mongoose.connect("mongodb://localhost:27017/submission_system",
+    { useCreateIndex: true,
+      useNewUrlParser: true });
 
 const app = express();
 
