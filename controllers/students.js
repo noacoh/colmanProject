@@ -19,7 +19,7 @@ module.exports = {
     enlistStudentToCourse: async (req, res, next) => {
         const resourceRequester = req.user;
         if (!resourceRequester.isAdmin) {
-            res.status(403).json({
+            res.status(401).json({
                 success: false,
                 message: 'Unauthorised'
             })

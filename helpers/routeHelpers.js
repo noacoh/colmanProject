@@ -39,27 +39,48 @@ module.exports = {
         idSchema: joi.object().keys({
             param: joi.string().regex(/^[0-9a-fA-F]{24}$/).required()
         }),
-        userSchema: joi.object.keys({
+        userSchema: joi.object().keys({
             firstName: joi.string().required(),
             lastName: joi.string().required(),
             identityNumber: joi.string().regex(/^[0-9]{9}$/).required(),
             password: joi.string().required()
         }),
-        userOptionalSchema:joi.object.keys({
+        userOptionalSchema:joi.object().keys({
             firstName: joi.string(),
             lastName: joi.string(),
             identityNumber: joi.string().regex(/^[0-9]{9}$/),
             password: joi.string()
         }),
-        courseSchema: joi.object.keys({
+        courseSchema: joi.object().keys({
             title: joi.string().required(),
             year: joi.number().required()
         }),
-        courseOptionalSchema: joi.object.keys({
+        courseOptionalSchema: joi.object().keys({
             title: joi.string(),
             year: joi.number()
         }),
-        authenticationSchema: joi.object.keys({
+        taskSchema: joi.object().keys({
+            title: joi.string().required(),
+            filePath: joi.string().required(),
+            solutionPath: joi.string().required(),
+            created: joi.date().required(),
+            deadline: joi.date().required()
+        }),
+        submissionSchema: joi.object().keys({
+            submissionDate: joi.string().required(),
+            grade: joi.number().required(),
+            filePath: joi.string().required(),
+            task: joi.string().regex(/^[0-9a-fA-F]{24}$/).required(),
+            student: joi.string().regex(/^[0-9a-fA-F]{24}$/).required()
+        }),
+        taskOptionalSchema: joi.object().keys({
+            title: joi.string(),
+            filePath: joi.string(),
+            solutionPath: joi.string(),
+            created: joi.date(),
+            deadline: joi.date()
+        }),
+        authenticationSchema: joi.object().keys({
             identityNumber: joi.string().regex(/^[0-9]{9}$/).required(),
             password: joi.string().required()
         }),

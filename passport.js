@@ -2,7 +2,7 @@ const passport = require('passport');
 const JwtStrategy = require('passport-jwt').Strategy;
 const { ExtractJwt } = require('passport-jwt');
 const LocalStrategy = require('passport-local');
-const { JWT_SECRET } = require('../configuration');
+const { JWT_SECRET } = require('./configuration');
 const User = require('./models/user');
 
 // JSON WEB TOKENS STRATEGY
