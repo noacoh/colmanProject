@@ -20,7 +20,7 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
-    isAdmin: {
+    admin: {
         type: Boolean,
         required: true,
         default: false
@@ -46,6 +46,14 @@ userSchema.methods.isValidPassword = async function(newPassword) {
     }catch (err) {
         throw new Error(err);
     }
+};
+
+userSchema.methods.isAdmin = function() {
+    return this.admin;
+};
+
+userSchema.methods.FullName = function() {
+    return this.firstName + ' ' + this.lastName;
 };
 
 const User = mongoose.model('user', userSchema);

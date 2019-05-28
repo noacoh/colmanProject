@@ -40,14 +40,14 @@ module.exports = {
             param: joi.string().regex(/^[0-9a-fA-F]{24}$/).required()
         }),
         userSchema: joi.object().keys({
-            firstName: joi.string().required(),
-            lastName: joi.string().required(),
+            firstName: joi.string().alphanum().min(3).max(30).required(),
+            lastName: joi.string().alphanum().min(3).max(30).required(),
             identityNumber: joi.string().regex(/^[0-9]{9}$/).required(),
             password: joi.string().required()
         }),
         userOptionalSchema:joi.object().keys({
-            firstName: joi.string(),
-            lastName: joi.string(),
+            firstName: joi.string().alphanum().min(3).max(30),
+            lastName: joi.string().alphanum().min(3).max(30),
             identityNumber: joi.string().regex(/^[0-9]{9}$/),
             password: joi.string()
         }),
@@ -61,21 +61,21 @@ module.exports = {
         }),
         taskSchema: joi.object().keys({
             title: joi.string().required(),
-            filePath: joi.string().required(),
+            exercisePath: joi.string().required(),
             solutionPath: joi.string().required(),
             created: joi.date().required(),
             deadline: joi.date().required()
         }),
         submissionSchema: joi.object().keys({
             submissionDate: joi.string().required(),
-            grade: joi.number().required(),
-            filePath: joi.string().required(),
+            grade: joi.number().integer().min(0).max(100).required(),
+            exercisePath: joi.string().required(),
             task: joi.string().regex(/^[0-9a-fA-F]{24}$/).required(),
             student: joi.string().regex(/^[0-9a-fA-F]{24}$/).required()
         }),
         taskOptionalSchema: joi.object().keys({
             title: joi.string(),
-            filePath: joi.string(),
+            exercisePath: joi.string(),
             solutionPath: joi.string(),
             created: joi.date(),
             deadline: joi.date()
@@ -83,6 +83,12 @@ module.exports = {
         authenticationSchema: joi.object().keys({
             identityNumber: joi.string().regex(/^[0-9]{9}$/).required(),
             password: joi.string().required()
+        }),
+        enlistToCourseSchema: joi.object().keys({
+            studentId: joi.string().regex(/^[0-9]{9}$/).required()
+        }),
+        submitForGradeSchema:  joi.object().keys({
+            studentId: joi.string().regex(/^[0-9]{9}$/).required()
         }),
     }
 };

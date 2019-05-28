@@ -1,10 +1,12 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const
-    submissionSchema = new Schema({
+const submissionSchema = new Schema({
     submissionDate: Date,
-    grade: Number,
+    grade: {
+        type: Number,
+        default: 0
+    },
     filePath: String,
     task: {
         type: Schema.Types.ObjectId,
@@ -13,6 +15,17 @@ const
     student: {
         type: Schema.Types.ObjectId,
         ref: 'student'
+    }
+});
+
+submissionSchema.pre('save', async function(next) {
+    try {
+        // TODO add method to calculate grade
+        //mock grading, should be some async function
+        this.grade = 100;
+        next();
+    } catch(err) {
+        next(err);
     }
 });
 const Submission = mongoose.model('submission', submissionSchema);

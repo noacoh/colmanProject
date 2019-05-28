@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const taskSchema = new Schema({
     id: Number,
     title: String,
-    filePath: String,
+    exercisePath: String,
     solutionPath: String,
     created: Date,
     deadline: Date,

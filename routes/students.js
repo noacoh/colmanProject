@@ -11,17 +11,13 @@ router.route('/')
 
 router.route('/:studentId')
     .get(validateParam(schemas.idSchema, 'studentId'),
+        passportJWT,
         StudentController.getStudent);
 
 router.route(':/studentId/courses')
     .get(validateParam(schemas.idSchema, 'studentId'),
-        StudentController.getStudentCourses);
-
-router.route('/:studentId/courses/:courseId')
-    .post(validateParam(schemas.idSchema, 'studentId'),
-        validateParam(schemas.idSchema, 'courseId'),
         passportJWT,
-        StudentController.enlistStudentToCourse);
+        StudentController.getStudentCourses);
 
 module.exports = router;
 

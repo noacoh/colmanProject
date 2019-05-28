@@ -14,14 +14,23 @@ router.route('/')
 router.route('/:courseId')
     .get(validateParam(schemas.idSchema, 'courseId'),
         CoursesController.getCourse)
-    .put([validateParam(schemas.idSchema, 'courseId'),
-        validateBody(schemas.courseSchema)],
+    .put(validateParam(schemas.idSchema, 'courseId'),
+        validateBody(schemas.courseSchema),
         passportJWT,
         CoursesController.replaceCourse)
-    .patch([validateParam(schemas.idSchema, 'courseId'),
-        validateBody(schemas.courseOptionalSchema)],
+    .patch(validateParam(schemas.idSchema, 'courseId'),
+        validateBody(schemas.courseOptionalSchema),
         passportJWT,
         CoursesController.updateCourse);
+
+router.route('/:courseId/students')
+    .get(validateParam(schemas.idSchema, 'courseId'),
+        passportJWT,
+        CoursesController.getStudentsEnlisted)
+    .post(validateParam(schemas.idSchema, 'courseId'),
+        validateBody(schemas.enlistToCourseSchema),
+        passportJWT,
+        CoursesController.enlistStudentToCourse);
 
 module.exports = router;
 
