@@ -12,8 +12,10 @@ router.route('/')
         TasksController.index,);
 
 router.route('uploads')
-    // TODO add body validation ,multer file handling, authentication
-    .post();
+    .post(upload.fields([{ name: 'exFile', maxCount:1 }, { name: 'practiceTestFile', maxCount:1 },  { name: 'finalTestFile', maxCount:1 }]),
+        validateBody(schemas.taskSchema),
+        passportJWT,
+        TasksController.uploadTask);
 
 router.route('/:taskId')
     .get(validateParam(schemas.idSchema, 'taskId'),

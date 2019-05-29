@@ -61,10 +61,8 @@ module.exports = {
         }),
         taskSchema: joi.object().keys({
             title: joi.string().required(),
-            exercisePath: joi.string().required(),
-            solutionPath: joi.string().required(),
-            created: joi.date().required(),
-            deadline: joi.date().required()
+            deadline: joi.date().required(),
+            courseId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required()
         }),
         submissionSchema: joi.object().keys({
             submissionDate: joi.string().required(),
@@ -75,9 +73,6 @@ module.exports = {
         }),
         taskOptionalSchema: joi.object().keys({
             title: joi.string(),
-            exercisePath: joi.string(),
-            solutionPath: joi.string(),
-            created: joi.date(),
             deadline: joi.date()
         }),
         authenticationSchema: joi.object().keys({

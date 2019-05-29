@@ -5,7 +5,8 @@ const taskSchema = new Schema({
     id: Number,
     title: String,
     exercisePath: String,
-    solutionPath: String,
+    practiceTestPath: String,
+    finalTestPath: String,
     created: Date,
     deadline: Date,
     course: [{
