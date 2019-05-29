@@ -15,7 +15,8 @@ const submissionSchema = new Schema({
     student: {
         type: Schema.Types.ObjectId,
         ref: 'student'
-    }
+    },
+    mode: String
 });
 
 submissionSchema.pre('save', async function(next) {
