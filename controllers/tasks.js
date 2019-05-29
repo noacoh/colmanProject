@@ -104,13 +104,15 @@ module.exports = {
     submitForGrade: async (req, res, next) => {
         const resourceRequester = req.user;
         const { taskId } = req.value.params;
+        const { mode } = req.value.body;
         // TODO consider try catch block here
         await Task.findById(taskId); // validate task exists
         const newSubmission = new Submission({
             submissionDate: new Date(),
             task: taskId,
             student: resourceRequester._id,
-            filePath: req.file.path
+            filePath: req.file.path,
+            mode: mode
         });
         await newSubmission.save(); // grade is calculated here
         res.status(201).json({

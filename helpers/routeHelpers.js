@@ -1,4 +1,5 @@
 const joi = require('joi');
+const { MODE } = require('../helpers/submissionMode');
 
 module.exports = {
     validateParam: (schema, name) => {
@@ -83,10 +84,7 @@ module.exports = {
             studentId: joi.string().regex(/^[0-9]{9}$/).required()
         }),
         submitForGradeSchema:  joi.object().keys({
-            studentId: joi.string().regex(/^[0-9]{9}$/).required(),
-            taskId: joi.string().regex(/^[0-9]{9}$/).required(),
-            filePath: joi.string().required(),
-            mode: joi.string().required()
+            mode: joi.string().regex(`^(${MODE.FINAL}|${MODE.PRACTICE})$`).required()
         }),
     }
 };
