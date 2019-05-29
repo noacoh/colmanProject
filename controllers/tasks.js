@@ -12,10 +12,20 @@ module.exports = {
         if (!resourceRequester.isAdmin()) {
             res.status(401).json({
                 success: false,
-                message: "Unauthorised"
+                message: "Unauthorized"
             })
         }
-        // TODO save files and create a new task
+        const { title, deadline, courseId } = req.value.body;
+        const newTask = {
+            title: title,
+            exercisePath:req.files['exFile'][0],
+            practiceTestPath: req.files['practiceTestFile'][0],
+            finalTestPath: req.files['finalTestFile'][0],
+            created: new Date(),
+            deadline: deadline,
+            course: courseId
+        };
+        await newTask.save();
       },
     getTask: async (req, res, next) => {
         const resourceRequester = req.user;
@@ -68,7 +78,7 @@ module.exports = {
         if (!resourceRequester.isAdmin()) {
             res.status(401).json({
                 success: false,
-                message: "Unauthorised"
+                message: "Unauthorized"
             })
         }
         const { taskId } = req.value.params;
@@ -87,34 +97,28 @@ module.exports = {
             })
         }
         const { taskId } = req.value.params;
-        const task = await Task.findById(taskId).populate('submissions');
+        const task = await Task.findById(taskId).populate('studentSubmissions');
         // TODO consider returning only grades and student ids/identity numbers
         res.status(200).json(task.studentSubmissions);
     },
     submitForGrade: async (req, res, next) => {
         const resourceRequester = req.user;
         const { taskId } = req.value.params;
-        // TODO do we really need to pass studentid? we have the id from the authentication
-        const { studentId } = req.value.body;
-        if (resourceRequester !== studentId) {
-            // confirm the resourceRequester is identical to the student. also confirms studentId.
-            res.status(401).json({
-                success: false,
-                message: "Unauthorised"
-            })
-        }
+        const { mode } = req.value.body;
         // TODO consider try catch block here
         await Task.findById(taskId); // validate task exists
         const newSubmission = new Submission({
             submissionDate: new Date(),
             task: taskId,
-            student: studentId,
-            filePath: req.file.path
+            student: resourceRequester._id,
+            filePath: req.file.path,
+            mode: mode
         });
         await newSubmission.save(); // grade is calculated here
-        res.status(200).json({
+        res.status(201).json({
             success: true,
-            message: 'File was submitted successfully'
+            message: 'File was submitted successfully',
+            data: { grade: newSubmission.grade }
         });
     },
     getTaskExerciseFile: async (req, res, next) => {
@@ -123,16 +127,16 @@ module.exports = {
         // TODO consider try catch block here
         const task = await Task.findById(taskId).populate('course'); // validate task exists
         const course = task.course;
-        if (resourceRequester.isAdmin()){
+        if (!resourceRequester.isAdmin()){
             if(!course.studentIsRegisteredForCourse(resourceRequester._id)){
                 // student is not registered for this course
-                console.log(`student ${student.FullName()} is not registered for course ${course.title}. Can not supply exercise file fo this task.`);
+                console.log(`student ${resourceRequester.FullName()} is not registered for course ${course.title}. Can not supply exercise file fo this task.`);
                 res.status(401).json({
                     success: false,
-                    message: "Unauthorised"
+                    message: "Unauthorized"
                 })
             }
         }
-        // TODO send file to client here
+        res.sendFile(task.exercisePath)
     }
 };

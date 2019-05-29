@@ -16,15 +16,19 @@ const submissionSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'student'
     },
-    mode: String
+    mode: {
+        type: String,
+        required: true,
+    }
 });
 
 submissionSchema.pre('save', async function(next) {
     try {
-        // TODO add method to calculate grade
+        // TODO add method to calculate grade (long async function.....)
         //mock grading, should be some async function
         this.grade = 100;
         next();
+        // TODO return err when trying to submit more than once on final mode for an 'exam' task
     } catch(err) {
         next(err);
     }

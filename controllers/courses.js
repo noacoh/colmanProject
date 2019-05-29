@@ -1,5 +1,5 @@
 const Course = require('../models/course');
-
+const Student = require('../models/student');
 
 module.exports = {
     index: async (req, res, next) => {
