@@ -24,7 +24,17 @@ const taskSchema = new Schema({
     }]
 
 });
-const Task = mongoose.model('task', taskSchema);
 taskSchema.methods.isExam = () => {return this.exam;};
+
+taskSchema.post('remove', async function(next) {
+    try {
+        // TODO delete files
+        next();
+    } catch(err) {
+        next(err);
+    }
+});
+
+const Task = mongoose.model('task', taskSchema);
 
 module.exports = Task;

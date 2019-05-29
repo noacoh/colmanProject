@@ -33,5 +33,14 @@ submissionSchema.pre('save', async function(next) {
         next(err);
     }
 });
+
+submissionSchema.post('remove', async function(next) {
+    try {
+        // TODO delete file
+        next();
+    } catch(err) {
+        next(err);
+    }
+});
 const Submission = mongoose.model('submission', submissionSchema);
 module.exports = Submission;
