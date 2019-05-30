@@ -1,0 +1,13 @@
+############################################################
+# Dockerfile to build sandbox for executing user code
+# Based on Ubuntu
+############################################################
+
+FROM chug/ubuntu16.04x64
+
+# Update the repository sources list
+RUN echo "deb http://archive.ubuntu.com/ubuntu trusty main universe" > /etc/apt/sources.list
+RUN apt-get update apt-get install -y \
+    gcc
+    g++
+ && rm -rf /var/lib/apt/lists/*
