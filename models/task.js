@@ -6,7 +6,8 @@ const taskSchema = new Schema({
     title: String,
     // path to zip containing all exercise files
     exercisePath: String,
-    // files containing the code for the practice test
+    // files containing the code for the practice test,
+    solutionPath: String,
     practiceTest: [{
         type: String
     }],
