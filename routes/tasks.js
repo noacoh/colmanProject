@@ -17,7 +17,11 @@ router.route('uploads')
     .post(upload.fields([{ name: 'exFile', maxCount:1 }, { name: 'practiceTest', maxCount:MAX_UPLOAD }, { name: 'finalTest', maxCount:MAX_UPLOAD }]),
         validateBody(schemas.taskSchema),
         passportJWT,
-        TasksController.uploadTask);
+        TasksController.uploadTask)
+    .patch([validateParam(schemas.idSchema, 'taskId'),
+                validateParam(schemas.taskOptionalSchema)],
+        passportJWT,
+        TasksController.uploadTaskSolution());
 
 router.route('downloads/:taskId')
     .get(validateParam(schemas.idSchema, 'taskId'),

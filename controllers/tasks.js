@@ -27,6 +27,22 @@ module.exports = {
         };
         await newTask.save();
       },
+    uploadTaskSolution: async (req, res, next) => {
+        const resourceRequester = req.user;
+        if (!resourceRequester.isAdmin()) {
+            res.status(401).json({
+                success: false,
+                message: "Unauthorized"
+            })
+        }
+        const { taskId } = req.value.params;
+        const { solutionPath } = req.value.params;
+        await Task.findByIdAndUpdate(taskId, solutionPath);
+        res.status(200).json({
+            success: true,
+            message: 'Task solution was updated successfully'
+        });
+      },
     getTask: async (req, res, next) => {
         const resourceRequester = req.user;
         if (!resourceRequester.isAdmin()) {

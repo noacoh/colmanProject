@@ -22,7 +22,7 @@ module.exports = {
                 message: 'Unauthorized'
             })
         }
-        const student = await Student.findById(userId);
+        const student = await Student.findById(studentId);
         res.status(200).json(student);
     },
     getStudentCourses: async (req, res, next) => {
