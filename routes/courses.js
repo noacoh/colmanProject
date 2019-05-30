@@ -26,11 +26,16 @@ router.route('/:courseId')
 router.route('/:courseId/students')
     .get(validateParam(schemas.idSchema, 'courseId'),
         passportJWT,
-        CoursesController.getStudentsEnlisted)
+        CoursesController.getStudentsEnrolled)
     .post(validateParam(schemas.idSchema, 'courseId'),
-        validateBody(schemas.enlistToCourseSchema),
+        validateBody(schemas.enrollToCourseSchema),
         passportJWT,
-        CoursesController.enlistStudentToCourse);
+        CoursesController.enrollStudentToCourse)
+    .post(validateParam(schemas.idSchema, 'courseId'),
+        validateBody(schemas.removeFromCourseSchema),
+        passportJWT,
+        CoursesController.removeStudentFromCourse);
+;
 
 module.exports = router;
 

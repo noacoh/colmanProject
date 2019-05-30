@@ -5,7 +5,7 @@ module.exports = {
     validateParam: (schema, name) => {
         return (req, res, next) => {
             const result = joi.validate({param: req['params'][name]}, schema);
-            if (result.error){
+            if (result.error) {
                 res.status(400).json(result.error);
             } else {
                 if (!req.value) {
@@ -22,7 +22,7 @@ module.exports = {
     validateBody: (schema) => {
         return (req, res, next) => {
             const result = joi.validate(req.body, schema);
-            if (result.error){
+            if (result.error) {
                 res.status(400).json(result.error);
             } else {
                 if (!req.value) {
@@ -46,7 +46,7 @@ module.exports = {
             identityNumber: joi.string().regex(/^[0-9]{9}$/).required(),
             password: joi.string().required()
         }),
-        userOptionalSchema:joi.object().keys({
+        userOptionalSchema: joi.object().keys({
             firstName: joi.string().alphanum().min(3).max(30),
             lastName: joi.string().alphanum().min(3).max(30),
             identityNumber: joi.string().regex(/^[0-9]{9}$/),
@@ -86,11 +86,15 @@ module.exports = {
             identityNumber: joi.string().regex(/^[0-9]{9}$/).required(),
             password: joi.string().required()
         }),
-        enlistToCourseSchema: joi.object().keys({
+        enrollToCourseSchema: joi.object().keys({
             studentId: joi.string().regex(/^[0-9]{9}$/).required()
         }),
-        submitForGradeSchema:  joi.object().keys({
+        submitForGradeSchema: joi.object().keys({
             mode: joi.string().regex(`^(${SUBMISSION.MODE.FINAL}|${SUBMISSION.MODE.PRACTICE})$`).required()
         }),
+        removeFromCourseSchema: joi.object().keys({
+            studentId: joi.string().regex(/^[0-9]{9}$/).required(),
+            courseId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required()
+        })
     }
 };

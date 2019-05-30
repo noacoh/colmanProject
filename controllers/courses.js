@@ -57,7 +57,7 @@ module.exports = {
             message: 'Course updated successfully'
         });
     },
-    getStudentsEnlisted: async (req, res, next) => {
+    getStudentsEnrolled: async (req, res, next) => {
         const resourceRequester = req.user;
         if (!resourceRequester.admin) {
             res.status(401).json({
@@ -68,9 +68,9 @@ module.exports = {
         // req.body may contain any number of fields
         const { courseId } = req.value.params;
         const course = await Course.findById(courseId).populate('student');
-        res.status(200).json({ "students": course.enlisted });
+        res.status(200).json({ "students": course.enrolled });
     },
-    enlistStudentToCourse: async (req, res, next) => {
+    enrollStudentToCourse: async (req, res, next) => {
         const resourceRequester = req.user;
         if (!resourceRequester.admin) {
             res.status(401).json({
@@ -86,11 +86,34 @@ module.exports = {
         const course = await Course.findById(courseId);
         user.courses.push(course);
         await student.save();
-        course.enlisted.push(user);
+        course.enrolled.push(user);
         course.save();
         res.status(200).json({
             success: true,
-            message: `Enlisted ${student.firstName} ${student.lastName} to '${course.title}' course successfully`
+            message: `Enrolled ${student.firstName} ${student.lastName} to '${course.title}' course successfully`
         })
     },
+    removeStudentFromCourse: async (req, res, next) => {
+        const resourceRequester = req.user;
+        if (!resourceRequester.admin) {
+            res.status(401).json({
+                success: false,
+                message: 'Unauthorised'
+            })
+        }
+        const { courseId } = req.value.params;
+        const { studentId } = req.value.body;
+        // Get Student
+        const student = await Student.findById(studentId);
+        // Get Course
+        const course = await Course.findById(courseId);
+        user.courses.remove(course);
+        await student.save();
+        course.enrolled.remove(user);
+        course.save();
+        res.status(200).json({
+            success: true,
+            message: `Removed ${student.firstName} ${student.lastName} from '${course.title}' course successfully`
+        })
+    }
 };

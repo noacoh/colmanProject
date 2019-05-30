@@ -40,7 +40,7 @@ router.route(':/userId/courses')
 router.route('/:userId/courses/:courseId')
     .post(validateParam(schemas.idSchema, 'userId'),
         validateParam(schemas.idSchema, 'courseId'),
-        UserController.enlistUserToCourse);*/
+        UserController.enrollUserToCourse);*/
 
 module.exports = router;
 
