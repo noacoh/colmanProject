@@ -1,6 +1,6 @@
-const { exec } = require('child_process');
-const fs = require('fs');
-
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
+const { readFile, writeFile }  = require('fs').promises;
 
 /**
          * @Constructor
@@ -10,7 +10,7 @@ const fs = require('fs');
          * @param {String} path: The current working directory where the current API folder is kept
          * @param {String} folder: The name of the folder that would be mounted/shared with Docker container, this will be concatenated with path
          * @param {String} vm_name: The TAG of the Docker VM that we wish to execute
-         * @param {String} compiler_name: The compiler/interpretor to use for carrying out the translation
+         * @param {String} compiler_name: The compiler/interpreter to use for carrying out the translation
          * @param {String} file_name: The file_name to which source code will be written
          * @param {String} code: The actual code
          * @param {String} output_command: Used in case of compilers only, to execute the object code, send " " in case of interpretors
@@ -34,12 +34,15 @@ const DockerSandbox = function(timeout_value, path, folder, vm_name, compiler_na
          * @function
          * @name DockerSandbox.run
          * @description Function that first prepares the Docker environment and then executes the Docker sandbox
-         * @param {Function pointer} success
+         * @param {Function ref} success
 */
-DockerSandbox.prototype.run = async function(success)
+DockerSandbox.prototype.run = async function(sucess)
 {
-    const exe = () => {this.execute(success)};
-    await this.prepare(exe);
+    console.log('---------------------');
+    await this.set();
+    await this.execute(sucess);
+    await this.clean();
+    console.log('---------------------');
 };
 
 
@@ -54,38 +57,32 @@ DockerSandbox.prototype.run = async function(success)
          * Docker container when we run it.
          * @param {Function ref} success
 */
-DockerSandbox.prototype.prepare = async function(success)
-{
+DockerSandbox.prototype.set = async function() {
+    console.log('@@@ setting input and output files');
     const sandbox = this;
-
+    const basePath = `${this.path}${this.folder}`;
+    // set file path to hold the code file
+    const filePath =`${basePath}/${sandbox.file_name}`;
     // create new directory
     // copy payload to directory
     // set permission for directory
-    const cmd = `mkdir ${this.path}${this.folder} && cp ${this.path}/Payload/* ${this.path}${this.folder} && chmod 777 ${this.path}${this.folder}`;
+    const cmd = `mkdir ${basePath} && cp ${this.path}/Payload/* ${basePath} && chmod 777 ${basePath}`;
     await exec(cmd);
-
-    // set file path to hold the code file
-    const filePath =`${sandbox.path}${sandbox.folder}/${sandbox.file_name}`;
+    console.log(`@@@ new directory ${basePath} created`);
 
     // write code to file
-    let err = await fs.writeFile(filePath, sandbox.code);
+    await writeFile(filePath, sandbox.code);
 
-    if (err) {
-        console.log(err);
-        return;
-    }
+    console.log(`${sandbox.langName}  code file created at ${filePath}`);
+    await exec(`chmod 777 '${filePath}'`);
 
-    console.log(`${sandbox.langName} file was saved!`);
-    exec(`chmod 777 '${filePath}'`);
+    await writeFile(`${basePath}/inputFile`, sandbox.stdin_data);
+    console.log(`@@@ input file created at ${basePath}/inputFile`);
+};
 
-    err = await fs.writeFile(`${sandbox.path}${sandbox.folder}/inputFile`, sandbox.stdin_data);
-
-    if (err) {
-        console.log(err);
-        return;
-    }
-    console.log("Input file was saved!");
-    success();
+DockerSandbox.prototype.clean = async () => {
+    console.log(`@@@ attempting to remove directory: ${this.folder}`);
+    await exec(`rm -r ${this.folder}`);
 };
 
 /**
@@ -106,99 +103,20 @@ DockerSandbox.prototype.prepare = async function(success)
 
 DockerSandbox.prototype.execute = async function(success)
 {
-    let myC = 0; //variable to enforce the timeout_value
-    const sandbox = this;
+    const basePath = `${this.path}${this.folder}`;
+    const cmd = `${this.path} DockerTimeout.sh ${this.timeout_value} s -u mysql -e 'NODE_PATH=/usr/local/lib/node_modules' -i -t -v "${this.path}${this.folder}":/usercode ${this.vm_name} /usercode/script.sh ${this.compiler_name} ${this.file_name} ${this.output_command} ${this.extra_arguments}`;
+    const outputFilePath = `${this.path}${this.folder}/completed`;
 
-    //this statement is what is executed
-    const st = this.path+'DockerTimeout.sh ' + this.timeout_value + 's -u mysql -e \'NODE_PATH=/usr/local/lib/node_modules\' -i -t -v  "' + this.path + this.folder + '":/usercode ' + this.vm_name + ' /usercode/script.sh ' + this.compiler_name + ' ' + this.file_name + ' ' + this.output_command+ ' ' + this.extra_arguments;
-    const st = `${this.path} DockerTimeout.sh ${this.timeout_value} s -u mysql -e 'NODE_PATH=/usr/local/lib/node_modules' -i -t -v "${this.path}${this.folder}":/usercode ' + this.vm_name + ' /usercode/script.sh ' + this.compiler_name + ' ' + this.file_name + ' ' + this.output_command+ ' ' + this.extra_arguments;
+    console.log(`@@@ executing ${cmd}`);
+    await exec(cmd, { timeout: this.timeout_value });
 
-    //log the statement in console
-    console.log(st);
+    console.log(`@@@ reading output from file ${outputFilePath}`);
+    const data = await readFile(outputFilePath, 'utf8');
 
-    //execute the Docker, This is done ASYNCHRONOUSLY
-    exec(st);
-    console.log("------------------------------");
-    //Check For File named "completed" after every 1 second
-    const intid = setInterval(function()
-        {
-            //Displaying the checking message after 1 second interval, testing purposes only
-            //console.log("Checking " + sandbox.path+sandbox.folder + ": for completion: " + myC);
-
-            myC = myC + 1;
-
-            fs.readFile(sandbox.path + sandbox.folder + '/completed', 'utf8', function(err, data) {
-
-            //if file is not available yet and the file interval is not yet up carry on
-            if (err && myC < sandbox.timeout_value)
-            {
-                //console.log(err);
-                return;
-            }
-            //if file is found simply display a message and proceed
-            else if (myC < sandbox.timeout_value)
-            {
-                console.log("DONE");
-                //check for possible errors
-                fs.readFile(sandbox.path + sandbox.folder + '/errors', 'utf8', function(err2, data2)
-                {
-                	if(!data2) data2=""
-               		console.log("Error file: ")
-               		console.log(data2)
-
-               		console.log("Main File")
-               		console.log(data)
-
-			var lines = data.toString().split('*-COMPILEBOX::ENDOFOUTPUT-*');
-			data=lines[0];
-			var time=lines[1];
-
-			console.log("Time: ");
-			console.log(time);
-
-
-       	           	success(data,time,data2)
-                });
-
-                //return the data to the calling functoin
-
-            }
-            //if time is up. Save an error message to the data variable
-            else
-            {
-            	//Since the time is up, we take the partial output and return it.
-            	fs.readFile(sandbox.path + sandbox.folder + '/logfile.txt', 'utf8', function(err, data){
-            		if (!data) data = "";
-                    data += "\nExecution Timed Out";
-                    console.log("Timed Out: "+sandbox.folder+" "+sandbox.langName)
-                    fs.readFile(sandbox.path + sandbox.folder + '/errors', 'utf8', function(err2, data2)
-	                {
-	                	if(!data2) data2="";
-
-				var lines = data.toString().split('*---*');
-				data = lines[0];
-				var time=lines[1];
-
-				console.log("Time: ");
-				console.log(time);
-
-	                   	success(data,data2)
-	                });
-            	});
-
-            }
-
-
-            //now remove the temporary directory
-            console.log("ATTEMPTING TO REMOVE: " + sandbox.folder);
-            console.log("------------------------------");
-            exec("rm -r " + sandbox.folder);
-
-
-            clearInterval(intid);
-        });
-    }, 1000);
-
+    console.log(`@@@ reading err output from file ${basePath}/errors`);
+    const compilationErr = await readFile( `${basePath}/errors`, 'utf8');
+    const [ output, time ] = data.toString().split('*-ENDOFOUTPUT-*');
+    success(output, time, compilationErr);
 };
 
 
