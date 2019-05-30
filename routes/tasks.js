@@ -6,13 +6,15 @@ const multer  = require('multer');
 const upload = multer({ dest: 'submissions/' });
 const { validateParam, validateBody, schemas } = require('../helpers/routeHelpers');
 const passportJWT = passport.authenticate('jwt', {session: false});
+const { MAX_UPLOADS } = require('../configuration/supports');
+
 
 router.route('/')
     .get(passportJWT,
-        TasksController.index,);
+        TasksController.index);
 
 router.route('uploads')
-    .post(upload.fields([{ name: 'exFile', maxCount:1 }, { name: 'practiceTestFile', maxCount:1 },  { name: 'finalTestFile', maxCount:1 }]),
+    .post(upload.fields([{ name: 'exFile', maxCount:1 }, { name: 'practiceTest', maxCount:MAX_UPLOADS }, { name: 'finalTest', maxCount:MAX_UPLOADS }]),
         validateBody(schemas.taskSchema),
         passportJWT,
         TasksController.uploadTask);
@@ -42,7 +44,7 @@ router.route('/:taskId/submissions')
     .get(validateParam(schemas.idSchema, 'taskId'),
         passportJWT,
         TasksController.getTaskSubmissions)
-    .post(upload.single('solFile'),
+    .post(upload.array('solFile', MAX_UPLOADS),
         validateParam(schemas.idSchema, 'taskId'),
         validateBody(schemas.submitForGradeSchema),
         passportJWT,

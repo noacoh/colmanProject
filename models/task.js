@@ -4,9 +4,16 @@ const Schema = mongoose.Schema;
 const taskSchema = new Schema({
     id: Number,
     title: String,
+    // path to zip containing all exercise files
     exercisePath: String,
-    practiceTestPath: String,
-    finalTestPath: String,
+    // files containing the code for the practice test
+    practiceTest: [{
+        type: String
+    }],
+    // files containing the code for the final test
+    finalTest: [{
+    type: String
+    }],
     created: Date,
     deadline: Date,
     exam: {

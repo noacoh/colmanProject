@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const { runInSandbox } = require('../docker_sandbox/sandboxWrapper');
+
 
 const submissionSchema = new Schema({
     submissionDate: Date,
@@ -7,7 +9,9 @@ const submissionSchema = new Schema({
         type: Number,
         default: 0
     },
-    filePath: String,
+    files:[{
+        type: String
+    }],
     task: {
         type: Schema.Types.ObjectId,
         ref: 'task'
@@ -25,6 +29,7 @@ const submissionSchema = new Schema({
 submissionSchema.pre('save', async function(next) {
     try {
         // TODO add method to calculate grade (long async function.....)
+        const { output, execTime, error} = await runInSandbox()
         //mock grading, should be some async function
         this.grade = 100;
         next();

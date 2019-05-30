@@ -18,9 +18,9 @@ module.exports = {
         const { title, deadline, courseId } = req.value.body;
         const newTask = {
             title: title,
-            exercisePath:req.files['exFile'][0],
-            practiceTestPath: req.files['practiceTestFile'][0],
-            finalTestPath: req.files['finalTestFile'][0],
+            exercisePath:req.files['exFile'].map( file => file.path),
+            practiceTest: req.files['practiceTestFile'].map( file => file.path),
+            finalTest: req.files['finalTestFile'].map( file => file.path),
             created: new Date(),
             deadline: deadline,
             course: courseId
@@ -32,7 +32,7 @@ module.exports = {
         if (!resourceRequester.isAdmin()) {
             res.status(401).json({
                 success: false,
-                message: "Unauthorised"
+                message: "Unauthorized"
             })
         }
         const { taskId } = req.value.params;
@@ -111,13 +111,13 @@ module.exports = {
             submissionDate: new Date(),
             task: taskId,
             student: resourceRequester._id,
-            filePath: req.file.path,
+            files: req.files.map(file => file.path),
             mode: mode
         });
         await newSubmission.save(); // grade is calculated here
         res.status(201).json({
             success: true,
-            message: 'File was submitted successfully',
+            message: 'Files submitted successfully',
             data: { grade: newSubmission.grade }
         });
     },
