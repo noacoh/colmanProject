@@ -8,12 +8,9 @@ FROM chug/ubuntu16.04x64
 # Update the repository sources list
 RUN echo "deb http://archive.ubuntu.com/ubuntu trusty main universe" > /etc/apt/sources.list
 RUN apt-get update apt-get install -y \
-    gcc \
-    g++ \
     python-software-properties \
     software-properties-common
 
-#Install all the languages/compilers we are supporting.
 #grab oracle java (auto accept licence)
 RUN add-apt-repository -y ppa:webupd8team/java
 RUN apt-get update
