@@ -28,15 +28,8 @@ router.route('downloads/:taskId')
 router.route('/:taskId')
     .get(validateParam(schemas.idSchema, 'taskId'),
         passportJWT,
-        TasksController.getTask)
-    // .put(validateParam(schemas.idSchema, 'taskId'),
-    //     validateBody(schemas.taskSchema),
-    //     passportJWT,
-    //     TasksController.replaceTask)
-    // .patch([validateParam(schemas.idSchema, 'taskId'),
-    //     validateParam(schemas.taskOptionalSchema)],
-    //     passportJWT,
-    //     TasksController.updateTask)
+        TasksController.getTask);
+
     .delete(validateParam(schemas.idSchema, 'taskId'),
         passportJWT,
         TasksController.deleteTask);
