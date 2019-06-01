@@ -1,6 +1,7 @@
 const Task = require('../models/task');
 const Submission = require('../models/submission');
 const Student = require('../models/student');
+const { SOLUTION_FILES, FINAL_TEST_FILES, PRACTICE_TEST_FILES, EXERCISE_FILE} = require('../configuration/supports').DATA_FORM.FIELD_NAME;
 
 module.exports = {
     index: async (req, res, next) => {
@@ -18,7 +19,7 @@ module.exports = {
         const { title, deadline, courseId } = req.value.body;
         const newTask = {
             title: title,
-            solution: req.value.files.sulotion,
+            solution: req.value.files.solution,
             practiceTest: req.value.files.practiceTest,
             finalTest: req.value.files.finalTest,
             exerciseZip: req.value.files.exerciseZip,
@@ -37,8 +38,8 @@ module.exports = {
             })
         }
         const { taskId } = req.value.params;
-        const { solutionPath } = req.value.params;
-        await Task.findByIdAndUpdate(taskId, solutionPath);
+        const { solution } = req.value.files;
+        await Task.findByIdAndUpdate(taskId, solution);
         res.status(200).json({
             success: true,
             message: 'Task solution was updated successfully'

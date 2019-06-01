@@ -18,11 +18,13 @@ router.route('uploads')
         taskUpload.storeFiles(),
         validateBody(schemas.taskSchema),
         passportJWT,
-        TasksController.uploadTask)
-    .patch([validateParam(schemas.idSchema, 'taskId'),
-            validateParam(schemas.taskOptionalSchema)],
-            passportJWT,
-            TasksController.uploadTaskSolution);
+        TasksController.uploadTask);
+
+router.route('uploads/addSolution')
+    .post(taskUpload.upload.fields([{ name: SOLUTION_FILES, maxCount: MAX_UPLOAD }]),
+        taskUpload.storeFiles(),
+        passportJWT,
+        TasksController.uploadTaskSolution);
 
 router.route('downloads/:taskId')
     .get(validateParam(schemas.idSchema, 'taskId'),
