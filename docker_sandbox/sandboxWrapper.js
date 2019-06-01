@@ -2,7 +2,7 @@ const sandBox = require('./API/DockerSandbox');
 const { compilers } = require('./API/compilers');
 
 module.exports = {
-  runInSandbox: async (language, code, stdin) => {
+  run: async (language, code, stdin) => {
 
       const folder = 'temp/' + random(10); //folder in which the temporary folder will be saved
       const path = __dirname + "/"; // current working path

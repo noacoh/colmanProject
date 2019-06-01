@@ -18,9 +18,10 @@ module.exports = {
         const { title, deadline, courseId } = req.value.body;
         const newTask = {
             title: title,
-            exercisePath:req.files['exFile'].map( file => file.path),
-            practiceTest: req.files['practiceTestFile'].map( file => file.path),
-            finalTest: req.files['finalTestFile'].map( file => file.path),
+            solution: req.value.files.sulotion,
+            practiceTest: req.value.files.practiceTest,
+            finalTest: req.value.files.finalTest,
+            exerciseZip: req.value.files.exerciseZip,
             created: new Date(),
             deadline: deadline,
             course: courseId
@@ -54,40 +55,6 @@ module.exports = {
         const { taskId } = req.value.params;
         const task = await Task.findById(taskId);
         res.status(200).json(task);
-    },
-    replaceTask: async (req, res, next) => {
-        const resourceRequester = req.user;
-        if (!resourceRequester.isAdmin()) {
-            res.status(401).json({
-                success: false,
-                message: "Unauthorised"
-            })
-        }
-        //need a complete object with all params
-        const { taskId } = req.value.params;
-        const newTask = req.value.body;
-        await Task.findByIdAndUpdate(taskId, newTask);
-        res.status(200).json({
-            success: true,
-            message: 'Task was replaced successfully'
-        });
-    },
-    updateTask: async (req, res, next) => {
-        const resourceRequester = req.user;
-        if (!resourceRequester.isAdmin()) {
-            res.status(401).json({
-                success: false,
-                message: "Unauthorised"
-            })
-        }
-        //can update specific fields
-        const { taskId } = req.value.params;
-        const newTask = req.value.body;
-        await Task.findByIdAndUpdate(taskId, newTask);
-        res.status(200).json({
-            success: true,
-            message: 'Task was updated successfully'
-        });
     },
     deleteTask: async (req, res, next) => {
         const resourceRequester = req.user;
