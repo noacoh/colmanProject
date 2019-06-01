@@ -26,56 +26,38 @@ const submissionStorage = multer.diskStorage({
 const taskUpload = multer(taskStorage);
 const submissionUpload = multer(submissionStorage);
 
+
 const storeTaskFiles = async () => {
     return (req, res, next) => {
 
         console.log('-----MAPPING TASK FILES TO DIRECTORIES-----');
 
-        let tempFiles = [].concat(
-            req.files[SOLUTION_FILES].map(file => file.path),
-            req.files[FINAL_TEST_FILES].map(file => file.path),
-            req.files[PRACTICE_TEST_FILES].map(file => file.path),
-            req.files[EXERCISE_FILE].map(file => file.path),
-        );
+        // keep track of the files saved to disk, so they can be deleted in case of unexpected error
+        let tempFiles = [];
         let movedFiles = [];
+
+        tempFiles = req.files[SOLUTION_FILES]? tempFiles.concat(req.files[SOLUTION_FILES].map(file => file.path)): tempFiles;
+        tempFiles = req.files[FINAL_TEST_FILES]? tempFiles.concat(req.files[FINAL_TEST_FILES].map(file => file.path)): tempFiles;
+        tempFiles = req.files[PRACTICE_TEST_FILES]? tempFiles.concat(req.files[PRACTICE_TEST_FILES].map(file => file.path)): tempFiles;
+        tempFiles = req.files[EXERCISE_FILE]? tempFiles.concat(req.files[EXERCISE_FILE].map(file => file.path)): tempFiles;
+
+        const extractFiles = (baseDir, fieldName) =>{
+            // creates a new directory if it not exists
+            createDirectoryIfNotExists(baseDir);
+            let files = req.files[fieldName].map( file => {
+                let newPath = `${baseDir}/${file.name}`;
+                moveFiles(file.path, newPath);
+                movedFiles.push(newPath);
+                removeFromArray(tempFiles, file.path);
+            });
+            return {
+                dir: baseDir,
+                files: files
+            };
+        };
 
         try {
             const base_path = `/tasks/task${Date.now()}`;
-            // create the directories to contain the task files
-            createDirectoryIfNotExists(`${base_path}/${SOLUTION_FILES}`);
-            createDirectoryIfNotExists(`${base_path}/${FINAL_TEST_FILES}`);
-            createDirectoryIfNotExists(`${base_path}/${PRACTICE_TEST_FILES}`);
-            createDirectoryIfNotExists(`${base_path}/${EXERCISE_FILE}`);
-
-            // move files from temp directory to designated directories
-
-            const solutionFiles = req.files[SOLUTION_FILES].map( file => {
-                let newPath = `${base_path}/${SOLUTION_FILES}/${file.name}`;
-                moveFiles(file.path, newPath);
-                movedFiles.push(newPath);
-                removeFromArray(tempFiles, file.path);
-            });
-
-            const practiceTest= req.files[FINAL_TEST_FILES].map( file => {
-                let newPath = `${base_path}/${FINAL_TEST_FILES}/${file.name}`;
-                moveFiles(file.path, newPath);
-                movedFiles.push(newPath);
-                removeFromArray(tempFiles, file.path);
-            });
-
-            const finalTest =  req.files[PRACTICE_TEST_FILES].map( file => {
-                let newPath = `${base_path}/${PRACTICE_TEST_FILES}/${file.name}`;
-                moveFiles(file.path, newPath);
-                movedFiles.push(newPath);
-                removeFromArray(tempFiles, file.path);
-            });
-            const exerciseZip = req.files[EXERCISE_FILE].map( file => {
-                let newPath = `${base_path}/${EXERCISE_FILE}/${file.name}`;
-                moveFiles(file.path, newPath);
-                movedFiles.push(newPath);
-                removeFromArray(tempFiles, file.path);
-            });
-
             // add data to req object
             if (!req.value) {
                 req.value = {};
@@ -83,10 +65,20 @@ const storeTaskFiles = async () => {
             if (!req.value['files']) {
                 req.value['files'] = {};
             }
-            req.value['files']['sulotion'] = { dir: `${base_path}/${SOLUTION_FILES}`, files: solutionFiles };
-            req.value['files']['finalTest'] = { dir: `${base_path}/${FINAL_TEST_FILES}`, files: finalTest };
-            req.value['files']['practiceTest'] = { dir: `${base_path}/${PRACTICE_TEST_FILES}`, files: practiceTest };
-            req.value['files']['exerciseZip'] = { dir: `${base_path}/${EXERCISE_FILE}`, files: exerciseZip };
+            if (req.files[SOLUTION_FILES]){
+                req.value['files']['solution'] = extractFiles(`${base_path}/${SOLUTION_FILES}`, SOLUTION_FILES);
+            }
+            if(req.files[FINAL_TEST_FILES]){
+                req.value['files']['finalTest'] = extractFiles(`${base_path}/${FINAL_TEST_FILES}`, FINAL_TEST_FILES);
+            }
+            if(req.files[PRACTICE_TEST_FILES]){
+                req.value['files']['practiceTest'] = extractFiles(`${base_path}/${PRACTICE_TEST_FILES}`, PRACTICE_TEST_FILES);
+
+            }
+            if (req.files[EXERCISE_FILE]){
+                req.value['files']['exerciseZip'] =  extractFiles(`${base_path}/${EXERCISE_FILE}`, EXERCISE_FILE);
+            }
+
             next();
         } catch (e) {
             console.log('@@@ error occurred. removing all files.');

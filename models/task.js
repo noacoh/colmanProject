@@ -5,7 +5,10 @@ const taskSchema = new Schema({
     id: Number,
     title: String,
     // path to zip containing all exercise files
-    exerciseZip: String,
+    exerciseZip: {
+        dir: String,
+        files: [String]
+    },
     // files containing the code for the practice test
     practiceTest: {
         dir: String,
