@@ -186,6 +186,24 @@ module.exports = {
                 })
             }
         }
-
+    },
+    getTaskLateSubmissionList: async (req, res, next) => {
+        const resourceRequester = req.user;
+        if (!resourceRequester.isAdmin()) {
+            res.status(401).json({
+                success: false,
+                message: "Unauthorised"
+            })
+        }
+        const {taskId} = req.value.params;
+        const task = await Task.findById(taskId).populate('studentSubmissions');
+        const lateStudents = [];
+        task.studentSubmissions.forEach(studentSubmission => {
+           if (studentSubmission.submissionDate > task.deadline) {
+               lateStudents.push(studentSubmission.student.identityNumber);
+           }
+        });
+        // TODO consider returning only grades and student ids/identity numbers
+        res.status(200).json(lateStudents);
     }
 };

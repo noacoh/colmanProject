@@ -29,7 +29,7 @@ const submissionSchema = new Schema({
 submissionSchema.pre('save', async function(next) {
     try {
         // TODO add method to calculate grade (long async function.....)
-        const { output, execTime, error} = await runInSandbox()
+        const { output, execTime, error} = await runInSandbox();
         //mock grading, should be some async function
         this.grade = 100;
         next();

@@ -26,7 +26,9 @@ router.route('uploads')
 router.route('downloads/:taskId')
     .get(validateParam(schemas.idSchema, 'taskId'),
         passportJWT,
-        TasksController.getTaskExerciseFile)
+        TasksController.getTaskExerciseFile);
+
+router.route('downloads/:taskId/solution')
     .get(validateParam(schemas.idSchema, 'taskId'),
         passportJWT,
         TasksController.getTaskSolutionFile);
@@ -56,6 +58,11 @@ router.route('/:taskId/submissions')
         validateBody(schemas.submitForGradeSchema),
         passportJWT,
         TasksController.submitForGrade);
+
+router.route('/:taskId/lateSubmissions')
+    .get(validateParam(schemas.idSchema, 'taskId'),
+        passportJWT,
+        TasksController.getTaskLateSubmissionList);
 
 module.exports = router;
 

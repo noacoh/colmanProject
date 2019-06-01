@@ -30,12 +30,14 @@ router.route('/:courseId/students')
     .post(validateParam(schemas.idSchema, 'courseId'),
         validateBody(schemas.enrollToCourseSchema),
         passportJWT,
-        CoursesController.enrollStudentToCourse)
+        CoursesController.enrollStudentToCourse);
+
+router.route('/:courseId/removeStudents')
     .post(validateParam(schemas.idSchema, 'courseId'),
         validateBody(schemas.removeFromCourseSchema),
         passportJWT,
         CoursesController.removeStudentFromCourse);
-;
+
 
 module.exports = router;
 
