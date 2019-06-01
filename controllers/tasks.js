@@ -105,5 +105,38 @@ module.exports = {
             }
         }
         res.sendFile(task.exercisePath)
+    },
+    getTaskSolutionFile: async (req, res, next) => {
+        const resourceRequester = req.user;
+        const { taskId } = req.value.params;
+        const task = await Task.findById(taskId).populate('course'); // validate task exists
+        const course = task.course;
+        if (!resourceRequester.isAdmin()){
+            if(!course.studentIsRegisteredForCourse(resourceRequester._id)){
+                // student is not registered for this course
+                console.log(`student ${resourceRequester.FullName()} is not registered for course ${course.title}. Can not supply exercise file fo this task.`);
+                res.status(401).json({
+                    success: false,
+                    message: "Unauthorized"
+                })
+            }
+        }
+        if (task.solutionPath === null){
+            res.status(404).json({
+                    success: false,
+                    message: "Solution file isn't found"
+                })
+        } else{
+            if (task.deadline < new Date()){
+                res.sendFile(task.solutionPath);
+            }
+            else{
+                res.status(404).json({
+                    success: false,
+                    message: "Can't download solution..."
+                })
+            }
+        }
+
     }
 };
