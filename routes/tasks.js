@@ -28,8 +28,7 @@ router.route('downloads/:taskId')
 router.route('/:taskId')
     .get(validateParam(schemas.idSchema, 'taskId'),
         passportJWT,
-        TasksController.getTask);
-
+        TasksController.getTask)
     .delete(validateParam(schemas.idSchema, 'taskId'),
         passportJWT,
         TasksController.deleteTask);
