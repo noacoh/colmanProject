@@ -42,10 +42,10 @@ const storeTaskFiles = async () => {
         try {
             const base_path = `/tasks/task${Date.now()}`;
             // create the directories to contain the task files
-            createDirectoryIfNotExists(`${base_path}/${SOLUTION_FILES})`;
-            createDirectoryIfNotExists(`${base_path}/${FINAL_TEST_FILES})`;
-            createDirectoryIfNotExists(`${base_path}/${PRACTICE_TEST_FILES})`;
-            createDirectoryIfNotExists(`${base_path}/${EXERCISE_FILE})`;
+            createDirectoryIfNotExists(`${base_path}/${SOLUTION_FILES}`);
+            createDirectoryIfNotExists(`${base_path}/${FINAL_TEST_FILES}`);
+            createDirectoryIfNotExists(`${base_path}/${PRACTICE_TEST_FILES}`);
+            createDirectoryIfNotExists(`${base_path}/${EXERCISE_FILE}`);
 
             // move files from temp directory to designated directories
 
