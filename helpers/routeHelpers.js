@@ -74,7 +74,13 @@ module.exports = {
         }),
         taskOptionalSchema: joi.object().keys({
             title: joi.string(),
-            deadline: joi.date()
+            exercisePath: joi.string(),
+            solutionPath: joi.string(),
+            deadline: joi.date(),
+            practiceTest: joi.string(),
+            finalTest: joi.string(),
+            exam: joi.boolean(),
+            course: joi.string().regex(/^[0-9a-fA-F]{24}$/).required()
         }),
         authenticationSchema: joi.object().keys({
             identityNumber: joi.string().regex(/^[0-9]{9}$/).required(),

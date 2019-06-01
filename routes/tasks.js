@@ -23,7 +23,10 @@ router.route('uploads')
 router.route('downloads/:taskId')
     .get(validateParam(schemas.idSchema, 'taskId'),
         passportJWT,
-        TasksController.getTaskExerciseFile());
+        TasksController.getTaskExerciseFile())
+    .get(validateParam(schemas.idSchema, 'taskId'),
+        passportJWT,
+        TasksController.getTaskSolutionFile());
 
 router.route('/:taskId')
     .get(validateParam(schemas.idSchema, 'taskId'),
