@@ -133,6 +133,6 @@ DockerSandbox.prototype.execute = async function(success, onError)
     const [ output, time ] = data.toString().split('*-ENDOFOUTPUT-*');
 
     success(output, time, compilationErr);
-}
+};
 
 module.exports = DockerSandbox;

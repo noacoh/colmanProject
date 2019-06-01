@@ -5,15 +5,22 @@ const taskSchema = new Schema({
     id: Number,
     title: String,
     // path to zip containing all exercise files
-    exercisePath: String,
+    exerciseZip: String,
     // files containing the code for the practice test
-    practiceTest: [{
-        type: String
-    }],
+    practiceTest: {
+        dir: String,
+        files: [String]
+    },
     // files containing the code for the final test
-    finalTest: [{
-    type: String
-    }],
+    finalTest: {
+        dir: String,
+        files: [String]
+    },
+    // files containing the code for the final test
+    solution: {
+        dir: String,
+        files: [String]
+    },
     created: Date,
     deadline: Date,
     exam: {
