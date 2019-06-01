@@ -21,15 +21,15 @@ router.route('uploads')
     .patch([validateParam(schemas.idSchema, 'taskId'),
             validateParam(schemas.taskOptionalSchema)],
             passportJWT,
-            TasksController.uploadTaskSolution());
+            TasksController.uploadTaskSolution);
 
 router.route('downloads/:taskId')
     .get(validateParam(schemas.idSchema, 'taskId'),
         passportJWT,
-        TasksController.getTaskExerciseFile())
+        TasksController.getTaskExerciseFile)
     .get(validateParam(schemas.idSchema, 'taskId'),
         passportJWT,
-        TasksController.getTaskSolutionFile());
+        TasksController.getTaskSolutionFile);
 
 router.route('/:taskId')
     .get(validateParam(schemas.idSchema, 'taskId'),
