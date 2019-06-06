@@ -7,9 +7,9 @@ signToken = user => {
         iss: 'ColmanSubSystem',
         sub: user._id,
         iat: new Date().getTime(),
-        exp: new Date().setDate(new Date().getDate() + 1)
+        exp: new Date().setDate(new Date().getDate() + 1)//TODO move this to conf file
 
-    }, JWT_SECRET)// TODO generate secret string and replace here
+    }, JWT_SECRET)// TODO generate secret string and replace in the conf file
 };
 module.exports = {
     index: async (req, res, next) => {

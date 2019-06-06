@@ -89,8 +89,8 @@ module.exports = {
         enlistToCourseSchema: joi.object().keys({
             studentId: joi.string().regex(/^[0-9]{9}$/).required()
         }),
-        submitForGradeSchema:  joi.object().keys({
-            mode: joi.string().regex(`^(${SUBMISSION.MODE.FINAL}|${SUBMISSION.MODE.PRACTICE})$`).required()
-        }),
+        // submitForGradeSchema:  joi.object().keys({
+        //     mode: joi.string().regex(`^(${SUBMISSION.MODE.FINAL}|${SUBMISSION.MODE.PRACTICE})$`).required()
+        // }),
     }
 };

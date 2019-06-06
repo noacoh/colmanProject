@@ -1,6 +1,11 @@
 const mongoose = require("mongoose");
 const bcrypt = require('bcryptjs');
 const Schema = mongoose.Schema;
+const PERMISSION = {
+    ADMIN: "admin",
+    TEACHING_ASSISTANT: "teachingAssistant",
+    STUDENT: "student"
+};
 
 const userSchema = new Schema({
     firstName: {
@@ -20,10 +25,10 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
-    admin: {
-        type: Boolean,
+    permission: {
+        type: String,
         required: true,
-        default: false
+        default: PERMISSION.STUDENT
     }
 });
 
@@ -49,7 +54,7 @@ userSchema.methods.isValidPassword = async function(newPassword) {
 };
 
 userSchema.methods.isAdmin = function() {
-    return this.admin;
+    return this.permission === "admin";
 };
 
 userSchema.methods.FullName = function() {

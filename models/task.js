@@ -39,6 +39,7 @@ const taskSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'submission'
     }]
+    // TASK CONF {}
 
 });
 taskSchema.methods.isExam = () => {return this.exam;};
