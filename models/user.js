@@ -43,6 +43,9 @@ userSchema.pre('save', async function(next) {
         // generate password hash
         // re-assign hashed version over original, plain-text password;
         this.password = await bcrypt.hash(this.password, salt);
+
+        // TODO create a log file for the student
+
         next();
     } catch(err) {
         next(err);

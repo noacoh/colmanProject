@@ -9,8 +9,12 @@ const testSchema = new Schema({
     compilation: {
         type: String,
         required: true
-    }
+    },
+    tasks: [{
+        type: Schema.Types.ObjectId,
+        ref: 'task'
+    }]
 });
 
-const Test = mongoose.model('test', test);
+const Test = mongoose.model('test', testSchema);
 module.exports = Test;

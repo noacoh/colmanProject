@@ -2,6 +2,8 @@ const Task = require('../models/task');
 const Submission = require('../models/submission');
 const Student = require('../models/student');
 
+// TODO we need to change controller and router according to new schema
+
 module.exports = {
     index: async (req, res, next) => {
         const tasks = await Task.find({});
