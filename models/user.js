@@ -29,6 +29,10 @@ const userSchema = new Schema({
         type: String,
         required: true,
         default: PERMISSION.STUDENT
+    },
+    email: {
+        type: String,
+        required: true
     }
 });
 

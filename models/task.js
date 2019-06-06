@@ -7,7 +7,6 @@ const TYPE = {
 
 const taskSchema = new Schema({
     title: String,
-    // path to zip containing all exercise files
     exercise: {
         dir: String,
         files: [String]
@@ -21,8 +20,6 @@ const taskSchema = new Schema({
         dir: String,
         files: [String]
     },
-    created: Date,
-    deadline: Date,
     type: {
         type: String,
         required: true,
@@ -35,7 +32,14 @@ const taskSchema = new Schema({
     studentSubmissions: [{
         type: Schema.Types.ObjectId,
         ref: 'submission'
-    }]
+    }],
+    deadline: {
+        type: Date,
+        required: true
+    },
+    meta: {
+        created: Date
+    },
 
 });
 taskSchema.methods.isExam = () => {return this.type === TYPE.EXAM;};
