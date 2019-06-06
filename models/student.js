@@ -6,7 +6,10 @@ const StudentSchema = new Schema({
     courses: [{
         type: Schema.Types.ObjectId,
         ref: 'course'
-    }]
+    }],
+    log: {
+        file: String
+    }
 });
 
 const Student = User.discriminator('student', StudentSchema);

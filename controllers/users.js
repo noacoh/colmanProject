@@ -1,15 +1,15 @@
 const JWT = require('jsonwebtoken');
 const User = require('../models/user');
-const { JWT_SECRET } = require('../configuration');
+const { JWT_SECRET, TOKEN_EXPIRATION } = require('../configuration');
 
 signToken = user => {
     return JWT.sign({
         iss: 'ColmanSubSystem',
         sub: user._id,
         iat: new Date().getTime(),
-        exp: new Date().setDate(new Date().getDate() + 1)//TODO move this to conf file
+        exp: new Date().setDate(new Date().getDate() + TOKEN_EXPIRATION)
 
-    }, JWT_SECRET)// TODO generate secret string and replace in the conf file
+    }, JWT_SECRET)
 };
 module.exports = {
     index: async (req, res, next) => {

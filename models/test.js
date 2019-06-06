@@ -1,30 +1,28 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const VISIBILITY = {
-    HIDDEN: "hidden",
-    EXPOSED: "exposed"
+
+const TYPE = {
+  INPUT: "input",
+  MAIN: "main"
 };
 
 const testSchema = new Schema({
-    name: {
+    testFiles:[{
+        type: Schema.Types.ObjectId,
+        ref: 'testFile'
+    }],
+    compilation: {
         type: String,
         required: true
     },
-    // full path to file
-    file: {
-        type: String,
-        required: true
-    },
-    configuration: {
-        visibility: {
-            type: {
-                String,
-                required: true,
-                default: VISIBILITY.HIDDEN
-            }
-        }
-    }
+    tasks: [{
+        type: Schema.Types.ObjectId,
+        ref: 'test'
+    }]
 });
 
-const test = mongoose.model('test', testSchema);
-module.exports = test;
+const Test = mongoose.model('test', test);
+module.exports = {
+    Test,
+    TYPE
+};

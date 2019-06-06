@@ -1,24 +1,21 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const TYPE = {
+    EXAM: "exam",
+    EXERCISE: "exercise"
+};
 
 const taskSchema = new Schema({
-    id: Number,
     title: String,
     // path to zip containing all exercise files
-    exerciseZip: {
+    exercise: {
         dir: String,
         files: [String]
     },
-    // files containing the code for the practice test
-    practiceTest: {
-        dir: String,
-        files: [String]
-    },
-    // files containing the code for the final test
-    finalTest: {
-        dir: String,
-        files: [String]
-    },
+    tests: [{
+        type: Schema.Types.ObjectId,
+        ref: 'test'
+    }],
     // files containing the code for the final test
     solution: {
         dir: String,
@@ -26,10 +23,10 @@ const taskSchema = new Schema({
     },
     created: Date,
     deadline: Date,
-    exam: {
-        type: Boolean,
+    type: {
+        type: String,
         required: true,
-        default: false
+        default: TYPE.EXERCISE
     },
     course: [{
         type: Schema.Types.ObjectId,
@@ -39,10 +36,9 @@ const taskSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'submission'
     }]
-    // TASK CONF {}
 
 });
-taskSchema.methods.isExam = () => {return this.exam;};
+taskSchema.methods.isExam = () => {return this.type === TYPE.EXAM;};
 
 taskSchema.post('remove', async function(next) {
     try {

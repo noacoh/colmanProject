@@ -74,7 +74,7 @@ const storeTaskFiles = async () => {
 
             }
             if (req.files[EXERCISE_FILE]){
-                req.value['files']['exerciseZip'] =  extractFiles(`${base_path}/${EXERCISE_FILE}`, EXERCISE_FILE);
+                req.value['files']['exercise'] =  extractFiles(`${base_path}/${EXERCISE_FILE}`, EXERCISE_FILE);
             }
 
             next();

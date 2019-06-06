@@ -9,22 +9,18 @@ const { TEMP } = require('../../configuration/index');
          * @description This constructor stores all the arguments needed to prepare and execute a Docker Sandbox
          * @param {Number} timeout: The Time_out limit for code execution in Docker
          * @param {String} vm_name: The TAG of the Docker VM that we wish to execute
-         * @param {String} compiler: The compiler/interpreter to use for carrying out the translation
          * @param {String} source_dir: Full path to the directory containing all the code files
-         * @param {String} language: Code language
-         * @param {String} compiler_args: Code language
          * @param {String} output_file: Used in case of compilers only, to execute the object code, send " " in case of interpreters
+         * @param {String} compilation_line: the compilation line to run as bash
 */
-const DockerSandbox = function(timeout, vm_name, compiler, source_dir, output_file, language, compiler_args, stdin) {
+const DockerSandbox = function(timeout, vm_name, source_dir, output_file, input, compilation_line) {
     this.timeout = timeout;
     this.shared_dir = `${TEMP}${Date().now()}`;
     this.vm_name = vm_name;
-    this.compiler = compiler;
     this.source_dir = source_dir;
     this.output_file = output_file;
-    this.language = language;
-    this.flags = compiler_args;
-    this.stdin = stdin;
+    this.input = input;
+    this.compilation_line = compilation_line;
 };
 
 /**
@@ -98,7 +94,7 @@ DockerSandbox.prototype.clean = async () => {
 DockerSandbox.prototype.execute = async function(success, onError)
 {
     const sharedDir = this.getSharedDir();
-    const cmd = `${this.path}DockerTimeout.sh ${this.timeout} -u root -i -t -v "${sharedDir}":/usercode ${this.vm_name} /usercode/script.sh ${this.compiler} ${this.file_name} ${this.output_file} ${this.flags}`;
+    const cmd = `${this.path}DockerTimeout.sh ${this.timeout} -u root -i -t -v "${sharedDir}":/usercode ${this.vm_name} /usercode/script.sh ${this.compilation_line} ${this.output_file}`;
     const outputFilePath = `${sharedDir}/completed`;
 
     console.log(`@@@ executing ${cmd}`);

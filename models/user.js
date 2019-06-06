@@ -54,7 +54,7 @@ userSchema.methods.isValidPassword = async function(newPassword) {
 };
 
 userSchema.methods.isAdmin = function() {
-    return this.permission === "admin";
+    return this.permission === PERMISSION.ADMIN;
 };
 
 userSchema.methods.FullName = function() {

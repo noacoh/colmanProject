@@ -21,7 +21,7 @@ module.exports = {
             solution: req.value.files.sulotion,
             practiceTest: req.value.files.practiceTest,
             finalTest: req.value.files.finalTest,
-            exerciseZip: req.value.files.exerciseZip,
+            exercise: req.value.files.exercise,
             created: new Date(),
             deadline: deadline,
             course: courseId
