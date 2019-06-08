@@ -109,6 +109,7 @@ module.exports = {
                 name: path.split("/").pop()
             }
         });
+        // send files as zip
         res.zip(files);
     },
 
@@ -140,6 +141,7 @@ module.exports = {
                         name: path.split("/").pop()
                     }
                 });
+                // send files as zip
                 res.zip(files);
             }
             else{
@@ -149,6 +151,9 @@ module.exports = {
                 })
             }
         }
+
+    },
+    uploadSolution: async (req, res, next) => {
 
     }
 };

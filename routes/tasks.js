@@ -1,16 +1,34 @@
+const router = require('express-promise-router')();
+const TasksController = require('../controllers/tasks');
+const { validateParam, validateBody, schemas } = require('../helpers/routeHelpers');
+
 const passport = require('passport');
 const passportConf = require('../passport');
-const TasksController = require('../controllers/tasks');
-const router = require('express-promise-router')();
-//const { taskUploader, submissionUploader } = require('../helpers/customStorage');
+const passportJWT = passport.authenticate('jwt', {session: false});
+
 const multer  = require('multer');
 const { RESOURCES } = require('../configuration');
-const taskUpload = multer({destination:RESOURCES.TASKS});
-const submissionUpload = multer({destination: RESOURCES.SUBMISSIONS});
-const { validateParam, validateBody, schemas } = require('../helpers/routeHelpers');
-const passportJWT = passport.authenticate('jwt', {session: false});
-const { MAX_UPLOADS } = require('../configuration/supports');
+
+// create file uploader for task exercise files
+const taskUpload = multer({
+    // configure destination folder for the files
+    destination: RESOURCES.TASKS,
+    // we want to rename the file, in order to ensure files name is unique
+    filename: function (req, file, cb) {
+        cb(null, file.originalname + '-' + Date.now())
+    }
+});
+// create file uploader for student submission files
+const submissionUpload = multer({
+    // configure destination folder for the files
+    destination: RESOURCES.SUBMISSIONS,
+    // we want to rename the file, in order to ensure files name is unique
+    filename: function (req, file, cb) {
+        cb(null, file.originalname + '-' + Date.now())
+    }
+});
 const { SOLUTION_FILES, EXERCISE_FILES} = require('../configuration/supports').DATA_FORM.FIELD_NAME;
+const { MAX_UPLOADS } = require('../configuration/supports');
 
 
 router.route('/')
@@ -18,6 +36,12 @@ router.route('/')
         TasksController.index);
 
 router.route('uploads')
+    .post(taskUpload.upload.array(EXERCISE_FILES, MAX_UPLOADS),
+        validateBody(schemas.taskSchema),
+        passportJWT,
+        TasksController.uploadTask);
+
+router.route('uploads/solution')
     .post(taskUpload.upload.array(EXERCISE_FILES, MAX_UPLOADS),
         validateBody(schemas.taskSchema),
         passportJWT,
