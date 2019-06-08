@@ -8,7 +8,11 @@ const TYPE = {
 const taskSchema = new Schema({
     title: String,
     exercise: {
-        files: [String]
+        files: [{
+            name: String,
+            path: String,
+            size: Number
+        }]
     },
     tests: [{
         type: Schema.Types.ObjectId,
@@ -16,7 +20,11 @@ const taskSchema = new Schema({
     }],
     // files containing the code for the final test
     solution: {
-        files: [String]
+        files: [{
+            name: String,
+            path: String,
+            size: Number
+        }]
     },
     type: {
         type: String,

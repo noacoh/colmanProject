@@ -41,11 +41,11 @@ router.route('uploads')
         passportJWT,
         TasksController.uploadTask);
 
-router.route('uploads/solution')
+router.route('uploads/:taskId/solution')
     .post(taskUpload.upload.array(EXERCISE_FILES, MAX_UPLOADS),
         validateBody(schemas.taskSchema),
         passportJWT,
-        TasksController.uploadTask);
+        TasksController.uploadSolution);
 
 router.route('downloads/:taskId')
     .get(validateParam(schemas.idSchema, 'taskId'),

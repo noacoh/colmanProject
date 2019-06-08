@@ -2,8 +2,6 @@ const Task = require('../models/task');
 const Submission = require('../models/submission');
 const zip = require('express-zip');
 
-// TODO we need to change controller and router according to new schema
-
 module.exports = {
     index: async (req, res, next) => {
         const tasks = await Task.find({});
@@ -18,9 +16,16 @@ module.exports = {
             })
         }
         const { title, deadline, courseId } = req.value.body;
+        const files = req.files.map( file => {
+            return {
+                path: file.path,
+                name: file.filename,
+                size: file.size
+            }
+        });
         const newTask = {
             title: title,
-            exercise: { files: req.files },
+            exercise: { files: files },
             meta : { created: new Date() },
             deadline: deadline,
             course: courseId
@@ -103,10 +108,10 @@ module.exports = {
                 })
             }
         }
-        const files = exercise.files.map(path => {
+        const files = exercise.files.map(file => {
             return {
-                path: path,
-                name: path.split("/").pop()
+                path: file.path,
+                name: file.name
             }
         });
         // send files as zip
@@ -135,10 +140,10 @@ module.exports = {
                 })
         } else{
             if (task.deadline < new Date() || resourceRequester.isAdmin()){
-                const files = solution.files.map(path => {
+                const files = solution.files.map(file => {
                     return {
-                        path: path,
-                        name: path.split("/").pop()
+                        path: file.path,
+                        name: file.name
                     }
                 });
                 // send files as zip
@@ -154,6 +159,25 @@ module.exports = {
 
     },
     uploadSolution: async (req, res, next) => {
-
+        const resourceRequester = req.user;
+        if (!resourceRequester.isAdmin() && !resourceRequester.isTeachingAssistant()) {
+            res.status(401).json({
+                success: false,
+                message: "Unauthorized"
+            })
+        }
+        const { taskId } = req.value.params;
+        const files = req.files.map( file => {
+            return {
+                path: file.path,
+                name: file.filename,
+                size: file.size
+            }
+        });
+        await Task.findByIdAndUpdate(taskId, {solution: {files: files}});
+        res.status(200).json({
+            success: true,
+            message: "Uploaded solution files successfully"
+        });
     }
 };
