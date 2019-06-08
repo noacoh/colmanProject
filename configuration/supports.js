@@ -14,7 +14,8 @@ module.exports = {
     DATA_FORM: {
         FIELD_NAME: {
             EXERCISE_FILES: 'exercise_files',
-            SOLUTION_FILES: 'solution_files'
+            SOLUTION_FILES: 'solution_files',
+            UNIT_TEST: 'test_file'
         }
     }
 };

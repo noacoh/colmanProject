@@ -15,6 +15,7 @@ const courses = require('./routes/courses');
 const users = require('./routes/users');
 const tasks = require('./routes/tasks');
 const submissions = require('./routes/submissions');
+const testUnit = require('./routes/testUnit');
 
 // Middlewares
 app.use(helmet());
@@ -26,6 +27,7 @@ app.use('/courses', courses);
 app.use('/users', users);
 app.use('/tasks', tasks);
 app.use('/submissions', submissions);
+app.use('/testUnit', testUnit);
 
 
 // Catch 404 Errors and forward them to error handler

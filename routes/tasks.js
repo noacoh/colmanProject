@@ -4,7 +4,7 @@ const TasksController = require('../controllers/tasks');
 const router = require('express-promise-router')();
 //const { taskUploader, submissionUploader } = require('../helpers/customStorage');
 const multer  = require('multer');
-const {RESOURCES} = require('../configuration');
+const { RESOURCES } = require('../configuration');
 const taskUpload = multer({destination:RESOURCES.TASKS});
 const submissionUpload = multer({destination: RESOURCES.SUBMISSIONS});
 const { validateParam, validateBody, schemas } = require('../helpers/routeHelpers');
@@ -26,7 +26,7 @@ router.route('uploads')
 router.route('downloads/:taskId')
     .get(validateParam(schemas.idSchema, 'taskId'),
         passportJWT,
-        TasksController.getTaskExerciseFile())
+        TasksController.downloadExerciseFiles())
     .get(validateParam(schemas.idSchema, 'taskId'),
         passportJWT,
         TasksController.getTaskSolutionFile());
@@ -34,7 +34,7 @@ router.route('downloads/:taskId')
 router.route('/:taskId')
     .get(validateParam(schemas.idSchema, 'taskId'),
         passportJWT,
-        TasksController.getTask)
+        TasksController.getTaskData)
     .delete(validateParam(schemas.idSchema, 'taskId'),
         passportJWT,
         TasksController.deleteTask);

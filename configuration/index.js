@@ -7,6 +7,7 @@ module.exports = {
     },
     TASKS: '/resources/tasks',
     SUBMISSIONS: '/resources/submissions',
-    LOGS: '/resources/logs'
+    LOGS: '/resources/logs',
+    UNIT_TESTS: '/resources/unit test'
   }
 };

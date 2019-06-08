@@ -64,6 +64,10 @@ userSchema.methods.isAdmin = function() {
     return this.permission === PERMISSION.ADMIN;
 };
 
+userSchema.methods.isTeachingAssistant = function() {
+    return this.permission === PERMISSION.TEACHING_ASSISTANT;
+};
+
 userSchema.methods.FullName = function() {
     return this.firstName + ' ' + this.lastName;
 };
