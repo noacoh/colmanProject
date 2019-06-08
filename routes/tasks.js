@@ -10,7 +10,7 @@ const submissionUpload = multer({destination: RESOURCES.SUBMISSIONS});
 const { validateParam, validateBody, schemas } = require('../helpers/routeHelpers');
 const passportJWT = passport.authenticate('jwt', {session: false});
 const { MAX_UPLOADS } = require('../configuration/supports');
-const { SOLUTION_FILES, FINAL_TEST_FILES, PRACTICE_TEST_FILES, EXERCISE_FILE} = require('../configuration/supports').DATA_FORM.FIELD_NAME;
+const { SOLUTION_FILES, EXERCISE_FILES} = require('../configuration/supports').DATA_FORM.FIELD_NAME;
 
 
 router.route('/')
@@ -18,7 +18,7 @@ router.route('/')
         TasksController.index);
 
 router.route('uploads')
-    .post(taskUpload.upload.fields([{ name: EXERCISE_FILE, maxCount: 1 }, { name: PRACTICE_TEST_FILES, maxCount: MAX_UPLOADS }, { name: FINAL_TEST_FILES, maxCount: MAX_UPLOADS }, { name: SOLUTION_FILES, maxCount: MAX_UPLOADS }]),
+    .post(taskUpload.upload.array(EXERCISE_FILES, MAX_UPLOADS),
         validateBody(schemas.taskSchema),
         passportJWT,
         TasksController.uploadTask);

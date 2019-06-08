@@ -13,9 +13,7 @@ module.exports = {
     MAX_UPLOAD: 10,
     DATA_FORM: {
         FIELD_NAME: {
-            PRACTICE_TEST_FILES: 'practice_test_files',
-            FINAL_TEST_FILES: 'final_test_files',
-            EXERCISE_FILE: 'exercise_file',
+            EXERCISE_FILES: 'exercise_files',
             SOLUTION_FILES: 'solution_files'
         }
     }

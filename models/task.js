@@ -8,7 +8,6 @@ const TYPE = {
 const taskSchema = new Schema({
     title: String,
     exercise: {
-        dir: String,
         files: [String]
     },
     tests: [{
@@ -17,7 +16,6 @@ const taskSchema = new Schema({
     }],
     // files containing the code for the final test
     solution: {
-        dir: String,
         files: [String]
     },
     type: {
