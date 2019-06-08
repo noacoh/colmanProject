@@ -2,7 +2,11 @@ const passport = require('passport');
 const passportConf = require('../passport');
 const TasksController = require('../controllers/tasks');
 const router = require('express-promise-router')();
-const { taskUploader, submissionUploader } = require('../helpers/customStorage');
+//const { taskUploader, submissionUploader } = require('../helpers/customStorage');
+const multer  = require('multer');
+const {RESOURCES} = require('../configuration');
+const taskUpload = multer({destination:RESOURCES.TASKS});
+const submissionUpload = multer({destination: RESOURCES.SUBMISSIONS});
 const { validateParam, validateBody, schemas } = require('../helpers/routeHelpers');
 const passportJWT = passport.authenticate('jwt', {session: false});
 const { MAX_UPLOADS } = require('../configuration/supports');
@@ -14,8 +18,7 @@ router.route('/')
         TasksController.index);
 
 router.route('uploads')
-    .post(taskUploader.upload.fields([{ name: EXERCISE_FILE, maxCount: 1 }, { name: PRACTICE_TEST_FILES, maxCount: MAX_UPLOADS }, { name: FINAL_TEST_FILES, maxCount: MAX_UPLOADS }, { name: SOLUTION_FILES, maxCount: MAX_UPLOADS }]),
-        taskUploader.storeFiles(),
+    .post(taskUpload.upload.fields([{ name: EXERCISE_FILE, maxCount: 1 }, { name: PRACTICE_TEST_FILES, maxCount: MAX_UPLOADS }, { name: FINAL_TEST_FILES, maxCount: MAX_UPLOADS }, { name: SOLUTION_FILES, maxCount: MAX_UPLOADS }]),
         validateBody(schemas.taskSchema),
         passportJWT,
         TasksController.uploadTask);
@@ -40,7 +43,7 @@ router.route('/:taskId/submissions')
     .get(validateParam(schemas.idSchema, 'taskId'),
         passportJWT,
         TasksController.getTaskSubmissions)
-    .post(submissionUploader.array( SOLUTION_FILES, MAX_UPLOADS ),
+    .post(submissionUpload.array( SOLUTION_FILES, MAX_UPLOADS ),
         validateParam(schemas.idSchema, 'taskId'),
         validateBody(schemas.submitForGradeSchema),
         passportJWT,
