@@ -10,7 +10,11 @@ const submissionSchema = new Schema({
         default: 0
     },
     files:[{
-        type: String
+        files: [{
+            name: String,
+            path: String,
+            size: Number
+        }]
     }],
     task: {
         type: Schema.Types.ObjectId,

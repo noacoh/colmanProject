@@ -82,7 +82,13 @@ module.exports = {
             submissionDate: new Date(),
             task: taskId,
             student: resourceRequester._id,
-            files: req.files.map(file => file.path),
+            files: req.files.map(file => {
+                return {
+                    path:file.path,
+                    name: file.filename,
+                    size: file.size
+                }
+            }),
             mode: mode
         });
         await newSubmission.save(); // grade is calculated here
@@ -114,7 +120,7 @@ module.exports = {
                 name: file.name
             }
         });
-        // send files as zip
+        // send response with zip file containing all solution files
         res.zip(files);
     },
 
@@ -146,7 +152,7 @@ module.exports = {
                         name: file.name
                     }
                 });
-                // send files as zip
+                // send response with zip file containing all solution files
                 res.zip(files);
             }
             else{
@@ -156,7 +162,6 @@ module.exports = {
                 })
             }
         }
-
     },
     uploadSolution: async (req, res, next) => {
         const resourceRequester = req.user;
