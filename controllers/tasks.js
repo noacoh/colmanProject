@@ -109,7 +109,7 @@ module.exports = {
                 name: path.split("/").pop()
             }
         });
-        res.zip(files)
+        res.zip(files);
     },
 
     getTaskSolutionFile: async (req, res, next) => {
@@ -134,7 +134,13 @@ module.exports = {
                 })
         } else{
             if (task.deadline < new Date() || resourceRequester.isAdmin()){
-                res.sendFile(task.solutionPath);
+                const files = solution.files.map(path => {
+                    return {
+                        path: path,
+                        name: path.split("/").pop()
+                    }
+                });
+                res.zip(files);
             }
             else{
                 res.status(404).json({
