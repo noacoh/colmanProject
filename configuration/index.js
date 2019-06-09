@@ -1,15 +1,23 @@
+const appRoot = require('app-root-path');
+
 module.exports = {
   JWT_SECRET: 'colmanauthentication',// TODO generate secret string
   TOKEN_EXPIRATION: 1,
-  RESOURCES:{
-    DOCKER: {
-      TEMP: '/resources/temp/docker'
+  resources:{
+    docker: {
+      temp: appRoot + '/resources/temp/docker'
     },
-    TASKS: '/resources/tasks',
-    SUBMISSIONS: '/resources/submissions',
-    UNIT_TESTS: '/resources/unit test',
-    LOGS: {
-      HTTP: 'resources/logs/http'
+    tasks: appRoot + '/resources/tasks',
+    submissions: appRoot + '/resources/submissions',
+    test_units: appRoot + '/resources/test units',
+    logs: {
+      app: appRoot + 'resources/logs/app.log',
+      activity: appRoot + 'resources/logs/activity.log',
+    }
+  },
+  server: {
+    logs: {
+      http: true
     }
   }
 };

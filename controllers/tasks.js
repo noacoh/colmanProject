@@ -1,7 +1,9 @@
-const Task = require('../models/task');
-const { Submission, MODE} = require('../models/submission');
 const zip = require('express-zip');
 const Course = require('../models/course');
+const Student = require('../models/student');
+const Task = require('../models/task');
+const { Submission, MODE} = require('../models/submission');
+const {logger, usersActivityLogger} = require('../configuration/logger')
 
 module.exports = {
     index: async (req, res, next) => {
@@ -10,7 +12,7 @@ module.exports = {
         },
     uploadTask: async (req, res, next) => {
         const resourceRequester = req.user;
-        if (!resourceRequester.isAdmin() && !resourceRequester.isTeachingAssistant()) {
+        if (!resourceRequester.isAdmin && !resourceRequester.isTeachingAssistant) {
             res.status(401).json({
                 success: false,
                 message: "Unauthorized"
@@ -43,7 +45,7 @@ module.exports = {
     },
     getTaskData: async (req, res, next) => {
         const resourceRequester = req.user;
-        if (!resourceRequester.isAdmin() && !resourceRequester.isTeachingAssistant()) {
+        if (!resourceRequester.isAdmin && !resourceRequester.isTeachingAssistant) {
             res.status(401).json({
                 success: false,
                 message: "Unauthorized"
@@ -55,7 +57,7 @@ module.exports = {
     },
     deleteTask: async (req, res, next) => {
         const resourceRequester = req.user;
-        if (!resourceRequester.isAdmin()) {
+        if (!resourceRequester.isAdmin) {
             res.status(401).json({
                 success: false,
                 message: "Unauthorized"
@@ -70,7 +72,7 @@ module.exports = {
     },
     getTaskSubmissions: async (req, res, next) => {
         const resourceRequester = req.user;
-        if (!resourceRequester.isAdmin()) {
+        if (!resourceRequester.isAdmin) {
             res.status(401).json({
                 success: false,
                 message: "Unauthorised"
@@ -87,12 +89,13 @@ module.exports = {
         const { mode } = req.value.body;
         const task = await Task.findById(taskId).populate('course'); // validate task exists
         const course = task.course;
-
+        usersActivityLogger.info({id: resourceRequester.identityNumber, message: "attempted submission", mode: mode, task: task.title});
         // validate student is registered for course
-        if (!resourceRequester.isAdmin()){
+        if (!resourceRequester.isAdmin){
             if(!course.studentIsRegisteredForCourse(resourceRequester._id)){
                 // student is not registered for this course
-                console.log(`student ${resourceRequester.FullName()} is not registered for course ${course.title}. Can not preform task submission.`);
+                logger.debug(`student ${resourceRequester.fullName} is not registered for course ${course.title}. Can not preform task submission.`);
+                usersActivityLogger.info({id:resourceRequester.identityNumber, message: "student is not registered for course. aborting."});
                 res.status(401).json({
                     success: false,
                     message: "Unauthorized to access resource."
@@ -104,6 +107,7 @@ module.exports = {
         const now = new Date();
         // do not allow to submit if deadline was passed
         if ( now  > task.deadline ) {
+            logger.debug(`student ${resourceRequester.identityNumber} is trying to submit past deadline. aborting`);
             res.status(400).json({
                 success: false,
                 message: "Deadline was passed"
@@ -113,11 +117,13 @@ module.exports = {
         if (task.studentSubmittedForTask(resourceRequester._id)) {
             // during exam, final submission can be preformed only once
             if (task.isExam() && mode === MODE.FINAL) {
+                logger.debug(`student ${resourceRequester.identityNumber} is trying to submit past deadline. aborting`);
                 res.status(400).json({
                     success: false,
                     message: 'Final submission during exam can be preformed only once.'
                 });
             }
+            logger.debug("removing prior submission");
             // remove prior submission before creating a new submission document for the student
             await Submission.remove({ student: resourceRequester._id, task: task._id});
         }
@@ -147,13 +153,12 @@ module.exports = {
     downloadExerciseFiles: async (req, res, next) => {
         const resourceRequester = req.user;
         const { taskId } = req.value.params;
-        // TODO consider try catch block here
         const task = await Task.findById(taskId).populate('course'); // validate task exists
         const course = task.course;
-        if (!resourceRequester.isAdmin() && !resourceRequester.isTeachingAssistant()) {
+        if (!resourceRequester.isAdmin && !resourceRequester.isTeachingAssistant) {
             if(!course.studentIsRegisteredForCourse(resourceRequester._id)){
                 // student is not registered for this course
-                console.log(`student ${resourceRequester.FullName()} is not registered for course ${course.title}. Can not supply exercise file fo this task.`);
+                console.log(`student ${resourceRequester.fullName} is not registered for course ${course.title}. Can not supply exercise file fo this task.`);
                 res.status(401).json({
                     success: false,
                     message: "Unauthorized"
@@ -175,10 +180,10 @@ module.exports = {
         const { taskId } = req.value.params;
         const task = await Task.findById(taskId).populate('course'); // validate task exists
         const course = task.course;
-        if (!resourceRequester.isAdmin()){
+        if (!resourceRequester.isAdmin){
             if(!course.studentIsRegisteredForCourse(resourceRequester._id)){
                 // student is not registered for this course
-                console.log(`student ${resourceRequester.FullName()} is not registered for course ${course.title}. Can not supply exercise file fo this task.`);
+                console.log(`student ${resourceRequester.fullName} is not registered for course ${course.title}. Can not supply exercise file fo this task.`);
                 res.status(401).json({
                     success: false,
                     message: "Unauthorized to access resource."
@@ -191,7 +196,7 @@ module.exports = {
                     message: "Solution file not found"
                 })
         } else{
-            if (task.deadline < new Date() || resourceRequester.isAdmin()){
+            if (task.deadline < new Date() || resourceRequester.isAdmin){
                 const files = solution.files.map(file => {
                     return {
                         path: file.path,
@@ -211,7 +216,7 @@ module.exports = {
     },
     uploadSolution: async (req, res, next) => {
         const resourceRequester = req.user;
-        if (!resourceRequester.isAdmin() && !resourceRequester.isTeachingAssistant()) {
+        if (!resourceRequester.isAdmin && !resourceRequester.isTeachingAssistant) {
             res.status(401).json({
                 success: false,
                 message: "Unauthorized"

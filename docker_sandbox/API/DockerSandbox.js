@@ -3,7 +3,6 @@ const exec = util.promisify(require('child_process').exec);
 const { readFile, writeFile, access, copyFile, mkdir }  = require('fs.promises');
 const { TEMP } = require('../../configuration/index');
 
-
 /**
          * @Constructor
          * @variable DockerSandbox

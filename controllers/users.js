@@ -1,6 +1,7 @@
 const JWT = require('jsonwebtoken');
 const User = require('../models/user');
 const { JWT_SECRET, TOKEN_EXPIRATION } = require('../configuration');
+const { usersActivityLogger } = require('../configuration/logger')
 
 signToken = user => {
     return JWT.sign({
@@ -18,6 +19,7 @@ module.exports = {
     },
     signIn: async (req, res, next) => {
         const token = signToken(req.user);
+        usersActivityLogger.info({id: req.user.identityNumber, message: "logged in"});
         res.status(200).json({ token });
     },
     secret: async (req, res, next) => {
