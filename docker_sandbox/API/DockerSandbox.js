@@ -1,7 +1,8 @@
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const { readFile, writeFile, access, copyFile, mkdir }  = require('fs.promises');
-const { TEMP } = require('../../configuration/index');
+const { resources } = require('../../configuration/index');
+const { TEMP } = resources.docker.temp;
 
 /**
          * @Constructor
@@ -16,7 +17,7 @@ const { TEMP } = require('../../configuration/index');
 
 const DockerSandbox = function(timeout, vm_name, source_dir, output_file, compilation_line) {
     this.timeout = timeout;
-    this.shared_dir = `${TEMP}/` + Date.now();
+    this.shared_dir = `${TEMP}/` + Date().now();
     this.vm_name = vm_name;
     this.source_dir = source_dir;
     this.output_file = output_file;
@@ -81,7 +82,7 @@ DockerSandbox.prototype.clean = async () => {
          * @name DockerSandbox.execute
          * @precondition: DockerSandbox.set() has successfully completed
          * @description: This function takes the newly created folder prepared by DockerSandbox.set() and spawns a Docker container
-         * with the folder mounted inside the container with the name '/temp/docker/<date>' and calls the script.sh file present in that folder
+         * with the folder mounted inside the container with the name 'resources/docker/temp/<date>' and calls the script.sh file present in that folder
          * to carry out the compilation. The Sandbox is spawned ASYNCHRONOUSLY and is supervised for a timeout limit specified in timeout_limit
          * variable in this class. This function keeps checking for the file "Completed" until the file is created by script.sh or the timeout occurs
          * In case of timeout an error message is returned back, otherwise the contents of the file (which could be the program output or log of

@@ -13,8 +13,8 @@
 
 compiler=$1
 file=$2
-output=$3
-addtionalArg=$4
+additionalArg=$3
+output=$4
 
 
 ########################################################################
@@ -49,7 +49,7 @@ if [[ "$output" = "" ]]; then
 #Branch 2
 else
 	#In case of compile errors, redirect them to a file
-        ${compiler} ${file} ${addtionalArg} #&> /usercode/errors.txt
+        ${compiler} ${file} ${additionalArg} #&> /usercode/errors.txt
 	#Branch 2a
 	if [[ $? -eq 0 ]];	then
 		${output} -< $"inputFile" #| tee /usercode/output.txt
