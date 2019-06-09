@@ -5,7 +5,7 @@ const { UNIT_TEST, OUTPUT_FILE, INPUT_FILE} = require('../configuration/supports
 module.exports = {
     index: async (req, res, next) => {
         const resourceRequester = req.user;
-        if (!resourceRequester.isAdmin() && !resourceRequester.isTeachingAssistant()) {
+        if (!resourceRequester.isAdmin && !resourceRequester.isTeachingAssistant) {
             res.status(401).json({
                 success: false,
                 message: 'Unauthorized'
@@ -16,7 +16,7 @@ module.exports = {
     },
     getTaskUTs: async (req, res, next) => {
         const resourceRequester = req.user;
-        if (!resourceRequester.isAdmin() && !resourceRequester.isTeachingAssistant()) {
+        if (!resourceRequester.isAdmin && !resourceRequester.isTeachingAssistant) {
             res.status(401).json({
                 success: false,
                 message: 'Unauthorized'
@@ -28,7 +28,7 @@ module.exports = {
     },
     getGenericUTs: async (req, res, next) => {
         const resourceRequester = req.user;
-        if (!resourceRequester.isAdmin() && !resourceRequester.isTeachingAssistant()) {
+        if (!resourceRequester.isAdmin && !resourceRequester.isTeachingAssistant) {
             res.status(401).json({
                 success: false,
                 message: 'Unauthorized'
@@ -40,7 +40,7 @@ module.exports = {
     },
     uploadExeUnitTest: async (req, res, next) => {
         const resourceRequester = req.user;
-        if (!resourceRequester.isAdmin() && !resourceRequester.isTeachingAssistant()) {
+        if (!resourceRequester.isAdmin && !resourceRequester.isTeachingAssistant) {
             res.status(401).json({
                 success: false,
                 message: 'Unauthorized'
@@ -60,7 +60,7 @@ module.exports = {
     },
     uploadIOUnitTest: async (req, res, next) => {
         const resourceRequester = req.user;
-        if (!resourceRequester.isAdmin() && !resourceRequester.isTeachingAssistant()) {
+        if (!resourceRequester.isAdmin && !resourceRequester.isTeachingAssistant) {
             res.status(401).json({
                 success: false,
                 message: 'Unauthorized'

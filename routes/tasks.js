@@ -7,12 +7,12 @@ const passportConf = require('../passport');
 const passportJWT = passport.authenticate('jwt', {session: false});
 
 const multer  = require('multer');
-const { RESOURCES } = require('../configuration');
+const { resources } = require('../configuration');
 
 // create file uploader for task exercise files
 const taskUpload = multer({
     // configure destination folder for the files
-    destination: RESOURCES.TASKS,
+    destination: resources.tasks,
     // we want to rename the file, in order to ensure files name is unique
     filename: function (req, file, cb) {
         cb(null, file.originalname + '-' + Date.now())
@@ -21,7 +21,7 @@ const taskUpload = multer({
 // create file uploader for student submission files
 const submissionUpload = multer({
     // configure destination folder for the files
-    destination: RESOURCES.SUBMISSIONS,
+    destination: resources.submissions,
     // we want to rename the file, in order to ensure files name is unique
     filename: function (req, file, cb) {
         cb(null, file.originalname + '-' + Date.now())
