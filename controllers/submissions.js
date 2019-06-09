@@ -1,4 +1,4 @@
-const Submission = require('../models/submission');
+const { Submission } = require('../models/submission');
 
 module.exports = {
     index: async (req, res, next) => {

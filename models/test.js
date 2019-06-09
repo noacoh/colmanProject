@@ -27,4 +27,7 @@ const testSchema = new Schema({
 });
 
 const Test = mongoose.model('test', testSchema);
-module.exports = Test;
+module.exports = {
+    Test,
+    VISIBILITY
+};

@@ -15,7 +15,9 @@ module.exports = {
         FIELD_NAME: {
             EXERCISE_FILES: 'exercise_files',
             SOLUTION_FILES: 'solution_files',
-            UNIT_TEST: 'test_file'
+            UNIT_TEST: 'test_file',
+            INPUT_FILE: 'input_file',
+            OUTPUT_FILE: 'output_file'
         }
     }
 };

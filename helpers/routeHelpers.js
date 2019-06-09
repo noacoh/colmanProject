@@ -1,5 +1,7 @@
 const joi = require('joi');
 const { MODE } = require('../models/submission');
+const { VISIBILITY } = require('../models/test');
+
 module.exports = {
     validateParam: (schema, name) => {
         return (req, res, next) => {
@@ -88,8 +90,21 @@ module.exports = {
         enlistToCourseSchema: joi.object().keys({
             studentId: joi.string().regex(/^[0-9]{9}$/).required()
         }),
-        // submitForGradeSchema:  joi.object().keys({
-        //     mode: joi.string().regex(`^(${MODE.FINAL}|${MODE.PRACTICE})$`).required()
-        // }),
+        submitForGradeSchema:  joi.object().keys({
+            mode: joi.string().regex(`/^(${MODE.FINAL}|${MODE.PRACTICE})$/`).required()
+        }),
+        testUnitSchema: joi.object().keys({
+            title: joi.String().required(),
+            description: joi.String(),
+            compilationLine: joi.String().required(),
+            task: joi.string().regex(/^[0-9]{9}$/)
+        }),
+        testSchema: Joi.object().keys({
+            units: Joi.array().items(Joi.object().keys({
+                    test: joi.string().regex(/^[0-9]{9}$/).required(),
+                    visibility: joi.string().regex(`/^(${VISIBILITY.EXPOSED}|${VISIBILITY.HIDDEN})$/`).required()
+                })
+            )
+        })
     }
 };

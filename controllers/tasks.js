@@ -24,6 +24,7 @@ module.exports = {
                 size: file.size
             }
         });
+        const course = await Course.findById(courseId);
         const newTask = {
             title: title,
             exercise: { files: files },
@@ -32,7 +33,14 @@ module.exports = {
             course: courseId
         };
         await newTask.save();
-      },
+        course.tasks.push(newTask._id);
+        await course.save();
+
+        res.status(203).json({
+            success: true,
+            message: "Task was created successfully"
+        })
+    },
     getTaskData: async (req, res, next) => {
         const resourceRequester = req.user;
         if (!resourceRequester.isAdmin() && !resourceRequester.isTeachingAssistant()) {

@@ -28,6 +28,7 @@
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
+    "rfs": "^8.0.4",
     "util": "^0.12.0"
   },
   "devDependencies": {
