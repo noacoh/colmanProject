@@ -1,6 +1,5 @@
 const joi = require('joi');
-const { SUBMISSION, LANGUAGES } = require('../configuration/supports');
-
+const { MODE } = require('../models/submission');
 module.exports = {
     validateParam: (schema, name) => {
         return (req, res, next) => {
@@ -90,7 +89,7 @@ module.exports = {
             studentId: joi.string().regex(/^[0-9]{9}$/).required()
         }),
         // submitForGradeSchema:  joi.object().keys({
-        //     mode: joi.string().regex(`^(${SUBMISSION.MODE.FINAL}|${SUBMISSION.MODE.PRACTICE})$`).required()
+        //     mode: joi.string().regex(`^(${MODE.FINAL}|${MODE.PRACTICE})$`).required()
         // }),
     }
 };

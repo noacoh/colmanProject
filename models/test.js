@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const VISIBILITY = {
     EXPOSED: 'exposed',
     HIDDEN: 'hidden'
-}
+};
 
 const testSchema = new Schema({
     units: [
