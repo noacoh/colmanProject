@@ -45,8 +45,10 @@ const taskSchema = new Schema({
         required: true
     },
     meta: {
-        created: Date,
-        required: true
+        created: {
+            type: Date,
+            required: true
+        }
     },
 
 });

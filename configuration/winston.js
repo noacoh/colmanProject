@@ -1,12 +1,12 @@
-const logger = require('winston');
-const { format } = logger;
-const { combine, timestamp, label, printf, prettyPrint } = format;
+const winston = require('winston');
+const { format } = winston;
+const { combine, timestamp, printf, prettyPrint } = format;
 
 const activityLogFormat = printf(({ level, message, timestamp, id }) => {
     return `${timestamp} ${level} ${id} : ${message}`;
 });
 
-const { resources } = require('index');
+const { resources } = require('./index');
 // define the custom settings for each transport (file, console)
 const options = {
     file: {
@@ -37,28 +37,28 @@ const options = {
     },
 };
 
-logger.loggers.add('logger', {
+winston.loggers.add('winston', {
     transports: [
-        new logger.transports.File(options.file.app),
-        new logger.transports.Console(options.console)
+        new winston.transports.File(options.file.app),
+        new winston.transports.Console(options.console)
     ],
-    exitOnError: false, // do not exit on handled exceptions
+    // exitOnError: false, // do not exit on handled exceptions
 });
-logger.loggers.add('usersactivity', {
+winston.loggers.add('usersactivity', {
     format: combine(
         timestamp(),
         activityLogFormat,
         prettyPrint()
     ),
     transports: [
-        new logger.transports.File(options.file.usersActivity),
-        new logger.transports.Console(options.console)
+        new winston.transports.File(options.file.usersActivity),
+        new winston.transports.Console(options.console)
     ],
-    exitOnError: false, // do not exit on handled exceptions
+    // exitOnError: false, // do not exit on handled exceptions
 });
 
-const logger = logger.loggers.get('logger');
-const usersActivityLogger = logger.loggers.get('logger');
+const logger = winston.loggers.get('winston');
+const usersActivityLogger = winston.loggers.get('winston');
 
 // create a stream object with a 'write' function that will be used by `morgan`
 logger.stream = {

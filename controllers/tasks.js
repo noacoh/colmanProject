@@ -3,7 +3,7 @@ const Course = require('../models/course');
 const Student = require('../models/student');
 const Task = require('../models/task');
 const { Submission, MODE} = require('../models/submission');
-const {logger, usersActivityLogger} = require('../configuration/logger')
+const {logger, usersActivityLogger} = require('../configuration/winston')
 
 module.exports = {
     index: async (req, res, next) => {

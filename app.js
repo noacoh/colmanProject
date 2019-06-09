@@ -3,8 +3,8 @@ const morgan = require('morgan');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
-const { server } = require('configuration');
-const { logger } = require('./configuration/logger');
+const { server } = require('./configuration');
+const { logger } = require('./configuration/winston');
 
 const LOG_HTTP_TRAFFIC = server.logs.http;
 

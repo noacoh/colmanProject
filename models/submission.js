@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const { runInSandbox } = require('../docker_sandbox/sandboxWrapper');
 const { removeFile, removeFromArray } = require('../helpers/util');
-const Task = require('task');
+const Task = require('./task');
 const MODE = {
     PRACTICE: 'practice',
     FINAL: 'final'
