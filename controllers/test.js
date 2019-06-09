@@ -3,7 +3,7 @@ const { Test } = require('../models/test');
 module.exports = {
     index: async (req, res, next) => {
         const resourceRequester = req.user;
-        if (!resourceRequester.isAdmin() && !resourceRequester.isTeachingAssistant()) {
+        if (!resourceRequester.isAdmin && !resourceRequester.isTeachingAssistant) {
             res.status(401).json({
                 success: false,
                 message: 'Unauthorized'
@@ -14,7 +14,7 @@ module.exports = {
     },
     addTest: async (req, res, next) => {
         const resourceRequester = req.user;
-        if (!resourceRequester.isAdmin() && !resourceRequester.isTeachingAssistant()) {
+        if (!resourceRequester.isAdmin && !resourceRequester.isTeachingAssistant) {
             res.status(401).json({
                 success: false,
                 message: 'Unauthorized'

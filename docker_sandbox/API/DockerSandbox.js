@@ -1,7 +1,7 @@
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const { readFile, writeFile, access, copyFile, mkdir }  = require('fs').promises;
-const { TEMP } = require('../../configuration/index');
+const { temp } = require('../../configuration/index');
 
 /**
          * @Constructor
@@ -15,7 +15,7 @@ const { TEMP } = require('../../configuration/index');
 */
 const DockerSandbox = function(timeout, vm_name, source_dir, output_file, input, compilation_line) {
     this.timeout = timeout;
-    this.shared_dir = `${TEMP}${Date().now()}`;
+    this.shared_dir = `${temp}${Date().now()}`;
     this.vm_name = vm_name;
     this.source_dir = source_dir;
     this.output_file = output_file;

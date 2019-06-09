@@ -3,12 +3,12 @@ const passportConf = require('../passport');
 const testUnitController = require('../controllers/testUnit');
 const router = require('express-promise-router')();
 
-const { RESOURCES } = require('../configuration');
+const { resources } = require('../configuration');
 const multer  = require('multer');
 // create file uploader for task exercise files
 const upload = multer({
     // configure destination folder for the files
-    destination: RESOURCES.UNIT_TESTS,
+    destination: resources.test_units,
     // we want to rename the file, in order to ensure files name is unique
     filename: function (req, file, cb) {
         cb(null, file.originalname + '-' + Date.now())

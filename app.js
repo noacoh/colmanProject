@@ -1,10 +1,12 @@
 const express = require('express');
-const logger = require('morgan');
+const morgan = require('morgan');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
-const rfs = require('rotating-file-stream');
-const { RESOURCES } = require('configuration');
+const { server } = require('configuration');
+const { logger } = require('./configuration/logger');
+
+const LOG_HTTP_TRAFFIC = server.logs.http;
 
 mongoose.connect("mongodb://localhost:27017/submission_system",
     { useCreateIndex: true,
@@ -20,18 +22,12 @@ const submissions = require('./routes/submissions');
 const testUnit = require('./routes/testUnit');
 const test = require('./routes/test');
 
-// log all requests in the Apache combined format to one log file per day in the log/
-// create a rotating write stream
-const accessLogStream = rfs('access.log', {
-    interval: '1d', // rotate daily
-    path: path.join(RESOURCES.LOGS.HTTP, 'log')
-});
-
 // Middlewares
 app.use(helmet());
-// setup the logger
-app.use(logger('dev', { stream: accessLogStream }));
 app.use(bodyParser.json());
+if (LOG_HTTP_TRAFFIC) {
+    app.use(morgan('combined', { stream: logger.stream }));
+}
 
 // Routes
 app.use('/courses', courses);
@@ -51,7 +47,11 @@ app.use((req, res, next) => {
 
 // Error handler function
 app.use((err, req, res, next) => {
-   // Respond to client
+
+    //include winston logging
+    logger.error(`${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`);
+
+    // Respond to client
     const error = app.get('env') === 'development' ? err : {};
     const status = err.status || 500;
 
@@ -60,9 +60,6 @@ app.use((err, req, res, next) => {
             message: error.message
         }
     });
-
-   // Respond to terminal
-   console.error(err);
 });
 
 // Start the server
