@@ -3,14 +3,12 @@ const { moveFiles, createDirectoryIfNotExists, removeFromArray, removeFile } = r
 const { SOLUTION_FILES, FINAL_TEST_FILES, PRACTICE_TEST_FILES, EXERCISE_FILE} = require('../configuration/supports').DATA_FORM.FIELD_NAME;
 
 const dest= {
-    task: '/task/temp',
-    submission: '/studentSubmissions'
+    task: 'temp/tasks/',
+    submission: 'studentSubmissions/'
 };
 
 const taskStorage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, dest.task);
-    },
+    destination: dest.task,
     filename: function (req, file, cb) {
         cb(null, file.originalname + Date().now())
     }
@@ -76,7 +74,7 @@ const storeTaskFiles = async () => {
 
             }
             if (req.files[EXERCISE_FILE]){
-                req.value['files']['exerciseZip'] =  extractFiles(`${base_path}/${EXERCISE_FILE}`, EXERCISE_FILE);
+                req.value['files']['exercise'] =  extractFiles(`${base_path}/${EXERCISE_FILE}`, EXERCISE_FILE);
             }
 
             next();

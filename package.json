@@ -14,6 +14,7 @@
     "crypto": "^1.0.1",
     "express": "^4.17.0",
     "express-promise-router": "^3.0.3",
+    "express-zip": "^2.0.1",
     "fs": "^0.0.1-security",
     "fs.promises": "^0.1.2",
     "helmet": "^3.18.0",
@@ -26,6 +27,8 @@
     "os": "^0.1.1",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0",
+    "rfs": "^8.0.4",
     "util": "^0.12.0"
   },
   "devDependencies": {

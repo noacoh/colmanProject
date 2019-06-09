@@ -7,6 +7,10 @@ const courseSchema = new Schema({
     enlisted: [{
         type: Schema.Types.ObjectId,
         ref: 'student'
+    }],
+    tasks: [{
+        type: Schema.Types.ObjectId,
+        ref: 'task'
     }]
 });
 

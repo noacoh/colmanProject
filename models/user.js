@@ -1,6 +1,11 @@
 const mongoose = require("mongoose");
 const bcrypt = require('bcryptjs');
 const Schema = mongoose.Schema;
+const PERMISSION = {
+    ADMIN: "admin",
+    TEACHING_ASSISTANT: "teachingAssistant",
+    STUDENT: "student"
+};
 
 const userSchema = new Schema({
     firstName: {
@@ -20,10 +25,14 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
-    admin: {
-        type: Boolean,
+    permission: {
+        type: String,
         required: true,
-        default: false
+        default: PERMISSION.STUDENT
+    },
+    email: {
+        type: String,
+        required: true
     }
 });
 
@@ -34,6 +43,9 @@ userSchema.pre('save', async function(next) {
         // generate password hash
         // re-assign hashed version over original, plain-text password;
         this.password = await bcrypt.hash(this.password, salt);
+
+        // TODO create a log file for the student
+
         next();
     } catch(err) {
         next(err);
@@ -49,7 +61,11 @@ userSchema.methods.isValidPassword = async function(newPassword) {
 };
 
 userSchema.methods.isAdmin = function() {
-    return this.admin;
+    return this.permission === PERMISSION.ADMIN;
+};
+
+userSchema.methods.isTeachingAssistant = function() {
+    return this.permission === PERMISSION.TEACHING_ASSISTANT;
 };
 
 userSchema.methods.FullName = function() {

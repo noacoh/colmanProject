@@ -1,35 +1,36 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const { removeFile } = require('../helpers/util');
+const TYPE = {
+    EXAM: "exam",
+    EXERCISE: "exercise"
+};
 
 const taskSchema = new Schema({
-    id: Number,
     title: String,
-    // path to zip containing all exercise files
-    exerciseZip: {
-        dir: String,
-        files: [String]
+    exercise: {
+        files: [{
+            name: String,
+            path: String,
+            size: Number
+        }]
     },
-    // files containing the code for the practice test
-    practiceTest: {
-        dir: String,
-        files: [String]
-    },
-    // files containing the code for the final test
-    finalTest: {
-        dir: String,
-        files: [String]
-    },
+    tests: [{
+        type: Schema.Types.ObjectId,
+        ref: 'test'
+    }],
     // files containing the code for the final test
     solution: {
-        dir: String,
-        files: [String]
+        files: [{
+            name: String,
+            path: String,
+            size: Number
+        }]
     },
-    created: Date,
-    deadline: Date,
-    exam: {
-        type: Boolean,
+    type: {
+        type: String,
         required: true,
-        default: false
+        default: TYPE.EXERCISE
     },
     course: [{
         type: Schema.Types.ObjectId,
@@ -38,14 +39,28 @@ const taskSchema = new Schema({
     studentSubmissions: [{
         type: Schema.Types.ObjectId,
         ref: 'submission'
-    }]
+    }],
+    deadline: {
+        type: Date,
+        required: true
+    },
+    meta: {
+        created: Date,
+        required: true
+    },
 
 });
-taskSchema.methods.isExam = () => {return this.exam;};
+taskSchema.methods.isExam = () => {return this.type === TYPE.EXAM;};
+
+taskSchema.methods.studentSubmittedForTask = (studentId) => {
+    return this.studentSubmissions.includes(studentId);
+};
+
 
 taskSchema.post('remove', async function(next) {
     try {
-        // TODO delete files
+        this.exercise.files.forEach( file => removeFile(file.path));
+        this.solution.files.forEach( file => removeFile(file.path));
         next();
     } catch(err) {
         next(err);

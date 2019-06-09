@@ -1,6 +1,12 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const { runInSandbox } = require('../docker_sandbox/sandboxWrapper');
+const { removeFile, removeFromArray } = require('../helpers/util');
+const Task = require('task');
+const MODE = {
+    PRACTICE: 'practice',
+    FINAL: 'final'
+};
 
 
 const submissionSchema = new Schema({
@@ -9,8 +15,10 @@ const submissionSchema = new Schema({
         type: Number,
         default: 0
     },
-    files:[{
-        type: String
+    files: [{
+        name: String,
+        path: String,
+        size: Number
     }],
     task: {
         type: Schema.Types.ObjectId,
@@ -33,7 +41,6 @@ submissionSchema.pre('save', async function(next) {
         //mock grading, should be some async function
         this.grade = 100;
         next();
-        // TODO return err when trying to submit more than once on final mode for an 'exam' task
     } catch(err) {
         next(err);
     }
@@ -41,11 +48,21 @@ submissionSchema.pre('save', async function(next) {
 
 submissionSchema.post('remove', async function(next) {
     try {
-        // TODO delete file
+        // remove student from task's submitted list
+        await this.populate('task');
+        const task = this.task;
+        removeFromArray(task.studentSubmissions, this.student);
+        await task.save();
+        // remove files
+        this.files.forEach( file => removeFile(file.path));
         next();
     } catch(err) {
         next(err);
     }
 });
+
 const Submission = mongoose.model('submission', submissionSchema);
-module.exports = Submission;
+module.exports = {
+    Submission,
+    MODE
+};

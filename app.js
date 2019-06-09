@@ -3,6 +3,8 @@ const logger = require('morgan');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
+const rfs = require('rotating-file-stream');
+const { RESOURCES } = require('configuration');
 
 mongoose.connect("mongodb://localhost:27017/submission_system",
     { useCreateIndex: true,
@@ -15,10 +17,20 @@ const courses = require('./routes/courses');
 const users = require('./routes/users');
 const tasks = require('./routes/tasks');
 const submissions = require('./routes/submissions');
+const testUnit = require('./routes/testUnit');
+const test = require('./routes/test');
+
+// log all requests in the Apache combined format to one log file per day in the log/
+// create a rotating write stream
+const accessLogStream = rfs('access.log', {
+    interval: '1d', // rotate daily
+    path: path.join(RESOURCES.LOGS.HTTP, 'log')
+});
 
 // Middlewares
 app.use(helmet());
-app.use(logger('dev'));
+// setup the logger
+app.use(logger('dev', { stream: accessLogStream }));
 app.use(bodyParser.json());
 
 // Routes
@@ -26,6 +38,8 @@ app.use('/courses', courses);
 app.use('/users', users);
 app.use('/tasks', tasks);
 app.use('/submissions', submissions);
+app.use('/testUnit', testUnit);
+app.use('/test', test);
 
 
 // Catch 404 Errors and forward them to error handler
