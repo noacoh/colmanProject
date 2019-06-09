@@ -1,5 +1,5 @@
 const JWT = require('jsonwebtoken');
-const User = require('../models/user');
+const { User } = require('../models/user');
 const { JWT_SECRET, TOKEN_EXPIRATION } = require('../configuration');
 const { usersActivityLogger } = require('../configuration/winston')
 
