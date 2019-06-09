@@ -1,5 +1,5 @@
 const { copyFile, mkdir, unlink } = require('fs').promises;
-const {logger} = require('../configuration/logger');
+const {logger} = require('../configuration/winston');
 
 module.exports = {
     createDirectoryIfNotExists: async (dir) => {

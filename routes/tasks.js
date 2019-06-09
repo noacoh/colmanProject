@@ -36,13 +36,13 @@ router.route('/')
         TasksController.index);
 
 router.route('uploads')
-    .post(taskUpload.upload.array(EXERCISE_FILES, MAX_UPLOADS),
+    .post(taskUpload.array(EXERCISE_FILES, MAX_UPLOADS),
         validateBody(schemas.taskSchema),
         passportJWT,
         TasksController.uploadTask);
 
 router.route('uploads/:taskId/solution')
-    .post(taskUpload.upload.array(EXERCISE_FILES, MAX_UPLOADS),
+    .post(taskUpload.array(EXERCISE_FILES, MAX_UPLOADS),
         validateParam(schemas.idSchema, 'taskId'),
         passportJWT,
         TasksController.uploadSolution);
@@ -50,10 +50,10 @@ router.route('uploads/:taskId/solution')
 router.route('downloads/:taskId')
     .get(validateParam(schemas.idSchema, 'taskId'),
         passportJWT,
-        TasksController.downloadExerciseFiles())
+        TasksController.downloadExerciseFiles)
     .get(validateParam(schemas.idSchema, 'taskId'),
         passportJWT,
-        TasksController.getTaskSolutionFile());
+        TasksController.getTaskSolutionFile);
 
 router.route('/:taskId')
     .get(validateParam(schemas.idSchema, 'taskId'),
