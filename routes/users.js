@@ -8,7 +8,7 @@ const passportSignIn = passport.authenticate('local', {session: false});
 const passportJWT = passport.authenticate('jwt', {session: false});
 
 
-    router.route('/')
+router.route('/')
     .get(UserController.index)
     .post(validateBody(schemas.userSchema),
         UserController.newUser);
