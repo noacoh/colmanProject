@@ -11,7 +11,7 @@ FROM ubuntu:16.04
 RUN apt-get update && apt-get install -y --no-install-recommends\
     software-properties-common \
     gcc \
-    g++-4.8 \
+    g++ \
     python-software-properties \
     bc \
     default-jdk \
