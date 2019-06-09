@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const { removeFile } = require('../helpers/util');
 const TYPE = {
     EXAM: "exam",
     EXERCISE: "exercise"
@@ -44,15 +45,22 @@ const taskSchema = new Schema({
         required: true
     },
     meta: {
-        created: Date
+        created: Date,
+        required: true
     },
 
 });
 taskSchema.methods.isExam = () => {return this.type === TYPE.EXAM;};
 
+taskSchema.methods.studentSubmittedForTask = (studentId) => {
+    return this.studentSubmissions.includes(studentId);
+};
+
+
 taskSchema.post('remove', async function(next) {
     try {
-        // TODO delete files
+        this.exercise.files.forEach( file => removeFile(file.path));
+        this.solution.files.forEach( file => removeFile(file.path));
         next();
     } catch(err) {
         next(err);

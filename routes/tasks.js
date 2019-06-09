@@ -43,7 +43,7 @@ router.route('uploads')
 
 router.route('uploads/:taskId/solution')
     .post(taskUpload.upload.array(EXERCISE_FILES, MAX_UPLOADS),
-        validateBody(schemas.taskSchema),
+        validateParam(schemas.idSchema, 'taskId'),
         passportJWT,
         TasksController.uploadSolution);
 

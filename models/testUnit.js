@@ -4,24 +4,35 @@ const Schema = mongoose.Schema;
 // test schema holds data for a modular test code
 const testUnitSchema = new Schema({
     file: {
-        path:{
+        path: {
             type: String,
             required: true
-        }
+        },
+        name: {
+            type: String,
+            required: true
+        },
+        size: {
+            type: Number,
+            required: true
+        },
     },
     title: {
         type: String,
         required: true
     },
-    description: String,
+    description: {
+        type: String,
+        default: ''
+    },
     compilationLine: {
         type: String,
         required: true
     },
-    task:{
+    task: {
         type: Schema.Types.ObjectId,
         ref: 'task',
-        require: false
+        default: null
     }
 });
 
