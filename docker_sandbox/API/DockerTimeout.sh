@@ -6,16 +6,16 @@ shift
 
 cont=$(docker run --rm -d "$@")
 code=$(timeout "$to" docker wait "$cont" || true)
-docker kill $cont &> /dev/null
+docker kill ${cont} &> /dev/null
 echo -n 'status: '
-if [ -z "$code" ]; then
+if [[ -z "$code" ]]; then
     echo timeout
 else
-    echo exited: $code
+    echo exited: ${code}
 fi
 
 echo output:
 # pipe to sed simply for pretty nice indentation
-docker logs $cont | sed 's/^/\t/'
+docker logs ${cont} | sed 's/^/\t/'
 
-docker rm $cont &> /dev/null
+docker rm ${cont} &> /dev/null

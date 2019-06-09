@@ -38,21 +38,21 @@ addtionalArg=$4
 #
 ########################################################################
 
-exec  1> $"/usercode/logfile.txt"
-exec  2> $"/usercode/errors"
+exec  1> $"logfile.txt"
+exec  2> $"errors"
 #3>&1 4>&2 >
 
 START=$(date +%s.%2N)
 #Branch 1
-if [ "$output" = "" ]; then
-    $compiler /usercode/$file -< $"/usercode/inputFile" #| tee /usercode/output.txt
+if [[ "$output" = "" ]]; then
+    ${compiler} ${file} -< $"inputFile" #| tee /usercode/output.txt
 #Branch 2
 else
 	#In case of compile errors, redirect them to a file
-        $compiler /usercode/$file $addtionalArg #&> /usercode/errors.txt
+        ${compiler} ${file} ${addtionalArg} #&> /usercode/errors.txt
 	#Branch 2a
-	if [ $? -eq 0 ];	then
-		$output -< $"/usercode/inputFile" #| tee /usercode/output.txt
+	if [[ $? -eq 0 ]];	then
+		${output} -< $"inputFile" #| tee /usercode/output.txt
 	#Branch 2b
 	else
 	    echo "Compilation Failed"
@@ -69,8 +69,8 @@ END=$(date +%s.%2N)
 runtime=$(echo "$END - $START" | bc)
 
 
-echo "*-ENDOFOUTPUT-*" $runtime
+echo "*-ENDOFOUTPUT-*" ${runtime}
 
 
-mv /usercode/logfile.txt /usercode/completed
+mv logfile.txt completed
 
