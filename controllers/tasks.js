@@ -38,7 +38,7 @@ module.exports = {
         course.tasks.push(newTask._id);
         await course.save();
 
-        res.status(203).json({
+        res.status(201).json({
             success: true,
             message: "Task was created successfully"
         })
@@ -143,12 +143,9 @@ module.exports = {
             mode: mode
         });
 
-        await newSubmission.save(); // grade is calculated here
-        res.status(201).json({
-            success: true,
-            message: 'Files submitted successfully',
-            data: { grade: newSubmission.grade }
-        });
+        const submission = await newSubmission.save(); // grade is calculated here
+        const out = await submission.submit();
+        res.status(201).json(out);
     },
     downloadExerciseFiles: async (req, res, next) => {
         const resourceRequester = req.user;

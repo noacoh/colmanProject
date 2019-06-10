@@ -1,5 +1,7 @@
 const { copyFile, mkdir, unlink } = require('fs').promises;
 const {logger} = require('../configuration/winston');
+const util = require('util');
+const exec = util.promisify(require('child_process').exec);
 
 module.exports = {
     createDirectoryIfNotExists: async (dir) => {
@@ -51,5 +53,8 @@ module.exports = {
             logger.error(`failed moving file from ${file.path} to ${newPath}`);
             throw err;
         }
+    },
+    deleteDir: async (dir) => {
+        await exec(`rm -r ${dir}`);
     }
 };

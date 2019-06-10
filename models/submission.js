@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const { runInSandbox } = require('../docker_sandbox/sandboxWrapper');
-const { removeFile, removeFromArray } = require('../helpers/util');
+const { removeFile, removeFromArray, createDirectoryIfNotExists, copyFile, deleteDir } = require('../helpers/util');
+const { resources } = require("../configuration")
 const Task = require('./task');
+const { Test } = require('./test');
 const MODE = {
     PRACTICE: 'practice',
     FINAL: 'final'
@@ -13,7 +14,7 @@ const submissionSchema = new Schema({
     submissionDate: Date,
     grade: {
         type: Number,
-        default: 0
+        default: -1
     },
     files: [{
         name: String,
@@ -31,26 +32,38 @@ const submissionSchema = new Schema({
     mode: {
         type: String,
         required: true,
-    }
+    },
+    output: String
+
 });
 
-submissionSchema.pre('save', async function(next) {
+submissionSchema.methods.submit = async function(){
+    const newDir = `${resources.docker.temp}/temp${new Date().getTime()}`;
+    const task = await Task.findById(this.task);
+    await createDirectoryIfNotExists(newDir);
     try {
-        // TODO add method to calculate grade (long async function.....)
-        const { output, execTime, error} = await runInSandbox()
-        //mock grading, should be some async function
-        this.grade = 100;
-        next();
-    } catch(err) {
-        next(err);
+        await this.files.forEach(async function(file) {
+            copyFile(file.name, newDir);
+        });
+       const test = mode === MODE.PRACTICE ? Test.findById(task.tests.practice) : Test.findById(task.tests.final);
+       const {output, grade} = test.run(newDir);
+       this.output = output;
+       this.grade = grade;
+       return {
+           output,
+           grade
+       }
+    } catch (err) {
+        throw err
+    } finally {
+        await deleteDir(newDir);
     }
-});
+};
 
 submissionSchema.post('remove', async function(next) {
     try {
         // remove student from task's submitted list
-        await this.populate('task');
-        const task = this.task;
+        const task = await Task.findById(this.task);
         removeFromArray(task.studentSubmissions, this.student);
         await task.save();
         // remove files

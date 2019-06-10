@@ -58,9 +58,9 @@ const taskSchema = new Schema({
     },
 
 });
-taskSchema.methods.isExam = () => {return this.type === TYPE.EXAM;};
+taskSchema.methods.isExam = function(){return this.type === TYPE.EXAM;};
 
-taskSchema.methods.studentSubmittedForTask = (studentId) => {
+taskSchema.methods.studentSubmittedForTask = function(studentId){
     return this.studentSubmissions.includes(studentId);
 };
 

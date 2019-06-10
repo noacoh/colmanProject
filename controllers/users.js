@@ -1,7 +1,8 @@
 const JWT = require('jsonwebtoken');
-const { User } = require('../models/user');
+const { User, PERMISSION } = require('../models/user');
+const Student = require('../models/student');
 const { JWT_SECRET, TOKEN_EXPIRATION } = require('../configuration');
-const { usersActivityLogger } = require('../configuration/winston')
+const { usersActivityLogger } = require('../configuration/winston');
 
 signToken = user => {
     return JWT.sign({
@@ -25,9 +26,18 @@ module.exports = {
     secret: async (req, res, next) => {
     },
     newUser: async (req, res, next) => {
-        const newUser = new User(req.value.body);
-        const user = await newUser.save();
-        res.status(201).json(user);
+        const { permission } = req.value.body;
+        if (permission === PERMISSION.STUDENT) {
+            const newStudent = new Student(req.value.body);
+            await newStudent.save();
+        } else {
+            const newUser = new User(req.value.body);
+            await newUser.save();
+        }
+        res.status(201).json({
+            success: true,
+            message: "new user created successfully"
+        });
     },
     getUser: async (req, res, next) => {
         const { userId } = req.value.params;
