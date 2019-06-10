@@ -26,10 +26,10 @@ module.exports = {
             units,
             task: taskId,
         });
-        await newTest.save();
+        const test = await newTest.save();
         // update the task document
         const tests = task.test;
-        tests[mode] = newTest._id;
+        tests[mode] = test._id;
         await task.update({test: tests});
         await task.save();
 
