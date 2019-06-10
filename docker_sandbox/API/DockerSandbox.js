@@ -73,8 +73,10 @@ DockerSandbox.prototype.set = async function() {
     // copy payload and files in source directory to the shared directory
     await exec(`cp docker_sandbox/API/payload/* ${sharedDir} && cp ${sandbox.source_dir}/* ${sharedDir} && chmod 777 ${sharedDir}`);
 
-    await writeFile(`${sharedDir}/inputFile`, sandbox.input);
-    console.log(`@@@ input file created at ${sharedDir}/inputFile`);
+    if (this.input){
+        await writeFile(`${sharedDir}/inputFile`, sandbox.input);
+        console.log(`@@@ input file created at ${sharedDir}/inputFile`);
+    }
 };
 
 DockerSandbox.prototype.clean = async () => {
@@ -104,6 +106,7 @@ DockerSandbox.prototype.execute = async function(success, onError)
 {
     const sharedDir = this.getSharedDir();
     const containerDir = this.getContainerDir();
+    // TODO check if this.input exists and execute accordingly
     const cmd = `${this.path}DockerTimeout.sh ${this.timeout} -u root -v ${sharedDir}:/${containerDir} 
                 -w ${sharedDir} ${this.vm_name} ./script.sh ${this.compilation_line}`;
     const outputFilePath = `${sharedDir}/completed`;
