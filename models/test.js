@@ -5,6 +5,9 @@ const VISIBILITY = {
     HIDDEN: 'hidden'
 };
 
+TestUnit
+
+
 
 const testSchema = new Schema({
     units: [
@@ -39,9 +42,9 @@ const testSchema = new Schema({
     }
 });
 
-testSchema.methods.run = async (sharedDir) => {
-    const results = this.units.map((unit)=>{
-        cont res = await unit.runInSandbox();
+testSchema.methods.run = async function(sharedDir){
+        const results = this.units.map((unit)=>{
+        const testUnit = TestUnit
     })
 };
 

@@ -42,7 +42,7 @@ const ioTestUintSchema = new Schema({
 });
 
 // sharedDir is the shared directory where the submission files can be found.
-ioTestUintSchema.methods.runTest = async (sharedDir, timeout)=> {
+ioTestUintSchema.methods.runTest = async function(sharedDir, timeout){
     // copy the test file to the shared directory
     await copyFile(this.file , sharedDir);
     try {
