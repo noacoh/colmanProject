@@ -1,7 +1,8 @@
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
-const { readFile, writeFile, access, copyFile, mkdir }  = require('fs').promises;
-const { temp } = require('../../configuration/index');
+const { readFile, writeFile, access, copyFile, mkdir }  = require('fs.promises');
+const { resources } = require('../../configuration/index');
+const { TEMP } = resources.docker.temp;
 
 /**
          * @Constructor
@@ -13,13 +14,13 @@ const { temp } = require('../../configuration/index');
          * @param {String} output_file: Used in case of compilers only, to execute the object code, send " " in case of interpreters
          * @param {String} compilation_line: the compilation line to run as bash
 */
-const DockerSandbox = function(timeout, vm_name, source_dir, output_file, input, compilation_line) {
+
+const DockerSandbox = function(timeout, vm_name, source_dir, output_file, compilation_line) {
     this.timeout = timeout;
-    this.shared_dir = `${temp}${Date().now()}`;
+    this.shared_dir = `${TEMP}/` + Date().now();
     this.vm_name = vm_name;
     this.source_dir = source_dir;
     this.output_file = output_file;
-    this.input = input;
     this.compilation_line = compilation_line;
 };
 
@@ -35,7 +36,8 @@ DockerSandbox.prototype.getSharedDir = () => {
          * @function
          * @name DockerSandbox.run
          * @description Function that first prepares the Docker environment and then executes the Docker sandbox
-         * @param {Function ref} success
+         * @param {Function} success
+         * @param {Function} onError
 */
 DockerSandbox.prototype.run = async function(success, onError)
 {
@@ -51,8 +53,8 @@ DockerSandbox.prototype.run = async function(success, onError)
          * @function
          * @name DockerSandbox.set
          * @description Function that creates a shared directory with docker, as declared in the constructor,
-         * and then copies contents of the 'Payload' folder and contents of the resource folder to the created folder. The shared folder will be mounted
-         * on the Docker Container.
+         * and then copies contents of the 'Payload' folder and contents of the resource folder to the created folder.
+         * The shared folder will be mounted on the Docker Container.
          * Summary: This function produces a folder that contains the source files and 2 scripts, this folder is mounted to our
          * Docker container when we run it.
 */
@@ -61,7 +63,7 @@ DockerSandbox.prototype.set = async function() {
     const sandbox = this;
     const sharedDir = sandbox.getSharedDir();
     // create new directory
-    await mkdir(sharedDir);
+    await exec(`mkdir -p ${sharedDir}`);
     console.log(`@@@ new directory ${sharedDir} created`);
     // copy payload and files in source directory to the shared directory
     await exec(`cp ../Payload/* ${sharedDir} && cp ${sandbox.source_dir}/* ${sharedDir} && chmod 777 ${sharedDir}`);
@@ -78,9 +80,9 @@ DockerSandbox.prototype.clean = async () => {
 /**
          * @function
          * @name DockerSandbox.execute
-         * @precondition: DockerSandbox.prepare() has successfully completed
-         * @description: This function takes the newly created folder prepared by DockerSandbox.prepare() and spawns a Docker container
-         * with the folder mounted inside the container with the name '/usercode/' and calls the script.sh file present in that folder
+         * @precondition: DockerSandbox.set() has successfully completed
+         * @description: This function takes the newly created folder prepared by DockerSandbox.set() and spawns a Docker container
+         * with the folder mounted inside the container with the name 'resources/docker/temp/<date>' and calls the script.sh file present in that folder
          * to carry out the compilation. The Sandbox is spawned ASYNCHRONOUSLY and is supervised for a timeout limit specified in timeout_limit
          * variable in this class. This function keeps checking for the file "Completed" until the file is created by script.sh or the timeout occurs
          * In case of timeout an error message is returned back, otherwise the contents of the file (which could be the program output or log of
@@ -88,13 +90,15 @@ DockerSandbox.prototype.clean = async () => {
          *
          * Summary: Run the Docker container and execute script.sh inside it. Return the output generated and delete the mounted folder
          *
-         * @param {Function pointer} success ?????
+         * @param {Function} success ?????
+         * @param {Function} onError
 */
 
 DockerSandbox.prototype.execute = async function(success, onError)
 {
     const sharedDir = this.getSharedDir();
-    const cmd = `${this.path}DockerTimeout.sh ${this.timeout} -u root -i -t -v "${sharedDir}":/usercode ${this.vm_name} /usercode/script.sh ${this.compilation_line} ${this.output_file}`;
+    const cmd = `${this.path}DockerTimeout.sh ${this.timeout} -u root -v ${sharedDir}:/${sharedDir} -w ${sharedDir}  
+                 ${this.vm_name} ./script.sh ${this.compilation_line} ./${this.output_file}`;
     const outputFilePath = `${sharedDir}/completed`;
 
     console.log(`@@@ executing ${cmd}`);
