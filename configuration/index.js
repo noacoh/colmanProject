@@ -13,8 +13,8 @@ module.exports = {
     test_units: appRoot + '/resources/test units',
     ios: appRoot + '/resources/ios',
     logs: {
-      app: appRoot + 'resources/logs/app.log',
-      activity: appRoot + 'resources/logs/activity.log',
+      app: appRoot + '/resources/logs/app.log',
+      activity: appRoot + '/resources/logs/activity.log',
     }
   },
   server: {

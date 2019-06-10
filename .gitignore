@@ -88,5 +88,5 @@ typings/
 .dynamodb/
 
 .gitignore
-.idea/colman_server.iml
+.idea/
 package-lock.json
