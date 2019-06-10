@@ -106,7 +106,7 @@ module.exports = {
             units: joi.array().items(joi.object().keys({
                     test: joi.string().regex(/^[0-9]{9}$/).required(),
                     visibility: joi.string().regex(new RegExp(`^(${VISIBILITY.EXPOSED}|${VISIBILITY.HIDDEN})$`)).required(),
-                    weight: joi.Number().required()
+                    weight: joi.number().required()
                 })
             ),
             taskId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required(),
