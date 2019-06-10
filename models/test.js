@@ -5,6 +5,7 @@ const VISIBILITY = {
     HIDDEN: 'hidden'
 };
 
+
 const testSchema = new Schema({
     units: [
         {
@@ -18,6 +19,14 @@ const testSchema = new Schema({
                     type: String,
                     required: true,
                     default: VISIBILITY.EXPOSED
+                },
+                timeout: {
+                    type: Number,
+                    required: true,
+                    default: 300
+                },
+                type: {
+
                 }
             }
 
@@ -30,12 +39,13 @@ const testSchema = new Schema({
     }
 });
 
-testSchema.methods.run = () => {
-
+testSchema.methods.run = async (sharedDir) => {
+    const results = this.units.map((unit)=>{
+        cont res = await unit.runInSandbox();
+    })
 };
 
 const Test = mongoose.model('test', testSchema);
 module.exports = {
     Test,
-    VISIBILITY
-};
+    VISIBILITY,};

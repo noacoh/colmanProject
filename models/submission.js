@@ -49,8 +49,7 @@ submissionSchema.pre('save', async function(next) {
 submissionSchema.post('remove', async function(next) {
     try {
         // remove student from task's submitted list
-        await this.populate('task');
-        const task = this.task;
+        const task = await Task.findById(this.task);
         removeFromArray(task.studentSubmissions, this.student);
         await task.save();
         // remove files

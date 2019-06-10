@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const sandbox = require('../docker_sandbox/sandboxWrapper');
 const {copyFile, removeFile} = require('../helpers/util');
+const Task = require('./task');
 
 // test schema holds data for a modular test code
 const testUnitSchema = new Schema({
@@ -42,12 +43,12 @@ testUnitSchema.methods.isGeneric = function() {
     return this.task? false : true;
 };
 
-testUnitSchema.methods.getTestTask = function() {
+testUnitSchema.methods.getTestTask = async function() {
     if (this.isGeneric()) {
         return null;
     }
-    this.populate('task');
-    return this.task;
+    const task = await Task.findById(this.task);
+    return task;
 };
 
 // sharedDir is the shared directory where the submission files can be found.
