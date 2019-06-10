@@ -46,9 +46,9 @@ module.exports = {
             lastName: joi.string().alphanum().min(3).max(30).required(),
             identityNumber: joi.string().regex(/^[0-9]{9}$/).required(),
             password: joi.string().required(),
-            permission: joi.string().required(),
-            email: joi.string().required()
-            // permission: joi.string().regex(new RegExp(`^(${PERMISSION.ADMIN}|${PERMISSION.TEACHING_ASSISTANT}|${PERMISSION.STUDENT})$`)).required()
+            // permission: joi.string().required(),
+            email: joi.string().required(),
+            permission: joi.string().regex(new RegExp(`^(${PERMISSION.ADMIN}|${PERMISSION.TEACHING_ASSISTANT}|${PERMISSION.STUDENT})$`)).required()
         }),
         userOptionalSchema:joi.object().keys({
             firstName: joi.string().alphanum().min(3).max(30),

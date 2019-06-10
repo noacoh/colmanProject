@@ -1,5 +1,5 @@
 const { Test } = require('../models/test');
-const Task = require('./task');
+const Task = require('../models/task');
 module.exports = {
     index: async (req, res, next) => {
         const resourceRequester = req.user;

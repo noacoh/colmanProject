@@ -1,11 +1,10 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const TestUnit = require('./testUnit');
 const VISIBILITY = {
     EXPOSED: 'exposed',
     HIDDEN: 'hidden'
 };
-
-TestUnit
 
 
 
@@ -43,9 +42,9 @@ const testSchema = new Schema({
 });
 
 testSchema.methods.run = async function(sharedDir){
-        const results = this.units.map((unit)=>{
-        const testUnit = TestUnit
-    })
+        // const results = this.units.map((unit)=>{
+        // const testUnit = TestUn
+    // })
 };
 
 const Test = mongoose.model('test', testSchema);
