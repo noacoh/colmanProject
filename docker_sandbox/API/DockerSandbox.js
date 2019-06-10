@@ -70,7 +70,7 @@ DockerSandbox.prototype.set = async function() {
     await exec(`mkdir -p ${sharedDir}`);
     console.log(`@@@ new directory ${sharedDir} created`);
     // copy payload and files in source directory to the shared directory
-    await exec(`cp docker_sandbox/API/payload/* ${sharedDir} && cp ${sandbox.source_dir}/* ${sharedDir} && chmod 777 ${sharedDir}`);
+    await exec(`cp ../payload/* ${sharedDir} && cp ${sandbox.source_dir}/* ${sharedDir} && chmod 777 ${sharedDir}`);
 };
 /**
  * @function
@@ -79,8 +79,10 @@ DockerSandbox.prototype.set = async function() {
  * @param {Buffer} input
  */
 DockerSandbox.prototype.addInput = async (input) => {
-    // TODO just make sure this runs tghre input file if already exists
-    await writeFile(`${sharedDir}/inputFile`, sandbox.input);
+    const sandbox = this;
+    const sharedDir = sandbox.getSharedDir();
+    // writes the input
+    await writeFile(`${sharedDir}/inputFile`, input);
     console.log(`@@@ input file created at ${sharedDir}/inputFile`);
 };
 

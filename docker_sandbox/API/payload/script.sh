@@ -45,14 +45,22 @@ exec  2> $"errors"
 START=$(date +%s.%2N)
 #Branch 1
 if [[ "$output" = "" ]]; then
-    ${compiler} ${file} -< $"inputFile" #| tee /usercode/output.txt
+    if [[ -f "inputFile" ]]; then #check if inputFile exists
+        ${compiler} ${file} -< $"inputFile" #| tee /usercode/output.txt
+    else
+        ${compiler} ${file}
+    fi
 #Branch 2
 else
 	#In case of compile errors, redirect them to a file
-        ${compiler} ${file} ${additionalArg} #&> /usercode/errors.txt
+    ${compiler} ${file} ${additionalArg} #&> /usercode/errors.txt
 	#Branch 2a
 	if [[ $? -eq 0 ]];	then
-		${output} -< $"inputFile" #| tee /usercode/output.txt
+	    if [[ -f "inputFile" ]]; then #check if inputFile exists
+		    ${output} -< $"inputFile" #| tee /usercode/output.txt
+		else
+		    ${output}
+		fi
 	#Branch 2b
 	else
 	    echo "Compilation Failed"
