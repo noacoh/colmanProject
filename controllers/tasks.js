@@ -85,8 +85,8 @@ module.exports = {
     },
     submitForGrade: async (req, res, next) => {
         const resourceRequester = req.user;
-        logger.debug(`@@@req.value ${JSON.stringify(req.value,null,'\t')}`);
-        logger.debug(`@@@req.files ${JSON.stringify(req.files, null, '\t')}`);
+        logger.debug(`@@@req.value ${JSON.stringify(req.value)}`);
+        logger.debug(`@@@req.files.path ${JSON.stringify(req.files.map(f=> f.path))}`);
         const { taskId } = req.value.params;
         const { mode } = req.value.body;
         logger.debug(`extracting task ${taskId} from db`);
@@ -149,7 +149,7 @@ module.exports = {
         });
 
         const submission = await newSubmission.save(); // grade is calculated here
-        logger.debug(`@@@submission  ${JSON.stringify(submission, null, '\t')}`);
+        logger.debug(`@@@submission  ${JSON.stringify(submission)}`);
         const out = await submission.submit();
         res.status(201).json(out);
     },

@@ -1,4 +1,5 @@
 const router = require('express-promise-router')();
+const path = require('path');
 const TasksController = require('../controllers/tasks');
 const { validateParam, validateBody, schemas } = require('../helpers/routeHelpers');
 
@@ -8,25 +9,32 @@ const passportJWT = passport.authenticate('jwt', {session: false});
 
 const multer  = require('multer');
 const { resources } = require('../configuration');
+const tasksStorage = multer.diskStorage({
+    // configure destination folder for the files
+    destination: function (req, file, cb) {
+        cb(null, resources.tasks)
+    },
+    // we want to rename the file, in order to ensure files name is unique
+    filename: function (req, file, cb) {
+        cb(null, file.originalname + '_' + Date.now())
+    }
+});
+
+const submissionStorage = multer.diskStorage({
+    // configure destination folder for the files
+    destination: function (req, file, cb) {
+        cb(null, resources.submissions)
+    },
+    // we want to rename the file, in order to ensure files name is unique
+    filename: function (req, file, cb) {
+        cb(null, file.originalname + '_' + Date.now())
+    }
+});
 
 // create file uploader for task exercise files
-const taskUpload = multer({
-    // configure destination folder for the files
-    destination: resources.tasks,
-    // we want to rename the file, in order to ensure files name is unique
-    filename: function (req, file, cb) {
-        cb(null, file.originalname + '-' + Date.now())
-    }
-});
+const taskUpload = multer({storage: tasksStorage});
 // create file uploader for student submission files
-const submissionUpload = multer({
-    // configure destination folder for the files
-    destination: resources.submissions,
-    // we want to rename the file, in order to ensure files name is unique
-    filename: function (req, file, cb) {
-        cb(null, file.originalname + '-' + Date.now())
-    }
-});
+const submissionUpload = multer({storage: submissionStorage});
 const { SOLUTION_FILES, EXERCISE_FILES} = require('../configuration/supports').DATA_FORM.FIELD_NAME;
 const { MAX_UPLOADS } = require('../configuration/supports');
 

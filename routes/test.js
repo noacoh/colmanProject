@@ -8,15 +8,19 @@ const { OUTPUT_FILES, INPUT_FILES} = require('../configuration/supports').DATA_F
 const { MAX_UPLOADS } = require('../configuration/supports');
 
 const multer  = require('multer');
-// create file uploader for task exercise files
-const upload = multer({
+
+const storage = multer.diskStorage({
     // configure destination folder for the files
-    destination: resources.ios,
+    destination: function (req, file, cb) {
+        cb(null, resources.ios);
+    },
     // we want to rename the file, in order to ensure files name is unique
     filename: function (req, file, cb) {
         cb(null, file.originalname + '-' + Date.now())
     }
 });
+// create file uploader for task exercise files
+const upload = multer({storage: storage});
 
 const passportJWT = passport.authenticate("jwt", {session: false});
 

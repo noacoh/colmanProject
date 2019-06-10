@@ -5,15 +5,18 @@ const router = require('express-promise-router')();
 
 const { resources } = require('../configuration');
 const multer  = require('multer');
-// create file uploader for task exercise files
-const upload = multer({
+const storage = multer.diskStorage({
     // configure destination folder for the files
-    destination: resources.test_units,
+    destination: function (req, file, cb) {
+        cb(null, resources.test_units)
+    },
     // we want to rename the file, in order to ensure files name is unique
     filename: function (req, file, cb) {
         cb(null, file.originalname + '-' + Date.now())
     }
 });
+// create file uploader for task exercise files
+const upload = multer({storage: storage});
 
 const { UNIT_TEST, OUTPUT_FILE, INPUT_FILE} = require('../configuration/supports').DATA_FORM.FIELD_NAME;
 

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const { removeFile, removeFromArray, createDirectoryIfNotExists, copyFile, deleteDir } = require('../helpers/util');
-const { resources } = require("../configuration")
+const { resources } = require("../configuration");
 const Task = require('./task');
 const { Test } = require('./test');
 const MODE = {
@@ -45,7 +45,7 @@ submissionSchema.methods.submit = async function(){
         await this.files.forEach(async function(file) {
             await copyFile(file, newDir);
         });
-       const test = mode === MODE.PRACTICE ? Test.findById(task.tests.practice) : Test.findById(task.tests.final);
+       const test = this.mode === MODE.PRACTICE ? await Test.findById(task.tests.practice) : await Test.findById(task.tests.final);
        const {output, grade} = await test.run(newDir);
        this.output = output;
        this.grade = grade;
