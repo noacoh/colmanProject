@@ -40,5 +40,16 @@ module.exports = {
         if (index > -1) {
             array.splice(index, 1);
         }
+    },
+    copyFile: async (file, destination, newName) => {
+        newName = newName ? newName: file.name;
+        const newPath = `${destination}/${newName}`;
+        try {
+            await copyFile(file.path, newPath);
+            logger.info(`moved file from ${file.path} to ${newPath} successfully`);
+        } catch (err) {
+            logger.error(`failed moving file from ${file.path} to ${newPath}`);
+            throw err;
+        }
     }
 };

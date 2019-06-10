@@ -107,7 +107,9 @@ module.exports = {
                     test: joi.string().regex(/^[0-9]{9}$/).required(),
                     visibility: joi.string().regex(new RegExp(`^(${VISIBILITY.EXPOSED}|${VISIBILITY.HIDDEN})$`)).required()
                 })
-            )
+            ),
+            taskId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required(),
+            mode: joi.string().regex(new RegExp(`^(${MODE.FINAL}|${MODE.PRACTICE})$`)).required()
         })
     }
 };

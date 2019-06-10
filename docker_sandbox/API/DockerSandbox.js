@@ -1,6 +1,6 @@
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
-const { readFile, writeFile, access, copyFile, mkdir }  = require('fs.promises');
+const { readFile, writeFile, access }  = require('fs.promises');
 const { resources } = require('../../configuration/index');
 const { TEMP } = resources.docker.temp;
 const { CONTAINER_DIR } = resources.docker.container_dir;
@@ -70,9 +70,19 @@ DockerSandbox.prototype.set = async function() {
     await exec(`mkdir -p ${sharedDir}`);
     console.log(`@@@ new directory ${sharedDir} created`);
     // copy payload and files in source directory to the shared directory
-    await exec(`cp docker_sandbox/API/payload/* ${sharedDir} && cp ${sandbox.source_dir}/* ${sharedDir} && chmod 777 ${sharedDir}`);
-
-    await writeFile(`${sharedDir}/inputFile`, sandbox.stdin);
+    await exec(`cp ../payload/* ${sharedDir} && cp ${sandbox.source_dir}/* ${sharedDir} && chmod 777 ${sharedDir}`);
+};
+/**
+ * @function
+ * @name DockerSandbox.addInput
+ * @description
+ * @param {Buffer} input
+ */
+DockerSandbox.prototype.addInput = async (input) => {
+    const sandbox = this;
+    const sharedDir = sandbox.getSharedDir();
+    // writes the input
+    await writeFile(`${sharedDir}/inputFile`, input);
     console.log(`@@@ input file created at ${sharedDir}/inputFile`);
 };
 
@@ -103,6 +113,7 @@ DockerSandbox.prototype.execute = async function(success, onError)
 {
     const sharedDir = this.getSharedDir();
     const containerDir = this.getContainerDir();
+    // TODO check if this.input exists and execute accordingly
     const cmd = `${this.path}DockerTimeout.sh ${this.timeout} -u root -v ${sharedDir}:/${containerDir} 
                 -w ${sharedDir} ${this.vm_name} ./script.sh ${this.compilation_line}`;
     const outputFilePath = `${sharedDir}/completed`;

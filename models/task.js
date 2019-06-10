@@ -15,10 +15,16 @@ const taskSchema = new Schema({
             size: Number
         }]
     },
-    tests: [{
-        type: Schema.Types.ObjectId,
-        ref: 'test'
-    }],
+    tests: {
+        practice: {
+            type: Schema.Types.ObjectId,
+            ref: 'test'
+        },
+        final: {
+            type: Schema.Types.ObjectId,
+            ref: 'test'
+        }
+    },
     // files containing the code for the final test
     solution: {
         files: [{
