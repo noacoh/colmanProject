@@ -1,5 +1,7 @@
 const { Test } = require('../models/test');
 const Task = require('../models/task');
+const { OUTPUT_FILES, INPUT_FILES} = require('../configuration/supports').DATA_FORM.FIELD_NAME;
+
 module.exports = {
     index: async (req, res, next) => {
         const resourceRequester = req.user;
@@ -20,13 +22,64 @@ module.exports = {
                 message: 'Unauthorized'
             })
         }
-        const { units, taskId, mode } = req.value.body;
-        const task = await Task.findById(taskId);
-        const newTest = new Test({
-            units,
-            task: taskId,
-            mode: mode
+        const { ioTests, mainTests, taskId, mode } = req.value.body;
+        const inputFilesMap = {};
+        const outputFilesMap = {};
+
+        // map files for test constructor required info
+        req.files[INPUT_FILES].forEach(file => {
+            inputFilesMap[file.originalname] = {
+                path: file.path,
+                name: file.filename,
+                size: file.size
+            }
         });
+
+        req.files[OUTPUT_FILES].forEach(file => {
+            outputFilesMap[file.originalname] = {
+                path: file.path,
+                name: file.filename,
+                size: file.size
+            }
+        });
+
+        const mainTestsArr = mainTests.map( unit => {
+            const {test, visibility, weight, timeout} = unit;
+            return {
+                test ,
+                configuration: {
+                    visibility,
+                    weight,
+                    timeout: timeout || 300
+                }
+           }
+        });
+
+        const ioTestsArr = ioTests.map( unit => {
+            const {test, visibility, weight, input, output, timeout } = unit;
+            return {
+                test ,
+                configuration: {
+                    visibility,
+                    weight,
+                    timeout: timeout || 300,
+                    input: { file: inputFilesMap[input] },
+                    output: { file: outputFilesMap[output] }
+                }
+            }
+        });
+
+
+        const task = await Task.findById(taskId);
+
+        // creat a new test document
+        const newTest = new Test({
+            ioTests: ioTestsArr,
+            mainTests: mainTestsArr,
+            mode: mode,
+            task: taskId
+        });
+
         const test = await newTest.save();
         // update the task document
         const tests = task.test;
@@ -34,7 +87,7 @@ module.exports = {
         await task.update({test: tests});
         await task.save();
 
-        res.status(203).json({
+        res.status(201).json({
             success: true,
             message: "New test was created successfully"
         });

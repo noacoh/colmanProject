@@ -11,6 +11,7 @@ module.exports = {
     tasks: appRoot + '/resources/tasks',
     submissions: appRoot + '/resources/submissions',
     test_units: appRoot + '/resources/test units',
+    ios: appRoot + '/resources/ios',
     logs: {
       app: appRoot + 'resources/logs/app.log',
       activity: appRoot + 'resources/logs/activity.log',

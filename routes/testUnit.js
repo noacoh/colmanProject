@@ -36,31 +36,11 @@ router.route('/genericTests')
     .get(passportJWT,
         testUnitController.getGenericUTs);
 
-router.route('/uploads/ioTest')
+router.route('/uploads/testUnit')
     .post(upload.single(UNIT_TEST),
         validateBody(schemas.testUnitSchema),
         passportJWT,
         testUnitController.uploadExeUnitTest);
-
-router.route('/uploads/exeTest')
-    .get(
-        upload.fields([
-            {
-                name: UNIT_TEST,
-                maxCount: 1
-            },
-            {
-                name: INPUT_FILE,
-                maxCount: 1,
-            },
-            {
-                name: OUTPUT_FILE,
-                maxCount: 1
-            }
-        ]),
-        validateBody(schemas.testUnitSchema),
-        passportJWT,
-        testUnitController.uploadIOUnitTest);
 
 module.exports = router;
 
