@@ -43,10 +43,10 @@ submissionSchema.methods.submit = async function(){
     await createDirectoryIfNotExists(newDir);
     try {
         await this.files.forEach(async function(file) {
-            copyFile(file.name, newDir);
+            await copyFile(file, newDir);
         });
        const test = mode === MODE.PRACTICE ? Test.findById(task.tests.practice) : Test.findById(task.tests.final);
-       const {output, grade} = test.run(newDir);
+       const {output, grade} = await test.run(newDir);
        this.output = output;
        this.grade = grade;
        return {

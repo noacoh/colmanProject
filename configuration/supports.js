@@ -5,7 +5,7 @@ module.exports = {
             PRACTICE: 'practice'
         }
     },
-    MAX_UPLOAD: 10,
+    MAX_UPLOADS: 10,
     DATA_FORM: {
         FIELD_NAME: {
             EXERCISE_FILES: 'exercise_files',

@@ -16,7 +16,7 @@ module.exports = {
                 if (!req.value['params']) {
                     req.value['params'] = {};
                 }
-                req.value['params'] = result.value.param;
+                req.value['params'][name] = result.value.param;
                 next();
             }
         }

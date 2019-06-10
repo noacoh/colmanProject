@@ -154,7 +154,7 @@ testSchema.methods.run = async function(sharedDir){
     const grade = results.reduce(function (total, result) {
         return total - result.loss;
     }, 100);
-    const visibleRes = results.filter( res => res.visibility);
+    const visibleRes = results.filter( res => res.visibility === VISIBILITY.EXPOSED);
     const visibleOut = visibleRes.map( res => {
         return res.compilationSuccess ? `compilation failed -${res.loss}` : re.output;
     });

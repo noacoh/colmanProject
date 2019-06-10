@@ -48,9 +48,9 @@ module.exports = {
         const newPath = `${destination}/${newName}`;
         try {
             await copyFile(file.path, newPath);
-            logger.info(`moved file from ${file.path} to ${newPath} successfully`);
+            logger.info(`copied file from ${file.path} to ${newPath} successfully`);
         } catch (err) {
-            logger.error(`failed moving file from ${file.path} to ${newPath}`);
+            logger.error(`failed copying file from ${file.path} to ${newPath}`);
             throw err;
         }
     },

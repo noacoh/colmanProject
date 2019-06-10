@@ -85,10 +85,15 @@ module.exports = {
     },
     submitForGrade: async (req, res, next) => {
         const resourceRequester = req.user;
+        logger.debug(`@@@req.value ${JSON.stringify(req.value,null,'\t')}`);
+        logger.debug(`@@@req.files ${JSON.stringify(req.files, null, '\t')}`);
         const { taskId } = req.value.params;
         const { mode } = req.value.body;
-        const task = await Task.findById(taskId).populate('course'); // validate task exists
-        const course = task.course;
+        logger.debug(`extracting task ${taskId} from db`);
+        const task = await Task.findById(taskId); // validate task exists
+        logger.debug(`${JSON.stringify(task)}`);
+        const course = await Course.findById(task.course);
+        logger.debug(`${JSON.stringify(course)}`);
         usersActivityLogger.info({id: resourceRequester.identityNumber, message: "attempted submission", mode: mode, task: task.title});
         // validate student is registered for course
         if (!resourceRequester.isAdmin){
@@ -144,6 +149,7 @@ module.exports = {
         });
 
         const submission = await newSubmission.save(); // grade is calculated here
+        logger.debug(`@@@submission  ${JSON.stringify(submission, null, '\t')}`);
         const out = await submission.submit();
         res.status(201).json(out);
     },
