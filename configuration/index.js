@@ -5,7 +5,8 @@ module.exports = {
   TOKEN_EXPIRATION: 1,
   resources:{
     docker: {
-      temp: appRoot + '/resources/temp/docker'
+      temp: appRoot + '/resources/temp/docker',
+      container_dir: '/resources/temp/docker'
     },
     tasks: appRoot + '/resources/tasks',
     submissions: appRoot + '/resources/submissions',

@@ -3,6 +3,7 @@ const exec = util.promisify(require('child_process').exec);
 const { readFile, writeFile, access, copyFile, mkdir }  = require('fs.promises');
 const { resources } = require('../../configuration/index');
 const { TEMP } = resources.docker.temp;
+const { CONTAINER_DIR } = resources.docker.container_dir;
 
 /**
          * @Constructor
@@ -11,17 +12,16 @@ const { TEMP } = resources.docker.temp;
          * @param {Number} timeout: The Time_out limit for code execution in Docker
          * @param {String} vm_name: The TAG of the Docker VM that we wish to execute
          * @param {String} source_dir: Full path to the directory containing all the code files
-         * @param {String} output_file: Used in case of compilers only, to execute the object code, send " " in case of interpreters
          * @param {String} compilation_line: the compilation line to run as bash
 */
 
-const DockerSandbox = function(timeout, vm_name, source_dir, output_file, compilation_line) {
+const DockerSandbox = function(timeout, vm_name, source_dir, compilation_line) {
     this.timeout = timeout;
     this.shared_dir = `${TEMP}/` + Date().now();
     this.vm_name = vm_name;
     this.source_dir = source_dir;
-    this.output_file = output_file;
     this.compilation_line = compilation_line;
+    this.container_dir = CONTAINER_DIR;
 };
 
 /**
@@ -31,6 +31,10 @@ const DockerSandbox = function(timeout, vm_name, source_dir, output_file, compil
  */
 DockerSandbox.prototype.getSharedDir = () => {
     return this.shared_dir;
+};
+
+DockerSandbox.prototype.getContainerDir = () => {
+    return this.container_dir;
 };
 /**
          * @function
@@ -66,14 +70,15 @@ DockerSandbox.prototype.set = async function() {
     await exec(`mkdir -p ${sharedDir}`);
     console.log(`@@@ new directory ${sharedDir} created`);
     // copy payload and files in source directory to the shared directory
-    await exec(`cp ../Payload/* ${sharedDir} && cp ${sandbox.source_dir}/* ${sharedDir} && chmod 777 ${sharedDir}`);
+    await exec(`cp docker_sandbox/API/payload/* ${sharedDir} && cp ${sandbox.source_dir}/* ${sharedDir} && chmod 777 ${sharedDir}`);
 
     await writeFile(`${sharedDir}/inputFile`, sandbox.stdin);
-    console.log(`@@@ input file created at ${basePath}/inputFile`);
+    console.log(`@@@ input file created at ${sharedDir}/inputFile`);
 };
 
 DockerSandbox.prototype.clean = async () => {
-    console.log(`@@@ attempting to remove directory: ${sandbox.folder}`);
+    const sandbox = this;
+    console.log(`@@@ attempting to remove directory: ${sandbox.shared_dir}`);
     await exec(`rm -r ${this.getSharedDir()}`);
 };
 
@@ -97,8 +102,9 @@ DockerSandbox.prototype.clean = async () => {
 DockerSandbox.prototype.execute = async function(success, onError)
 {
     const sharedDir = this.getSharedDir();
-    const cmd = `${this.path}DockerTimeout.sh ${this.timeout} -u root -v ${sharedDir}:/${sharedDir} -w ${sharedDir}  
-                 ${this.vm_name} ./script.sh ${this.compilation_line} ./${this.output_file}`;
+    const containerDir = this.getContainerDir();
+    const cmd = `${this.path}DockerTimeout.sh ${this.timeout} -u root -v ${sharedDir}:/${containerDir} 
+                -w ${sharedDir} ${this.vm_name} ./script.sh ${this.compilation_line}`;
     const outputFilePath = `${sharedDir}/completed`;
 
     console.log(`@@@ executing ${cmd}`);

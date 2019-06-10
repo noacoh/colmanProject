@@ -2,16 +2,12 @@ const sandBox = require('./API/DockerSandbox');
 
 
 module.exports = {
-  runInSandbox: async (source_dir) => {
+  runInSandbox: async (source_dir, compilation_line) => {
 
-      //const shared_dir = `${TEMP}/` + Date.now(); //folder in which the temporary folder will be saved
-      //const path = __dirname + "/"; // current working path
       const vm_name = 'virtual_machine'; // name of virtual machine that we want to execute
       const timeout_value = 300; // timeout in seconds (5 mins)
-      const file_name = './a.out';
-      const { compilation_line } = compilation_line;
 
-      const sandBox = new sandBox(timeout_value, vm_name, source_dir, file_name, compilation_line);
+      const sandBox = new sandBox(timeout_value, vm_name, source_dir, compilation_line);
 
       //the result maybe normal program output, list of error messages or a Timeout error
       let [output, execTime, error] = [null, null, null];
