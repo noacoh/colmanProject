@@ -59,6 +59,6 @@ testUnitSchema.methods.getTestTask = async function() {
 
 const TestUnit = mongoose.model('testUnit', testUnitSchema);
 module.exports = {
-    TestUnit,
-    UNIT_TYPE
+    TestUnit: TestUnit,
+    UNIT_TYPE: UNIT_TYPE
 };

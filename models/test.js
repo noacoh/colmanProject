@@ -4,7 +4,7 @@ const { TestUnit } = require('./testUnit');
 const sandbox = require('../docker_sandbox/sandboxWrapper');
 const { copyFile, removeFile } = require('../helpers/util');
 const { readFile }  = require('fs.promises');
-
+const { logger } = require('../configuration/winston');
 const VISIBILITY = {
     EXPOSED: 'exposed',
     HIDDEN: 'hidden'
@@ -88,12 +88,14 @@ testSchema.methods.run = async function(sharedDir){
     const results = [];
 
     this.mainTests.forEach(async function(unit) {
+        logger.debug(`@@@unit: ${JSON.stringify(unit)}`);
         const testUnit = await TestUnit.findById(unit.test);
+        logger.debug(`@@@testunit: ${JSON.stringify(testUnit)}`);
         await copyFile(testUnit.file.path, sharedDir);
         try {
             const { output, error } = sandbox.runInSandbox(sharedDir, testUnit.compilationLine, unit.configuration.timeout);
             if (output.includes("Compilation Failed")){
-                mainTests.push({
+                results.push({
                     error,
                     output,
                     compilationSuccess: false,
