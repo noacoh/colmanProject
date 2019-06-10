@@ -51,14 +51,20 @@ testUnitSchema.methods.getTestTask = function() {
 };
 
 // sharedDir is the shared directory where the submission files can be found.
-testUnitSchema.methods.runTest = async (sharedDir)=> {
+testUnitSchema.methods.runTest = async (sharedDir, timeout)=> {
     // copy the test file to the shared directory
 
     await copyFile(this.file , sharedDir);
     try {
-        sandbox.runInSandbox(sharedDir,);
-    } catch (err) {
+        const { output, error } = sandbox.runInSandbox(sharedDir, this.compilationLine, timeout);
+        return {
+            error,
+            output,
+            loss: 10,
 
+        }
+    } catch (err) {
+        // handle err
     } finally {
         removeFile(`${sharedDir}/${this.file.name}`);
     }
