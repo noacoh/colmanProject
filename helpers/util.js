@@ -1,4 +1,4 @@
-const { copyFile, mkdir, unlink } = require('fs').promises;
+const { copyFile, mkdir, unlink } = require('fs.promises');
 const {logger} = require('../configuration/winston');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);

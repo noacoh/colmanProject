@@ -17,17 +17,14 @@ passport.use(new JwtStrategy({
             // user not found
             return done(null, false);
         }
-        done(user, true)
+        done(null, user);
     } catch(err) {
         done(err, false);
     }
 }));
 
 // LOCAL STRATEGY
-passport.use(new LocalStrategy({
-    usernameField: 'identityNumber',
-
-}, async (identityNumber, password, done) => {
+passport.use(new LocalStrategy({usernameField: 'identityNumber'}, async (identityNumber, password, done) => {
     try {
         const user = await User.findOne({ identityNumber: identityNumber });
         if (!user) {
