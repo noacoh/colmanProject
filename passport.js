@@ -39,8 +39,8 @@ passport.use(new LocalStrategy({
             // password do not match
             return done(null, false);
         }
-        done(user, true);
-    } catch (err) {
+        done(null, user);
+    }catch (err) {
         done(err, false);
     }
 }));
