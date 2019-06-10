@@ -1,6 +1,6 @@
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
-const { readFile, writeFile, access, copyFile, mkdir }  = require('fs.promises');
+const { readFile, writeFile, access }  = require('fs.promises');
 const { resources } = require('../../configuration/index');
 const { TEMP } = resources.docker.temp;
 const { CONTAINER_DIR } = resources.docker.container_dir;
@@ -15,13 +15,14 @@ const { CONTAINER_DIR } = resources.docker.container_dir;
          * @param {String} compilation_line: the compilation line to run as bash
 */
 
-const DockerSandbox = function(timeout, vm_name, source_dir, compilation_line) {
+const DockerSandbox = function(timeout, vm_name, source_dir, compilation_line, input) {
     this.timeout = timeout;
     this.shared_dir = `${TEMP}/` + Date().now();
     this.vm_name = vm_name;
     this.source_dir = source_dir;
     this.compilation_line = compilation_line;
     this.container_dir = CONTAINER_DIR;
+    this.input = input;
 };
 
 /**
@@ -72,7 +73,7 @@ DockerSandbox.prototype.set = async function() {
     // copy payload and files in source directory to the shared directory
     await exec(`cp docker_sandbox/API/payload/* ${sharedDir} && cp ${sandbox.source_dir}/* ${sharedDir} && chmod 777 ${sharedDir}`);
 
-    await writeFile(`${sharedDir}/inputFile`, sandbox.stdin);
+    await writeFile(`${sharedDir}/inputFile`, sandbox.input);
     console.log(`@@@ input file created at ${sharedDir}/inputFile`);
 };
 

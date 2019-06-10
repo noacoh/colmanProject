@@ -23,8 +23,16 @@ const testSchema = new Schema({
 
         }
     ],
-
+    task: {
+        type: Schema.Types.ObjectId,
+        ref: 'task',
+        required: true
+    }
 });
+
+testSchema.methods.run = () => {
+
+};
 
 const Test = mongoose.model('test', testSchema);
 module.exports = {
