@@ -1,4 +1,6 @@
 #!/bin/bash
+CLEAR='\033[0m'
+RED='\033[0;31m'
 
 ########################################################################
 #	- This is the main script that is used to compile/interpret the source code
@@ -7,21 +9,13 @@
 #		2. The source file that is to be compiled/interpreted
 #		3. Additional argument only needed for compilers, to execute the object code
 #
-#	- Sample execution command:   $: ./script.sh g++ file.cpp ./a.out
+#	- Sample execution command: ./script.sh --compiler gcc --files "*.c *.h" --additional -Wall -exec ./a.out
 #
 ########################################################################
 
-#compiler=$1
-#file=$2
-#additionalArg=$3
-#output=$4
-
-CLEAR='\033[0m'
-RED='\033[0;31m'
-
 function usage() {
   if [[ -n "$1" ]]; then
-    echo -h "${RED}👉 $1${CLEAR}\n";
+    echo -n "${RED} $1${CLEAR}\n";
   fi
   echo "Usage: $0 [-c compiler-name] [-f files] [-a additional-args] [-e executable]"
   echo "  -c, --compiler            Compiler to use"
@@ -56,13 +50,12 @@ function usage() {
 
 exec  1> $"logfile.txt"
 exec  2> $"errors"
-#3>&1 4>&2 >
 
 while [[ "$#" -gt 0 ]]; do case $1 in
-  -c|--compiler) compiler="$2"; echo compiler:${compiler};  shift;;
-  -f|--files) files="$2"; echo files:${files}; shift;;
-  -a|--additional) additionalArgs="$2"; echo additionalArgs:${additionalArgs};  shift;;
-  -e|--exec) output="$2"; echo output=${output}; shift;;
+  -c|--compiler) compiler="$2"; shift;;
+  -f|--files) files="$2"; shift;;
+  -a|--additional) additionalArgs="$2"; shift;;
+  -e|--exec) output="$2"; shift;;
   *) usage "Unknown parameter passed: $1"; exit 1;;
 esac; shift; done
 
@@ -75,38 +68,30 @@ START=$(date +%s.%2N)
 #Branch 1
 if [[ "$output" = "" ]]; then
     if [[ -f "inputFile" ]]; then #check if inputFile exists
-        ${compiler} ${files} -< $"inputFile" #| tee /usercode/output.txt
+        ${compiler} ${files} -< $"inputFile"
     else
         ${compiler} ${files}
     fi
 #Branch 2
 else
 	#In case of compile errors, redirect them to a file
-    ${compiler} ${files} ${additionalArgs} #&> /usercode/errors.txt
+    ${compiler} ${files} ${additionalArgs}
 	#Branch 2a
 	if [[ $? -eq 0 ]];	then
 	    if [[ -f "inputFile" ]]; then #check if inputFile exists
-		    ${output} -< $"inputFile" #| tee /usercode/output.txt
+		    ${output} -< $"inputFile"
 		else
 		    ${output}
 		fi
 	#Branch 2b
 	else
 	    echo "Compilation Failed"
-	    #if compilation fails, display the output file
-	    #cat /usercode/errors.txt
 	fi
 fi
 
-#exec 1>&3 2>&4
-
-#head -100 /usercode/logfile.txt
-#touch /usercode/completed
 END=$(date +%s.%2N)
 runtime=$(echo "$END - $START" | bc)
 
-
 echo "*-ENDOFOUTPUT-*" ${runtime}
-
 
 mv logfile.txt completed
