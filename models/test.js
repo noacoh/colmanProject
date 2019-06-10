@@ -27,8 +27,9 @@ const testSchema = new Schema({
                     required: true,
                     default: 300
                 },
-                type: {
-
+                weight:{
+                    type: Number,
+                    required: true
                 }
             }
 
@@ -42,9 +43,10 @@ const testSchema = new Schema({
 });
 
 testSchema.methods.run = async function(sharedDir){
-        // const results = this.units.map((unit)=>{
-        // const testUnit = TestUn
-    // })
+        const results = this.units.map((unit)=>{
+            const testUnit = TestUnit.findById(unit.test);
+            return { t: testUnit.__t || 'main', res: testUnit.runTest(sharedDir, unit.configuration.timeout), visibility: unit.configuration.visibility  }
+    })
 };
 
 const Test = mongoose.model('test', testSchema);

@@ -25,6 +25,7 @@ module.exports = {
         const newTest = new Test({
             units,
             task: taskId,
+            mode: mode,
         });
         const test = await newTest.save();
         // update the task document
