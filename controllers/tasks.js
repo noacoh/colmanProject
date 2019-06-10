@@ -38,7 +38,7 @@ module.exports = {
         course.tasks.push(newTask._id);
         await course.save();
 
-        res.status(203).json({
+        res.status(201).json({
             success: true,
             message: "Task was created successfully"
         })

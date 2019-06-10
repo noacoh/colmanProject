@@ -2,6 +2,7 @@ const joi = require('joi');
 const { MODE } = require('../models/submission');
 const { VISIBILITY } = require('../models/test');
 const { PERMISSION } = require('../models/user');
+
 module.exports = {
     validateParam: (schema, name) => {
         return (req, res, next) => {
@@ -100,12 +101,24 @@ module.exports = {
             title: joi.string().required(),
             description: joi.string(),
             compilationLine: joi.string().required(),
-            task: joi.string().regex(/^[0-9]{9}$/)
+            task: joi.string().regex(/^[0-9]{9}$/),
+            type: joi.string().regex(new RegExp(`^(${MODE.FINAL}|${MODE.PRACTICE})$`)).required()
         }),
         testSchema: joi.object().keys({
-            units: joi.array().items(joi.object().keys({
+            mainTests: joi.array().items(joi.object().keys({
                     test: joi.string().regex(/^[0-9]{9}$/).required(),
-                    visibility: joi.string().regex(new RegExp(`^(${VISIBILITY.EXPOSED}|${VISIBILITY.HIDDEN})$`)).required()
+                    visibility: joi.string().regex(new RegExp(`^(${VISIBILITY.EXPOSED}|${VISIBILITY.HIDDEN})$`)).required(),
+                    weight: joi.number().required(),
+                    timeout: joi.number()
+                })
+            ),
+            ioTests: joi.array().items(joi.object().keys({
+                    test: joi.string().regex(/^[0-9]{9}$/).required(),
+                    visibility: joi.string().regex(new RegExp(`^(${VISIBILITY.EXPOSED}|${VISIBILITY.HIDDEN})$`)).required(),
+                    weight: joi.number().required(),
+                    timeout: joi.number(),
+                    input: joi.string().required(), //name of the input file (including extension)
+                    output: joi.string().required() //name of the output file (including extension)
                 })
             ),
             taskId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required(),

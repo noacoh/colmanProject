@@ -5,19 +5,14 @@ module.exports = {
             PRACTICE: 'practice'
         }
     },
-    LANGUAGES: {
-        JAVA: 'java',
-        CPP: 'c++',
-        C: 'c'
-    },
     MAX_UPLOAD: 10,
     DATA_FORM: {
         FIELD_NAME: {
             EXERCISE_FILES: 'exercise_files',
             SOLUTION_FILES: 'solution_files',
             UNIT_TEST: 'test_file',
-            INPUT_FILE: 'input_file',
-            OUTPUT_FILE: 'output_file'
+            INPUT_FILES: 'input_files',
+            OUTPUT_FILES: 'output_files',
         }
     }
 };
