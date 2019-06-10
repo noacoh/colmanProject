@@ -15,14 +15,13 @@ const { CONTAINER_DIR } = resources.docker.container_dir;
          * @param {String} compilation_line: the compilation line to run as bash
 */
 
-const DockerSandbox = function(timeout, vm_name, source_dir, compilation_line, input) {
+const DockerSandbox = function(timeout, vm_name, source_dir, compilation_line) {
     this.timeout = timeout;
     this.shared_dir = `${TEMP}/` + Date().now();
     this.vm_name = vm_name;
     this.source_dir = source_dir;
     this.compilation_line = compilation_line;
     this.container_dir = CONTAINER_DIR;
-    this.input = input;
 };
 
 /**
@@ -72,11 +71,17 @@ DockerSandbox.prototype.set = async function() {
     console.log(`@@@ new directory ${sharedDir} created`);
     // copy payload and files in source directory to the shared directory
     await exec(`cp docker_sandbox/API/payload/* ${sharedDir} && cp ${sandbox.source_dir}/* ${sharedDir} && chmod 777 ${sharedDir}`);
-
-    if (this.input){
-        await writeFile(`${sharedDir}/inputFile`, sandbox.input);
-        console.log(`@@@ input file created at ${sharedDir}/inputFile`);
-    }
+};
+/**
+ * @function
+ * @name DockerSandbox.addInput
+ * @description
+ * @param {Buffer} input
+ */
+DockerSandbox.prototype.addInput = async (input) => {
+    // TODO just make sure this runs tghre input file if already exists
+    await writeFile(`${sharedDir}/inputFile`, sandbox.input);
+    console.log(`@@@ input file created at ${sharedDir}/inputFile`);
 };
 
 DockerSandbox.prototype.clean = async () => {
