@@ -63,8 +63,17 @@ testUnitSchema.methods.runTest = async (sharedDir, timeout)=> {
                 compilationSuccess: false
             }
         }
-    const r =/(\(-[0-9]{2}\)|\(-100\))'/gm;
-    const loss = output.match(r);
+    const lossPattern =/(\(-[0-9]{2}\)|\(-100\))'/gm;
+    const losses = output.match(lossPattern);
+    const loss = losses.reduce((total, loss)=> {
+        return total + parseInt(loss.slice(2,-1));
+    },0);
+    return {
+        error,
+        output,
+        loss,
+        compilationSuccess: true
+    }
     } catch (err) {
         throw err;
         // handle err
