@@ -32,7 +32,9 @@ const submissionSchema = new Schema({
     mode: {
         type: String,
         required: true,
-    }
+    },
+    output: String
+
 });
 
 submissionSchema.methods.submit = async function(){
@@ -44,7 +46,13 @@ submissionSchema.methods.submit = async function(){
             copyFile(file.name, newDir);
         });
        const test = mode === MODE.PRACTICE ? Test.findById(task.tests.practice) : Test.findById(task.tests.final);
-       return test.run(newDir);
+       const {output, grade} = test.run(newDir);
+       this.output = output;
+       this.grade = grade;
+       return {
+           output,
+           grade
+       }
     } catch (err) {
         throw err
     } finally {
