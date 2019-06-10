@@ -8,19 +8,18 @@ module.exports = {
       const vm_name = 'virtual_machine'; // name of the virtual machine
       const timeout_value = timeout ? timeout : 300; // default timeout in is 5 minutes
       let input;
-      let sb;
+      logger.info('initiating sandBox', {timeout_value, vm_name, source_dir, compilation_line});
+      const sb = new sandBox(timeout_value, vm_name, source_dir, compilation_line);
       if (input_file) {
           try {
               // read file content into a buffer
               input = await readFile(input_file);
+              logger.info(`adding input file ${input_file}`);
+              await sb.addInput(input);
           } catch (err) {
               logger.error(`failed to read from file ${input_file}.[${err.toString()}]`);
               throw err;
           }
-          logger.info('initiating sandBox', {timeout_value, vm_name, source_dir, compilation_line, input_file});
-          sb = new sandBox(timeout_value, vm_name, source_dir, compilation_line, input);
-      } else {
-          sb = new sandBox(timeout_value, vm_name, source_dir, compilation_line);
       }
       //the result maybe normal program output, list of error messages or a Timeout error
       let [output, execTime, error] = [null, null, null];
