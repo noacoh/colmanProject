@@ -167,4 +167,5 @@ testSchema.methods.run = async function(sharedDir){
 const Test = mongoose.model('test', testSchema);
 module.exports = {
     Test,
-    VISIBILITY,};
+    VISIBILITY
+};
