@@ -12,8 +12,8 @@ module.exports = {
     submissions: appRoot + '/resources/submissions',
     test_units: appRoot + '/resources/test units',
     logs: {
-      app: appRoot + 'resources/logs/app.log',
-      activity: appRoot + 'resources/logs/activity.log',
+      app: appRoot + '/resources/logs/app.log',
+      activity: appRoot + '/resources/logs/activity.log',
     }
   },
   server: {
