@@ -2,6 +2,7 @@ const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const { readFile, writeFile, access }  = require('fs.promises');
 const { resources } = require('../../configuration');
+const { logger } = require('../../configuration/winston');
 
 /**
          * @Constructor
@@ -43,11 +44,14 @@ DockerSandbox.prototype.getContainerDir = () => {
 */
 DockerSandbox.prototype.run = async function(success, onError)
 {
-    console.log('\n\n-----------------------');
+    console.log('----------------------------');
+    console.log('@@@ set directories and file');
     await this.set();
+    console.log('@@@ run files in sandbox');
     await this.execute(success, onError);
+    console.log('@@@ clean directories and file');
     await this.clean();
-    console.log('-----------------------\n\n');
+    console.log('----------------------------');
 };
 
 

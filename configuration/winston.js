@@ -3,7 +3,11 @@ const { format } = winston;
 const { combine, timestamp, printf, prettyPrint } = format;
 
 const activityLogFormat = printf(({ level, message, timestamp, id }) => {
-    return `${timestamp} ${level} ${id} : ${message}`;
+    return `${timestamp} ${level} ${id}: ${message}`;
+});
+
+const logFormat = printf(({ level, message, timestamp }) => {
+    return `${timestamp} ${level} : ${message}`;
 });
 
 const { resources } = require('./index');
@@ -38,6 +42,10 @@ const options = {
 };
 
 winston.loggers.add('winston', {
+    format: combine(
+        timestamp(),
+        logFormat
+    ),
     transports: [
         new winston.transports.File(options.file.app),
         new winston.transports.Console(options.console)
@@ -47,9 +55,8 @@ winston.loggers.add('winston', {
 winston.loggers.add('usersactivity', {
     format: combine(
         timestamp(),
-        activityLogFormat,
-        prettyPrint()
-    ),
+        activityLogFormat
+        ),
     transports: [
         new winston.transports.File(options.file.usersActivity),
         new winston.transports.Console(options.console)
