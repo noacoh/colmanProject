@@ -87,11 +87,12 @@ const testSchema = new Schema({
 testSchema.methods.run = async function(sharedDir){
     const results = [];
 
-    this.mainTests.forEach(async function(unit) {
+    await this.mainTests.forEach(async function(unit) {
         logger.debug(`@@@unit: ${JSON.stringify(unit)}`);
         const testUnit = await TestUnit.findById(unit.test);
         logger.debug(`@@@testunit: ${JSON.stringify(testUnit)}`);
-        await copyFile(testUnit.file.path, sharedDir);
+        logger.debug(`@@@file: ${JSON.stringify(testUnit.file)}`);
+        await copyFile(testUnit.file, sharedDir);
         try {
             const { output, error } = sandbox.runInSandbox(sharedDir, testUnit.compilationLine, unit.configuration.timeout);
             if (output.includes("Compilation Failed")){
