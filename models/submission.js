@@ -60,7 +60,7 @@ submissionSchema.methods.submit = async function(){
     } catch (err) {
         throw err
     } finally {
-        await deleteDir(newDir);
+        // await deleteDir(newDir);
     }
 };
 

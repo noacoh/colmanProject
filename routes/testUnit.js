@@ -12,7 +12,8 @@ const storage = multer.diskStorage({
     },
     // we want to rename the file, in order to ensure files name is unique
     filename: function (req, file, cb) {
-        cb(null, file.originalname + '-' + Date.now())
+        const [name, extension] =file.originalname.split('.');
+        cb(null, `${name}_${Date.now()}.${extension}`)
     }
 });
 // create file uploader for task exercise files

@@ -94,7 +94,7 @@ testSchema.methods.run = async function(sharedDir){
         logger.debug(`@@@file: ${JSON.stringify(testUnit.file)}`);
         await copyFile(testUnit.file, sharedDir);
         try {
-            const { output, error } = sandbox.runInSandbox(sharedDir, testUnit.compilationLine, unit.configuration.timeout);
+            const { output, error } = await sandbox.runInSandbox(sharedDir, testUnit.compilationLine, unit.configuration.timeout);
             if (output.includes("Compilation Failed")){
                 results.push({
                     error,
@@ -124,11 +124,11 @@ testSchema.methods.run = async function(sharedDir){
             removeFile(`${sharedDir}/${testUnit.file.name}`);
         }
     });
-    this.ioTests.forEach(async function(unit) {
+    await this.ioTests.forEach(async function(unit) {
         const testUnit = await TestUnit.findById(unit.test);
         await copyFile(testUnit.file.path, sharedDir);
         try {
-            const { output, error } = sandbox.runInSandbox(sharedDir, testUnit.compilationLine, unit.configuration.timeout, unit.configuration.input.file.path);
+            const { output, error } = await sandbox.runInSandbox(sharedDir, testUnit.compilationLine, unit.configuration.timeout, unit.configuration.input.file.path);
             if (output.includes("Compilation Failed")){
                 results.push({
                     error,
@@ -151,7 +151,7 @@ testSchema.methods.run = async function(sharedDir){
             throw err;
             // handle err
         } finally {
-            removeFile(`${sharedDir}/${testUnit.file.name}`);
+            await removeFile(`${sharedDir}/${testUnit.file.name}`);
         }
     });
     const grade = results.reduce(function (total, result) {

@@ -16,7 +16,7 @@ const { logger } = require('../../configuration/winston');
 
 const DockerSandbox = function(timeout, vm_name, source_dir, compilation_line) {
     this.timeout = timeout;
-    this.shared_dir = `${resources.docker.temp}/temp${Date.now()}`;
+    this.shared_dir = `${resources.docker.temp}/dtemp${Date.now()}`;
     this.vm_name = vm_name;
     this.source_dir = source_dir;
     this.compilation_line = compilation_line;
@@ -44,14 +44,22 @@ DockerSandbox.prototype.getContainerDir = function(){
 */
 DockerSandbox.prototype.run = async function(success, onError)
 {
+
     console.log('----------------------------');
-    console.log('@@@ set directories and file');
-    await this.set();
-    console.log('@@@ run files in sandbox');
-    await this.execute(success, onError);
-    console.log('@@@ clean directories and file');
-    await this.clean();
-    console.log('----------------------------');
+    try {
+        logger.debug('@@@ set directories and file');
+        await this.set();
+        logger.debug('@@@ run files in sandbox');
+        await this.execute(success, onError);
+        logger.debug('@@@ clean directories and file');
+    } catch (err) {
+        logger.debug(err);
+        throw (err);
+    } finally {
+        // await this.clean();
+        console.log('----------------------------');
+    }
+
 };
 
 
@@ -72,7 +80,7 @@ DockerSandbox.prototype.set = async function() {
     await exec(`mkdir -p ${sharedDir}`);
     console.log(`@@@ new directory ${sharedDir} created`);
     // copy payload and files in source directory to the shared directory
-    await exec(`cp ${resources.root}docker_sandbox/API/payload/* ${sharedDir} && cp ${sandbox.source_dir}/* ${sharedDir} && chmod 777 ${sharedDir}`);
+    await exec(`cp -a ${resources.root}/docker_sandbox/API/payload/. ${sharedDir}/ && cp  -a ${sandbox.source_dir}/. ${sharedDir}/ && chmod 777 ${sharedDir}`);
 };
 /**
  * @function
@@ -116,7 +124,7 @@ DockerSandbox.prototype.execute = async function(success, onError)
     const sharedDir = this.getSharedDir();
     const containerDir = this.getContainerDir();
     // TODO check if this.input exists and execute accordingly
-    const cmd = `${this.path}DockerTimeout.sh ${this.timeout} -u root -v ${sharedDir}:/${containerDir} 
+    const cmd = `${this.getSharedDir()}/DockerTimeout.sh ${this.timeout} -u root -v ${sharedDir}:/${containerDir} 
                 -w ${sharedDir} ${this.vm_name} ./script.sh ${this.compilation_line}`;
     const outputFilePath = `${sharedDir}/completed`;
 
