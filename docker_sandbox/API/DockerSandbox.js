@@ -42,24 +42,20 @@ DockerSandbox.prototype.getContainerDir = function(){
          * @param {Function} success
          * @param {Function} onError
 */
-DockerSandbox.prototype.run = async function(success, onError)
-{
-
+DockerSandbox.prototype.run = async function() {
     console.log('----------------------------');
     try {
         logger.debug('@@@ set directories and file');
         await this.set();
         logger.debug('@@@ run files in sandbox');
-        await this.execute(success, onError);
-        logger.debug('@@@ clean directories and file');
+        return await this.execute();
     } catch (err) {
         logger.debug(err);
         throw (err);
     } finally {
-        // await this.clean();
+        await this.clean();
         console.log('----------------------------');
     }
-
 };
 
 
@@ -119,39 +115,45 @@ DockerSandbox.prototype.clean = async function(){
          * @param {Function} onError
 */
 
-DockerSandbox.prototype.execute = async function(success, onError)
-{
+DockerSandbox.prototype.execute = async function() {
     const sharedDir = this.getSharedDir();
     const containerDir = this.getContainerDir();
-    // TODO check if this.input exists and execute accordingly
     const cmd = `${this.getSharedDir()}/DockerTimeout.sh ${this.timeout} -u root -v ${sharedDir}:${containerDir} -w ${containerDir} ${this.vm_name} ./script.sh ${this.compilation_line}`;
     const outputFilePath = `${sharedDir}/completed`;
 
     console.log(`@@@ executing ${cmd}`);
-    await exec(cmd);
-
+    try{
+        await exec(cmd);
+    } catch (err){
+        logger.info(err);
+    }
     try{
         await access(outputFilePath);
     } catch(err){
         console.log(`@@@ missing output file ${outputFilePath}`);
-        onError(err);
+        throw err;
     }
-
     console.log(`@@@ reading output from file ${outputFilePath}`);
     const data = await readFile(outputFilePath, 'utf8');
-
+    logger.debug(data);
     console.log(`@@@ reading err output from file ${sharedDir}/errors`);
     try{
         await access(`${sharedDir}/errors`);
     } catch(err){
         console.log(`@@@ missing compilation errors file ${`${sharedDir}/errors`}`);
-        onError(err);
+        throw err;
     }
 
     const compilationErr = await readFile( `${sharedDir}/errors`, 'utf8');
+    logger.debug(compilationErr);
     const [ output, time ] = data.toString().split('*-ENDOFOUTPUT-*');
-
-    success(output, time, compilationErr);
+    logger.debug(`@@@ output: ${output}`);
+    logger.debug(`@@@ time: ${time}`);
+    return {
+        output,
+        time,
+        compilationErr
+    };
 };
 
 module.exports = DockerSandbox;

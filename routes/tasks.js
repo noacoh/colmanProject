@@ -21,6 +21,19 @@ const tasksStorage = multer.diskStorage({
     }
 });
 
+// const submissionStorage = multer.diskStorage({
+//     // configure destination folder for the files
+//     destination: function (req, file, cb) {
+//         cb(null, resources.submissions)
+//     },
+//     // we want to rename the file, in order to ensure files name is unique
+//     filename: function (req, file, cb) {
+//         const [name, extension] =file.originalname.split('.');
+//         cb(null, `${name}_${Date.now()}.${extension}`)
+//     }
+// });
+
+
 const submissionStorage = multer.diskStorage({
     // configure destination folder for the files
     destination: function (req, file, cb) {
@@ -28,8 +41,7 @@ const submissionStorage = multer.diskStorage({
     },
     // we want to rename the file, in order to ensure files name is unique
     filename: function (req, file, cb) {
-        const [name, extension] =file.originalname.split('.');
-        cb(null, `${name}_${Date.now()}.${extension}`)
+        cb(null, file.originalname)
     }
 });
 

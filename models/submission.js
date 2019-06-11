@@ -5,6 +5,7 @@ const { resources } = require("../configuration");
 const Task = require('./task');
 const { Test } = require('./test');
 const { logger } = require("../configuration/winston");
+// const {asyncForEach} = require('../helpers/util');
 const MODE = {
     PRACTICE: 'practice',
     FINAL: 'final'
@@ -44,23 +45,29 @@ submissionSchema.methods.submit = async function(){
     const task = await Task.findById(this.task);
     await createDirectoryIfNotExists(newDir);
     try {
-        await this.files.forEach(async function(file) {
-            await copyFile(file, newDir);
-        });
+        for (let i = 0; i < this.files.length; i++) {
+            await copyFile(this.files[i], newDir);
+        }
         let test = null;
+        logger.debug(`@@@@ TASK TESTS ${JSON.stringify(task.tests)}`);
         if (this.mode === MODE.PRACTICE){
             test = await Test.findById(task.tests.practice)
         } else {
             test = await Test.findById(task.tests.final);
         }
+        logger.debug(`@@@@ TEST OBJ ${JSON.stringify(test)}`);
+
         const {output, grade} = await test.run(newDir);
+
+        logger.debug('@@@@ GOT RESULTS!');
+        logger.debug(JSON.stringify({output, grade}));
         this.output = output;
         this.grade = grade;
         return { output, grade }
     } catch (err) {
         throw err
     } finally {
-        // await deleteDir(newDir);
+        await deleteDir(newDir);
     }
 };
 

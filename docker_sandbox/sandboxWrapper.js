@@ -3,8 +3,7 @@ const { readFile }  = require('fs.promises');
 const { logger } = require('../configuration/winston');
 
 module.exports = {
-  runInSandbox: async (source_dir, compilation_line, timeout, input_file) => {
-
+  runInSandbox: async function(source_dir, compilation_line, timeout, input_file) {
       const vm_name = 'virtual_machine'; // name of the virtual machine
       const timeout_value = timeout ? timeout : 300; // default timeout in is 5 minutes
       let input;
@@ -22,21 +21,10 @@ module.exports = {
           }
       }
       //the result maybe normal program output, list of error messages or a Timeout error
-      let [output, execTime, error] = [null, null, null];
       logger.info(`running sandbox... may Halisi be with us`);
-      await sb.run(function(data ,execTime ,error)
-      {
-          this.output = data;
-          this.execTime = execTime;
-          this.error = error;
-      }, function(err){
-          logger.error('failed to run files in docker sandbox');
-          throw err;
-      });
-      return {
-          output,
-          execTime,
-          error
-      };
+      const res =  await sb.run();
+      logger.info('@@@@@@@ CAME BACK WITH RESULTS!');
+      logger.info(JSON.stringify(res));
+      return res;
   }
 };
