@@ -1,9 +1,7 @@
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const { readFile, writeFile, access }  = require('fs.promises');
-const { resources } = require('../../configuration/index');
-const { TEMP } = resources.docker.temp;
-const { CONTAINER_DIR } = resources.docker.container_dir;
+const { resources } = require('../../configuration');
 
 /**
          * @Constructor
@@ -17,11 +15,11 @@ const { CONTAINER_DIR } = resources.docker.container_dir;
 
 const DockerSandbox = function(timeout, vm_name, source_dir, compilation_line) {
     this.timeout = timeout;
-    this.shared_dir = `${TEMP}/` + Date.now();
+    this.shared_dir = `${resources.docker.temp}/temp${Date.now()}`;
     this.vm_name = vm_name;
     this.source_dir = source_dir;
     this.compilation_line = compilation_line;
-    this.container_dir = CONTAINER_DIR;
+    this.container_dir = resources.docker.container_dir;
 };
 
 /**
@@ -45,11 +43,11 @@ DockerSandbox.prototype.getContainerDir = () => {
 */
 DockerSandbox.prototype.run = async function(success, onError)
 {
-    console.log('---------------------');
+    console.log('\n\n-----------------------');
     await this.set();
     await this.execute(success, onError);
     await this.clean();
-    console.log('---------------------');
+    console.log('-----------------------\n\n');
 };
 
 
@@ -63,14 +61,14 @@ DockerSandbox.prototype.run = async function(success, onError)
          * Docker container when we run it.
 */
 DockerSandbox.prototype.set = async function() {
-    console.log('@@@ setting input and output files');
     const sandbox = this;
+    console.log('@@@ setting input and output files');
     const sharedDir = sandbox.getSharedDir();
     // create new directory
     await exec(`mkdir -p ${sharedDir}`);
     console.log(`@@@ new directory ${sharedDir} created`);
     // copy payload and files in source directory to the shared directory
-    await exec(`cp ../payload/* ${sharedDir} && cp ${sandbox.source_dir}/* ${sharedDir} && chmod 777 ${sharedDir}`);
+    await exec(`cp ${resources.root}docker_sandbox/API/payload/* ${sharedDir} && cp ${sandbox.source_dir}/* ${sharedDir} && chmod 777 ${sharedDir}`);
 };
 /**
  * @function

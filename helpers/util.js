@@ -60,6 +60,7 @@ module.exports = {
             logger.debug(`removed dir ${dir}`);
         } catch (err) {
             logger.debug(`failed to remove dir ${dir}`);
+            throw err;
         }
 
     }
