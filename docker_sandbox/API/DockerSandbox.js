@@ -17,7 +17,7 @@ const { CONTAINER_DIR } = resources.docker.container_dir;
 
 const DockerSandbox = function(timeout, vm_name, source_dir, compilation_line) {
     this.timeout = timeout;
-    this.shared_dir = `${TEMP}/` + Date().now();
+    this.shared_dir = `${TEMP}/` + Date.now();
     this.vm_name = vm_name;
     this.source_dir = source_dir;
     this.compilation_line = compilation_line;
