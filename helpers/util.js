@@ -55,6 +55,12 @@ module.exports = {
         }
     },
     deleteDir: async (dir) => {
-        await exec(`rm -r ${dir}`);
+        try {
+            await exec(`rm -r ${dir}`);
+            logger.debug(`removed dir ${dir}`);
+        } catch (err) {
+            logger.debug(`failed to remove dir ${dir}`);
+        }
+
     }
 };

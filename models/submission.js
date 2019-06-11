@@ -4,6 +4,7 @@ const { removeFile, removeFromArray, createDirectoryIfNotExists, copyFile, delet
 const { resources } = require("../configuration");
 const Task = require('./task');
 const { Test } = require('./test');
+const { logger } = require("../configuration/winston");
 const MODE = {
     PRACTICE: 'practice',
     FINAL: 'final'
@@ -38,21 +39,24 @@ const submissionSchema = new Schema({
 });
 
 submissionSchema.methods.submit = async function(){
-    const newDir = `${resources.docker.temp}/temp${new Date().getTime()}`;
+    const newDir = `${resources.docker.temp}/temp${Date.now()}`;
+    logger.debug(`@@@ will try to create a new temp directory to contain all exe files to run in docker container. dir ${newDir}`);
     const task = await Task.findById(this.task);
     await createDirectoryIfNotExists(newDir);
     try {
         await this.files.forEach(async function(file) {
             await copyFile(file, newDir);
         });
-       const test = this.mode === MODE.PRACTICE ? await Test.findById(task.tests.practice) : await Test.findById(task.tests.final);
-       const {output, grade} = await test.run(newDir);
-       this.output = output;
-       this.grade = grade;
-       return {
-           output,
-           grade
-       }
+        let test = null;
+        if (this.mode === MODE.PRACTICE){
+            test = await Test.findById(task.tests.practice)
+        } else {
+            test = await Test.findById(task.tests.final);
+        }
+        const {output, grade} = await test.run(newDir);
+        this.output = output;
+        this.grade = grade;
+        return { output, grade }
     } catch (err) {
         throw err
     } finally {
