@@ -1,6 +1,6 @@
 const winston = require('winston');
 const { format } = winston;
-const { combine, timestamp, printf, prettyPrint } = format;
+const { combine, timestamp, printf} = format;
 
 const activityLogFormat = printf(({ level, message, timestamp, id }) => {
     return `${timestamp} ${level} ${id}: ${message}`;

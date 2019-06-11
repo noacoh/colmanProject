@@ -28,11 +28,11 @@ const DockerSandbox = function(timeout, vm_name, source_dir, compilation_line) {
  * @name DockerSandbox.getSharedDir
  * @description Function that returns the designated path to the directory shared with docker
  */
-DockerSandbox.prototype.getSharedDir = () => {
+DockerSandbox.prototype.getSharedDir = function(){
     return this.shared_dir;
 };
 
-DockerSandbox.prototype.getContainerDir = () => {
+DockerSandbox.prototype.getContainerDir = function(){
     return this.container_dir;
 };
 /**
@@ -80,7 +80,7 @@ DockerSandbox.prototype.set = async function() {
  * @description
  * @param {Buffer} input
  */
-DockerSandbox.prototype.addInput = async (input) => {
+DockerSandbox.prototype.addInput = async function(input){
     const sandbox = this;
     const sharedDir = sandbox.getSharedDir();
     // writes the input
@@ -88,7 +88,7 @@ DockerSandbox.prototype.addInput = async (input) => {
     console.log(`@@@ input file created at ${sharedDir}/inputFile`);
 };
 
-DockerSandbox.prototype.clean = async () => {
+DockerSandbox.prototype.clean = async function(){
     const sandbox = this;
     console.log(`@@@ attempting to remove directory: ${sandbox.shared_dir}`);
     await exec(`rm -r ${this.getSharedDir()}`);
