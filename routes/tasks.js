@@ -21,27 +21,15 @@ const tasksStorage = multer.diskStorage({
     }
 });
 
-// const submissionStorage = multer.diskStorage({
-//     // configure destination folder for the files
-//     destination: function (req, file, cb) {
-//         cb(null, resources.submissions)
-//     },
-//     // we want to rename the file, in order to ensure files name is unique
-//     filename: function (req, file, cb) {
-//         const [name, extension] =file.originalname.split('.');
-//         cb(null, `${name}_${Date.now()}.${extension}`)
-//     }
-// });
-
-
 const submissionStorage = multer.diskStorage({
     // configure destination folder for the files
     destination: function (req, file, cb) {
-        cb(null, resources.submissions)
+        cb(null, resources.submissions.temp)
     },
     // we want to rename the file, in order to ensure files name is unique
     filename: function (req, file, cb) {
-        cb(null, file.originalname)
+        const [name, extension] =file.originalname.split('.');
+        cb(null, `${name}_${Date.now()}.${extension}`)
     }
 });
 
@@ -72,7 +60,9 @@ router.route('uploads/:taskId/solution')
 router.route('downloads/:taskId')
     .get(validateParam(schemas.idSchema, 'taskId'),
         passportJWT,
-        TasksController.downloadExerciseFiles)
+        TasksController.downloadExerciseFiles);
+
+router.route('downloads/:taskId/solution')
     .get(validateParam(schemas.idSchema, 'taskId'),
         passportJWT,
         TasksController.getTaskSolutionFile);

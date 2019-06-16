@@ -41,7 +41,6 @@ const submissionSchema = new Schema({
 
 submissionSchema.methods.submit = async function(){
     const newDir = `${resources.docker.temp}/temp${Date.now()}`;
-    logger.debug(`@@@ will try to create a new temp directory to contain all exe files to run in docker container. dir ${newDir}`);
     const task = await Task.findById(this.task);
     await createDirectoryIfNotExists(newDir);
     try {
@@ -49,17 +48,14 @@ submissionSchema.methods.submit = async function(){
             await copyFile(this.files[i], newDir);
         }
         let test = null;
-        logger.debug(`@@@@ TASK TESTS ${JSON.stringify(task.tests)}`);
         if (this.mode === MODE.PRACTICE){
             test = await Test.findById(task.tests.practice)
         } else {
             test = await Test.findById(task.tests.final);
         }
-        logger.debug(`@@@@ TEST OBJ ${JSON.stringify(test)}`);
 
         const {output, grade} = await test.run(newDir);
 
-        logger.debug('@@@@ GOT RESULTS!');
         logger.debug(JSON.stringify({output, grade}));
         this.output = output;
         this.grade = grade;

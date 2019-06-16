@@ -88,18 +88,14 @@ const testSchema = new Schema({
 
 testSchema.methods.run = async function(sharedDir){
     const results = [];
+
     for (let i = 0; i < this.mainTests.length; i++) {
-        // logger.debug(`@@@unit: ${JSON.stringify(unit)}`);
-        const testUnit = await TestUnit.findById(this.mainTests[i].test);
-        logger.debug(`@@@testunit: ${JSON.stringify(testUnit)}`);
-        logger.debug(`@@@file: ${JSON.stringify(testUnit.file)}`);
+        const testConf = this.ioTests[i];
+        const testUnit = await TestUnit.findById(testConf.test);
         await copyFile(testUnit.file, sharedDir);
         try {
-            const { output, compilationErr } = await sandbox.runInSandbox(sharedDir, testUnit.compilationLine, this.mainTests[i].configuration.timeout);
-            logger.debug('@@@ RESULTS FROM SANDBOX ARRIVED!');
-            logger.debug(JSON.stringify({output, compilationErr}));
+            const { output, compilationErr } = await sandbox.runInSandbox(sharedDir, testUnit.compilationLine,testConf.configuration.timeout);
             if (output.includes("Compilation Failed")){
-                logger.debug('DETECTED COMPILATION FAILED IN OUTPUT');
                 results.push({
                     compilationErr,
                     output,
@@ -117,9 +113,9 @@ testSchema.methods.run = async function(sharedDir){
             results.push({
                 compilationErr,
                 output,
-                loss: loss < this.mainTests[i].configuration.weight? loss : this.mainTests[i].configuration.weight,
+                loss: loss < testConf.configuration.weight? loss : testConf.configuration.weight,
                 compilationSuccess: true,
-                visibility: this.mainTests[i].configuration.visibility
+                visibility: testConf.configuration.visibility
             });
         } catch (err) {
             throw err;
@@ -130,10 +126,11 @@ testSchema.methods.run = async function(sharedDir){
     }
 
     for (let i = 0; i < this.ioTests.length; i++) {
-        const testUnit = await TestUnit.findById(this.ioTests[i].test);
+        const testConf = this.ioTests[i];
+        const testUnit = await TestUnit.findById(testConf.test);
         await copyFile(testUnit.file.path, sharedDir);
         try {
-            const { output, compilationErr } = await sandbox.runInSandbox(sharedDir, testUnit.compilationLine, this.mainTests[i].configuration.timeout, this.mainTests[i].configuration.input.file.path);
+            const { output, compilationErr } = await sandbox.runInSandbox(sharedDir, testUnit.compilationLine, testConf.configuration.timeout, testConf.configuration.input.file.path);
             if (output.includes("Compilation Failed")){
                 results.push({
                     compilationErr,
@@ -143,12 +140,12 @@ testSchema.methods.run = async function(sharedDir){
                     visibility: this.mainTests[i].configuration.visibility
                 })
             } else {
-                const expectedOutput = await readFile(unit.configuration.output.file.path);
+                const expectedOutput = await readFile(testConf.configuration.output.file.path);
                 results.push({
                     compilationErr,
                     output,
                     compilationSuccess: true,
-                    loss: Buffer.compare(expectedOutput, Buffer.from(output)) === 0 ? 0 : this.mainTests[i].configuration.weight,
+                    loss: Buffer.compare(expectedOutput, Buffer.from(output)) === 0 ? 0 : testConf.configuration.weight,
                     visibility: this.mainTests[i].configuration.visibility
                 });
             }
@@ -159,7 +156,6 @@ testSchema.methods.run = async function(sharedDir){
             await removeFile(`${sharedDir}/${testUnit.file.name}`);
         }
     }
-    logger.debug(`@@@ RESULTS ARRAY ${JSON.stringify(results)}`);
     const grade = results.reduce(function (total, result) {
         return total - result.loss;
     }, 100);
