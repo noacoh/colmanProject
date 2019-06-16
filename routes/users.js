@@ -9,8 +9,10 @@ const passportJWT = passport.authenticate('jwt', {session: false});
 
 
 router.route('/')
-    .get(UserController.index)
-    .post(validateBody(schemas.userSchema),
+    .get(passportJWT,
+        UserController.index)
+    .post(passportJWT,
+        validateBody(schemas.userSchema),
         UserController.newUser);
 
 // router.route('/signup')
@@ -21,16 +23,16 @@ router.route('/signin')
         passportSignIn,
         UserController.signIn);
 
-router.route('/secret')
-    .get(passportJWT,
-        UserController.secret);
-
 router.route('/:userId')
-    .get(validateParam(schemas.idSchema, 'userId'), UserController.getUser)
-    .put(validateParam(schemas.idSchema, 'userId'),
+    .get(passportJWT,
+        validateParam(schemas.idSchema, 'userId'),
+        UserController.getUser)
+    .put(passportJWT,
+        validateParam(schemas.idSchema, 'userId'),
         validateBody(schemas.userSchema),
         UserController.replaceUser)
-    .patch(validateParam(schemas.idSchema, 'userId'),
+    .patch(validateParam(passportJWT,
+        schemas.idSchema, 'userId'),
         validateBody(schemas.userOptionalSchema),
         UserController.updateUser);
 /*

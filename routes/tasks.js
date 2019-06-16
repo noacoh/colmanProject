@@ -16,7 +16,7 @@ const tasksStorage = multer.diskStorage({
     },
     // we want to rename the file, in order to ensure files name is unique
     filename: function (req, file, cb) {
-        const [name, extension] =file.originalname.split('.');
+        const [name, extension] = file.originalname.split('.');
         cb(null, `${name}_${Date.now()}.${extension}`)
     }
 });
