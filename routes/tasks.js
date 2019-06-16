@@ -62,11 +62,11 @@ router.route('downloads/:taskId')
         passportJWT,
         TasksController.downloadExerciseFiles);
 
-
 router.route('downloads/:taskId/solution')
     .get(validateParam(schemas.idSchema, 'taskId'),
         passportJWT,
         TasksController.getTaskSolutionFile);
+
 router.route('/:taskId')
     .get(validateParam(schemas.idSchema, 'taskId'),
         passportJWT,

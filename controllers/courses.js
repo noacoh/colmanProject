@@ -19,6 +19,25 @@ module.exports = {
         res.status(201).json(course);
     },
     getCourse: async (req, res, next) => {
+        const resourceRequester = req.user;
+        if (!resourceRequester.admin) {
+            res.status(401).json({
+                success: false,
+                message: "Unauthorised"
+            })
+        }
+        const { courseId } = req.value.params;
+        const course = await Course.findById(courseId);
+        res.status(200).json(course);
+    },
+    getCourseTasks: async (req, res, next) => {
+        const resourceRequester = req.user;
+        if (!resourceRequester.admin) {
+            res.status(401).json({
+                success: false,
+                message: "Unauthorised"
+            })
+        }
         const { courseId } = req.value.params;
         const course = await Course.findById(courseId);
         res.status(200).json(course);
@@ -31,14 +50,10 @@ module.exports = {
                 message: "Unauthorised"
             })
         }
-        // enforce request.body contains all the fields
         const { courseId } = req.value.params;
         const newCourse = new Course(req.value.body);
-        await Course.findByIdAndUpdate(courseId, newCourse);
-        res.status(200).json({
-            success: true,
-            message: 'Course replaced successfully'
-        });
+        const course = await Course.findById(courseId, newCourse).populate('tasks');
+        res.status(200).json(course.tasks);
     },
     updateCourse: async (req, res, next) => {
         const resourceRequester = req.user;
@@ -92,5 +107,20 @@ module.exports = {
             success: true,
             message: `Enlisted ${student.firstName} ${student.lastName} to '${course.title}' course successfully`
         })
+    },
+    deleteCourse: async (req, res, next) => {
+        const resourceRequester = req.user;
+        if (!resourceRequester.isAdmin) {
+            res.status(401).json({
+                success: false,
+                message: "Unauthorized"
+            })
+        }
+        const { courseId } = req.value.params;
+        await Course.findByIdAndRemove(courseId);
+        res.status(200).json({
+            success: true,
+            message: 'Course was removed successfully'
+        });
     },
 };

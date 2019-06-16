@@ -13,6 +13,7 @@ router.route('/')
 
 router.route('/:courseId')
     .get(validateParam(schemas.idSchema, 'courseId'),
+        passportJWT,
         CoursesController.getCourse)
     .put(validateParam(schemas.idSchema, 'courseId'),
         validateBody(schemas.courseSchema),
@@ -21,7 +22,11 @@ router.route('/:courseId')
     .patch(validateParam(schemas.idSchema, 'courseId'),
         validateBody(schemas.courseOptionalSchema),
         passportJWT,
-        CoursesController.updateCourse);
+        CoursesController.updateCourse)
+    .delete(validateParam(schemas.idSchema, 'courseId'),
+        validateBody(schemas.courseOptionalSchema),
+        passportJWT,
+        CoursesController.deleteCourse);
 
 router.route('/:courseId/students')
     .get(validateParam(schemas.idSchema, 'courseId'),
@@ -31,6 +36,12 @@ router.route('/:courseId/students')
         validateBody(schemas.enlistToCourseSchema),
         passportJWT,
         CoursesController.enlistStudentToCourse);
+
+router.route('/:courseId/tasks')
+    .get(validateParam(schemas.idSchema, 'courseId'),
+        passportJWT,
+        CoursesController.getCourseTasks);
+
 
 module.exports = router;
 
