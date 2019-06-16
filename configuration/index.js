@@ -9,7 +9,10 @@ module.exports = {
       container_dir: appRoot + '/resources/temp/docker'
     },
     tasks: appRoot + '/resources/tasks',
-    submissions: appRoot + '/resources/submissions',
+    submissions: {
+      temp: appRoot + '/resources/temp/submissions',
+      root: appRoot + '/resources/submissions',
+    },
     test_units: appRoot + '/resources/test units',
     ios: appRoot + '/resources/ios',
     logs: {

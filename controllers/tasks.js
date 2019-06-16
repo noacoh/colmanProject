@@ -3,7 +3,9 @@ const Course = require('../models/course');
 const Student = require('../models/student');
 const Task = require('../models/task');
 const { Submission, MODE} = require('../models/submission');
-const {logger, usersActivityLogger} = require('../configuration/winston')
+const {logger, usersActivityLogger} = require('../configuration/winston');
+const { moveFiles, createDirectoryIfNotExists } = require("../helpers/util");
+const { resources } = require('../configuration');
 
 module.exports = {
     index: async (req, res, next) => {
@@ -85,15 +87,11 @@ module.exports = {
     },
     submitForGrade: async (req, res, next) => {
         const resourceRequester = req.user;
-        logger.debug(`@@@req.value ${JSON.stringify(req.value)}`);
-        logger.debug(`@@@req.files.path ${JSON.stringify(req.files.map(f=> f.path))}`);
         const { taskId } = req.value.params;
         const { mode } = req.value.body;
-        logger.debug(`extracting task ${taskId} from db`);
         const task = await Task.findById(taskId); // validate task exists
-        logger.debug(`${JSON.stringify(task)}`);
         const course = await Course.findById(task.course);
-        logger.debug(`${JSON.stringify(course)}`);
+
         usersActivityLogger.info({id: resourceRequester.identityNumber, message: "attempted submission", mode: mode, task: task.title});
         // validate student is registered for course
         if (!resourceRequester.isAdmin){
@@ -133,6 +131,14 @@ module.exports = {
             await Submission.remove({ student: resourceRequester._id, task: task._id});
         }
 
+        const newDir = `${resources.submissions.root}/${taskId}_${resourceRequester.identityNumber}`
+        // arrange submission files in separated directory
+        for (let i = 0; i < req.files.length; i++) {
+            const file = req.files[i];
+            await createDirectoryIfNotExists(newDir);
+            await moveFiles(file.path, `${newDir}/${file.originalname}`);
+        }
+
         // create new submission document
         const newSubmission = new Submission({
             submissionDate: new Date(),
@@ -140,8 +146,8 @@ module.exports = {
             student: resourceRequester._id,
             files: req.files.map(file => {
                 return {
-                    path:file.path,
-                    name: file.filename,
+                    path: `${newDir}/${file.originalname}`,
+                    name: file.originalname,
                     size: file.size
                 }
             }),
@@ -149,7 +155,6 @@ module.exports = {
         });
 
         const submission = await newSubmission.save(); // grade is calculated here
-        logger.debug(`@@@submission  ${JSON.stringify(submission)}`);
         const out = await submission.submit();
         res.status(201).json(out);
     },

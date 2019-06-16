@@ -24,7 +24,15 @@ module.exports = {
             logger.error(`failed moving file from ${old_path} to ${new_path}`);
             throw err;
         }
-        removeFile(old_path);
+        finally {
+            try {
+                await unlink(old_path);
+                logger.info(`removed ${old_path}`);
+            } catch (err) {
+                logger.error(`failed to remove ${old_path}`);
+                throw err;
+            }
+        }
 
     },
     removeFile: async (path) => {
@@ -63,10 +71,5 @@ module.exports = {
             throw err;
         }
 
-    },
-    asyncForEach: async function(array, callback) {
-        for (let index = 0; index < array.length; index++) {
-            await callback(array[index], index, array);
-        }
     }
 };
