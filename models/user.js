@@ -58,7 +58,6 @@ userSchema.methods.isValidPassword = async function(newPassword) {
 };
 
 userSchema.methods.isAdmin = function() {
-    logger.info(`isAdmin ${this.permission === PERMISSION.ADMIN}`)
     return this.permission === PERMISSION.ADMIN;
 };
 
