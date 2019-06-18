@@ -57,7 +57,6 @@ router.route('/:courseId/students')
 router.route('/:courseId/uploads/students')
     .post(upload.single(STUDENTS_LIST),
         validateParam(schemas.idSchema, 'courseId'),
-        validateBody(schemas.enlistToCourseSchema),
         passportJWT,
         CoursesController.enlistStudentsToCourse);
 

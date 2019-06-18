@@ -33,8 +33,8 @@ module.exports = {
     },
     signUp: async (req, res, next) => {
         const { firstName, lastName, identityNumber, password, permission, email } = req.value.body;
-        const excisingUser = User.findOne({email});
-        if (excisingUser) {
+        const existingUser = User.findOne({email});
+        if (existingUser) {
             res.status(400).json({
                 success: false,
                 message: 'The email address you have entered is already associated with another account'
@@ -116,8 +116,8 @@ module.exports = {
             })
         }
         const { firstName, lastName, identityNumber, password, permission, email } = req.value.body;
-        const excisingUser = User.findOne({email});
-        if (excisingUser) {
+        const existingUser = await User.findOne({email});
+        if (existingUser) {
             res.status(400).json({
                 success: false,
                 message: 'The email address you have entered is already associated with another account'

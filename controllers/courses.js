@@ -129,7 +129,7 @@ module.exports = {
         for (let i = 0; i < studentsIds.length; i++) {
             const studentId = studentsIds[i];
             // Get Student
-            const student = await Student.findById(studentId);
+            const student = await Student.findOne({identityNumber: studentId});
             if (!student) {
                 logger.info(`failed to add ${studentId} to course ${course.title}`, err);
                 errors.push({id: studentId, err: 'student not found'});
@@ -167,7 +167,7 @@ module.exports = {
         }
         res.status(200).json({
             success: true,
-            message: `Enlisted ${student.firstName} ${student.lastName} to '${course.title}' course successfully`,
+            message: `Enlisted ${studentsIds} to '${course.title}' course successfully`,
             errors
         })
     },
