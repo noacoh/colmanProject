@@ -16,7 +16,7 @@ router.route('/')
         UserController.newUser);
 
 router.route('/signup')
-    .post(validateBody(schemas.userSchema,
+    .post(validateBody(schemas.userSchema),
         UserController.signUp);
 
 router.route('/signin')
