@@ -188,8 +188,8 @@ module.exports = {
     getTaskSolutionFile: async (req, res, next) => {
         const resourceRequester = req.user;
         const { taskId } = req.value.params;
-        const task = await Task.findById(taskId).populate('course'); // validate task exists
-        const course = task.course;
+        const task = await Task.findById(taskId);
+        const course = await Course.findById(task.course);
         if (!resourceRequester.isAdmin()){
             if(!course.studentIsRegisteredForCourse(resourceRequester._id)){
                 // student is not registered for this course
