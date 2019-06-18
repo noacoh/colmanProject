@@ -13,6 +13,7 @@ module.exports = {
             UNIT_TEST: 'test_file',
             INPUT_FILES: 'input_files',
             OUTPUT_FILES: 'output_files',
+            STUDENTS_LIST: 'students_list',
         }
     }
 };

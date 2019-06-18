@@ -15,6 +15,13 @@ signToken = user => {
 };
 module.exports = {
     index: async (req, res, next) => {
+        const resourceRequester = req.user;
+        if (!resourceRequester.isAdmin) {
+            res.status(401).json({
+                success: false,
+                message: 'Unauthorized'
+            })
+        }
         const users = await User.find({});
         res.status(200).json(users);
     },
@@ -23,9 +30,17 @@ module.exports = {
         usersActivityLogger.info({id: req.user.identityNumber, message: "logged in"});
         res.status(200).json({ token });
     },
-    secret: async (req, res, next) => {
+    signUp: async (req, res, next) => {
+
     },
     newUser: async (req, res, next) => {
+        const resourceRequester = req.user;
+        if (!resourceRequester.isAdmin) {
+            res.status(401).json({
+                success: false,
+                message: 'Unauthorized'
+            })
+        }
         const { permission } = req.value.body;
         if (permission === PERMISSION.STUDENT) {
             const newStudent = new Student(req.value.body);
@@ -40,6 +55,13 @@ module.exports = {
         });
     },
     getUser: async (req, res, next) => {
+        const resourceRequester = req.user;
+        if (!resourceRequester.isAdmin) {
+            res.status(401).json({
+                success: false,
+                message: 'Unauthorized'
+            })
+        }
         const { userId } = req.value.params;
         const user = await User.findById(userId);
         res.status(200).json(user);
@@ -55,7 +77,13 @@ module.exports = {
         });
     },
     updateUser: async (req, res, next) => {
-        // req.body may contain any number of fields
+        const resourceRequester = req.user;
+        if (!resourceRequester.isAdmin) {
+            res.status(401).json({
+                success: false,
+                message: 'Unauthorized'
+            })
+        }
         const { userId } = req.value.params;
         const newUser = new User(req.value.body);
         await User.findByIdAndUpdate(userId, newUser);

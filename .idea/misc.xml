@@ -3,4 +3,10 @@
   <component name="JavaScriptSettings">
     <option name="languageLevel" value="ES6" />
   </component>
+  <component name="ProjectPlainTextFileTypeManager">
+    <file url="file://$PROJECT_DIR$/resources/submissions/Monomial.cpp" />
+    <file url="file://$PROJECT_DIR$/resources/submissions/Monomial.h" />
+    <file url="file://$PROJECT_DIR$/resources/submissions/Polynomial.cpp" />
+    <file url="file://$PROJECT_DIR$/resources/submissions/Polynomial.h" />
+  </component>
 </project>
