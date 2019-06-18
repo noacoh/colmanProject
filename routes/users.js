@@ -28,7 +28,7 @@ router.route('/confirmation/:token')
     .get(validateParam(schemas.confirmationSchema, 'token'),
         UserController.confirmEmail);
 
-router.route('/resend')
+router.route('/resendVerification')
     .post(validateBody(schemas.resendTokenSchema),
         UserController.resendToken);
 
