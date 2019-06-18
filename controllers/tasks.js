@@ -97,7 +97,7 @@ module.exports = {
         if (!resourceRequester.isAdmin()){
             if(!course.studentIsRegisteredForCourse(resourceRequester._id)){
                 // student is not registered for this course
-                logger.debug(`student ${resourceRequester.fullName} is not registered for course ${course.title}. Can not preform task submission.`);
+                logger.debug(`student ${resourceRequester.firstName} ${resourceRequester.lastName}  is not registered for course ${course.title}. Can not preform task submission.`);
                 usersActivityLogger.info({id:resourceRequester.identityNumber, message: "student is not registered for course. aborting."});
                 res.status(401).json({
                     success: false,
@@ -166,7 +166,7 @@ module.exports = {
         if (!resourceRequester.isAdmin() && !resourceRequester.isTeachingAssistant()) {
             if(!course.studentIsRegisteredForCourse(resourceRequester._id)){
                 // student is not registered for this course
-                logger.info(`student ${resourceRequester.fullName} is not registered for course ${course.title}. Can not supply exercise file fo this task.`);
+                logger.info(`student ${resourceRequester.firstName} ${resourceRequester.lastName} is not registered for course ${course.title}. Can not supply exercise file fo this task.`);
                 res.status(401).json({
                     success: false,
                     message: "Unauthorized"
@@ -192,7 +192,7 @@ module.exports = {
         if (!resourceRequester.isAdmin()){
             if(!course.studentIsRegisteredForCourse(resourceRequester._id)){
                 // student is not registered for this course
-                console.log(`student ${resourceRequester.fullName} is not registered for course ${course.title}. Can not supply exercise file fo this task.`);
+                console.log(`student ${resourceRequester.firstName} ${resourceRequester.lastName} is not registered for course ${course.title}. Can not supply exercise file fo this task.`);
                 res.status(401).json({
                     success: false,
                     message: "Unauthorized to access resource."

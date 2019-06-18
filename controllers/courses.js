@@ -69,7 +69,7 @@ module.exports = {
         }
         // req.body may contain any number of fields
         const { courseId } = req.value.params;
-        const newCourse = new Course(req.value.body);
+        const newCourse = req.value.body;
         await Course.findByIdAndUpdate(courseId, newCourse);
         res.status(200).json({
             success: true,
