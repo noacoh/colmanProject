@@ -90,7 +90,7 @@ testSchema.methods.run = async function(sharedDir){
     const results = [];
 
     for (let i = 0; i < this.mainTests.length; i++) {
-        const testConf = this.ioTests[i];
+        const testConf = this.mainTests[i];
         const testUnit = await TestUnit.findById(testConf.test);
         await copyFile(testUnit.file, sharedDir);
         try {
