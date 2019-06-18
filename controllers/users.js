@@ -30,6 +30,9 @@ module.exports = {
         usersActivityLogger.info({id: req.user.identityNumber, message: "logged in"});
         res.status(200).json({ token });
     },
+    signUp: async (req, res, next) => {
+
+    },
     newUser: async (req, res, next) => {
         const resourceRequester = req.user;
         if (!resourceRequester.isAdmin) {

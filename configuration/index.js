@@ -13,6 +13,7 @@ module.exports = {
       temp: appRoot + '/resources/temp/submissions',
       root: appRoot + '/resources/submissions',
     },
+    students_list: appRoot + '/resources/temp/students',
     test_units: appRoot + '/resources/test units',
     ios: appRoot + '/resources/ios',
     logs: {
