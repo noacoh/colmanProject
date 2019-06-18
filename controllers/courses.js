@@ -129,10 +129,8 @@ module.exports = {
         for (let i = 0; i < studentsIds.length; i++) {
             const studentId = studentsIds[i];
             // Get Student
-            let student;
-            try {
-                student = await Student.findById(studentId);
-            } catch (err) {
+            const student = await Student.findById(studentId);
+            if (!student) {
                 logger.info(`failed to add ${studentId} to course ${course.title}`, err);
                 errors.push({id: studentId, err: 'student not found'});
                 continue;

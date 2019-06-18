@@ -19,13 +19,11 @@ const storage = multer.diskStorage({
 // create file uploader for task exercise files
 const upload = multer({storage: storage});
 
-const { UNIT_TEST, OUTPUT_FILE, INPUT_FILE} = require('../configuration/supports').DATA_FORM.FIELD_NAME;
+const { UNIT_TEST } = require('../configuration/supports').DATA_FORM.FIELD_NAME;
 
 const passportJWT = passport.authenticate('jwt', {session: false});
 
 const { validateParam, validateBody, schemas } = require('../helpers/routeHelpers');
-
-
 
 router.route('/')
     .get(passportJWT,

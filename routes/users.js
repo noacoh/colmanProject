@@ -15,13 +15,22 @@ router.route('/')
         validateBody(schemas.userSchema),
         UserController.newUser);
 
-// router.route('/signup')
-//     .post(UserController.signUp);
+router.route('/signup')
+    .post(validateBody(schemas.userSchema,
+        UserController.signUp);
 
 router.route('/signin')
     .post(validateBody(schemas.authenticationSchema),
         passportSignIn,
         UserController.signIn);
+
+router.route('/confirmation/:token')
+    .get(validateParam(schemas.confirmationSchema, 'token'),
+        UserController.confirmEmail);
+
+router.route('/resend')
+    .post(validateBody(schemas.resendTokenSchema),
+        UserController.resendToken);
 
 router.route('/:userId')
     .get(passportJWT,

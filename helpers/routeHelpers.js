@@ -48,7 +48,7 @@ module.exports = {
             identityNumber: joi.string().regex(/^[0-9]{9}$/).required(),
             password: joi.string().required(),
             // permission: joi.string().required(),
-            email: joi.string().required(),
+            email: joi.string().email({ minDomainSegments: 2 }).required(),
             permission: joi.string().regex(new RegExp(`^(${PERMISSION.ADMIN}|${PERMISSION.TEACHING_ASSISTANT}|${PERMISSION.STUDENT})$`)).required()
         }),
         userOptionalSchema:joi.object().keys({
@@ -123,6 +123,12 @@ module.exports = {
             ),
             taskId: joi.string().regex(/^[0-9a-fA-F]{24}$/).required(),
             mode: joi.string().regex(new RegExp(`^(${MODE.FINAL}|${MODE.PRACTICE})$`)).required()
+        }),
+        confirmationSchema: joi.object().keys({
+            token: joi.string().required()
+        }),
+        resendTokenSchema: joi.object().keys({
+            email: joi.string().email({ minDomainSegments: 2 }).required()
         })
     }
 };

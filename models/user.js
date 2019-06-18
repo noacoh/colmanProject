@@ -33,6 +33,11 @@ const userSchema = new Schema({
     email: {
         type: String,
         required: true
+    },
+    isVerified: {
+        type:Boolean,
+        required: true,
+        default: false
     }
 });
 
