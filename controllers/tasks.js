@@ -161,9 +161,8 @@ module.exports = {
     downloadExerciseFiles: async (req, res, next) => {
         const resourceRequester = req.user;
         const { taskId } = req.value.params;
-        const task = await Task.findById(taskId).populate('course'); // validate task exists
-        logger.debug(`requesting files for task ${task.title}`);
-        const course = task.course;
+        const task = await Task.findById(taskId);
+        const course = await Course.findById(task.course);
         if (!resourceRequester.isAdmin() && !resourceRequester.isTeachingAssistant()) {
             if(!course.studentIsRegisteredForCourse(resourceRequester._id)){
                 // student is not registered for this course
