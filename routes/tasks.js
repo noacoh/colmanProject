@@ -45,24 +45,24 @@ router.route('/')
     .get(passportJWT,
         TasksController.index);
 
-router.route('uploads')
+router.route('/uploads')
     .post(taskUpload.array(EXERCISE_FILES, MAX_UPLOADS),
         validateBody(schemas.taskSchema),
         passportJWT,
         TasksController.uploadTask);
 
-router.route('uploads/:taskId/solution')
+router.route('/uploads/:taskId/solution')
     .post(taskUpload.array(EXERCISE_FILES, MAX_UPLOADS),
         validateParam(schemas.idSchema, 'taskId'),
         passportJWT,
         TasksController.uploadSolution);
 
-router.route('downloads/:taskId')
+router.route('/downloads/:taskId')
     .get(validateParam(schemas.idSchema, 'taskId'),
         passportJWT,
         TasksController.downloadExerciseFiles);
 
-router.route('downloads/:taskId/solution')
+router.route('/downloads/:taskId/solution')
     .get(validateParam(schemas.idSchema, 'taskId'),
         passportJWT,
         TasksController.getTaskSolutionFile);

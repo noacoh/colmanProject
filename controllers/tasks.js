@@ -162,11 +162,12 @@ module.exports = {
         const resourceRequester = req.user;
         const { taskId } = req.value.params;
         const task = await Task.findById(taskId).populate('course'); // validate task exists
+        logger.debug(`requesting files for task ${task.title}`);
         const course = task.course;
         if (!resourceRequester.isAdmin() && !resourceRequester.isTeachingAssistant()) {
             if(!course.studentIsRegisteredForCourse(resourceRequester._id)){
                 // student is not registered for this course
-                console.log(`student ${resourceRequester.fullName} is not registered for course ${course.title}. Can not supply exercise file fo this task.`);
+                logger.info(`student ${resourceRequester.fullName} is not registered for course ${course.title}. Can not supply exercise file fo this task.`);
                 res.status(401).json({
                     success: false,
                     message: "Unauthorized"
@@ -179,6 +180,7 @@ module.exports = {
                 name: file.name
             }
         });
+        usersActivityLogger.info({id: resourceRequester.identityNumber, message: `task ${task.title} files downloaded`, course: course, task: task.title});
         // send response with zip file containing all solution files
         res.zip(files);
     },
