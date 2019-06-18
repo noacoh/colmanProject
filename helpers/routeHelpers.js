@@ -2,7 +2,7 @@ const joi = require('joi');
 const { MODE } = require('../models/submission');
 const { VISIBILITY } = require('../models/test');
 const { PERMISSION } = require('../models/user');
-
+const { UNIT_TYPE } = require('../models/testUnit');
 module.exports = {
     validateParam: (schema, name) => {
         return (req, res, next) => {
@@ -102,7 +102,7 @@ module.exports = {
             description: joi.string(),
             compilationLine: joi.string().required(),
             task: joi.string().regex(/^[0-9]{9}$/),
-            type: joi.string().regex(new RegExp(`^(${MODE.FINAL}|${MODE.PRACTICE})$`)).required()
+            type: joi.string().regex(new RegExp(`^(${UNIT_TYPE.IO}|${UNIT_TYPE.MAIN})$`)).required()
         }),
         testSchema: joi.object().keys({
             mainTests: joi.array().items(joi.object().keys({
