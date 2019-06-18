@@ -200,14 +200,14 @@ module.exports = {
                 })
             }
         }
-        if (task.solutionPath === null){
+        if (task.solution === null){
             res.status(404).json({
                     success: false,
                     message: "Solution file not found"
                 })
-        } else{
+        } else {
             if (task.deadline < new Date() || resourceRequester.isAdmin()){
-                const files = solution.files.map(file => {
+                const files = task.solution.files.map(file => {
                     return {
                         path: file.path,
                         name: file.name

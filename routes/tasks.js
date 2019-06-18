@@ -87,7 +87,3 @@ router.route('/:taskId/submissions')
 
 module.exports = router;
 
-// e.g multipart form to submit a file
-// <form action="/profile" method="post" enctype="multipart/form-data">
-//   <input type="file" name="solFile" />
-// </form>
