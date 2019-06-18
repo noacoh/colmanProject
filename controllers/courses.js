@@ -176,7 +176,7 @@ module.exports = {
 
     deleteCourse: async (req, res, next) => {
         const resourceRequester = req.user;
-        if (!resourceRequester.isAdmin) {
+        if (!resourceRequester.isAdmin()) {
             res.status(401).json({
                 success: false,
                 message: "Unauthorized"

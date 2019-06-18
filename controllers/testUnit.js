@@ -3,7 +3,7 @@ const TestUnit = require('../models/testUnit');
 module.exports = {
     index: async (req, res, next) => {
         const resourceRequester = req.user;
-        if (!resourceRequester.isAdmin && !resourceRequester.isTeachingAssistant) {
+        if (!resourceRequester.isAdmin() && !resourceRequester.isTeachingAssistant()) {
             res.status(401).json({
                 success: false,
                 message: 'Unauthorized'
@@ -14,7 +14,7 @@ module.exports = {
     },
     getTaskUTs: async (req, res, next) => {
         const resourceRequester = req.user;
-        if (!resourceRequester.isAdmin && !resourceRequester.isTeachingAssistant) {
+        if (!resourceRequester.isAdmin() && !resourceRequester.isTeachingAssistant()) {
             res.status(401).json({
                 success: false,
                 message: 'Unauthorized'
@@ -26,7 +26,7 @@ module.exports = {
     },
     getGenericUTs: async (req, res, next) => {
         const resourceRequester = req.user;
-        if (!resourceRequester.isAdmin && !resourceRequester.isTeachingAssistant) {
+        if (!resourceRequester.isAdmin() && !resourceRequester.isTeachingAssistant()) {
             res.status(401).json({
                 success: false,
                 message: 'Unauthorized'
@@ -38,7 +38,7 @@ module.exports = {
     },
     uploadExeUnitTest: async (req, res, next) => {
         const resourceRequester = req.user;
-        if (!resourceRequester.isAdmin && !resourceRequester.isTeachingAssistant) {
+        if (!resourceRequester.isAdmin() && !resourceRequester.isTeachingAssistant()) {
             res.status(401).json({
                 success: false,
                 message: 'Unauthorized'

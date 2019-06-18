@@ -4,7 +4,7 @@ const Course = require('../models/course');
 module.exports = {
     index: async (req, res, next) => {
         const resourceRequester = req.user;
-        if (!resourceRequester.isAdmin) {
+        if (!resourceRequester.isAdmin()) {
             res.status(401).json({
                 success: false,
                 message: 'Unauthorized'
@@ -16,7 +16,7 @@ module.exports = {
     getStudent: async (req, res, next) => {
         const resourceRequester = req.user;
         const { studentId } = req.value.params;
-        if (resourceRequester.id !== studentId && !resourceRequester.isAdmin) {
+        if (resourceRequester.id !== studentId && !resourceRequester.isAdmin()) {
             res.status(401).json({
                 success: false,
                 message: 'Unauthorized'
@@ -28,7 +28,7 @@ module.exports = {
     getStudentCourses: async (req, res, next) => {
         const resourceRequester = req.user;
         const { studentId } = req.value.params;
-        if (resourceRequester.id !== studentId && !resourceRequester.isAdmin) {
+        if (resourceRequester.id !== studentId && !resourceRequester.isAdmin()) {
             res.status(401).json({
                 success: false,
                 message: 'Unauthorized'

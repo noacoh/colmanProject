@@ -14,7 +14,7 @@ module.exports = {
         },
     uploadTask: async (req, res, next) => {
         const resourceRequester = req.user;
-        if (!resourceRequester.isAdmin && !resourceRequester.isTeachingAssistant) {
+        if (!resourceRequester.isAdmin() && !resourceRequester.isTeachingAssistant()) {
             res.status(401).json({
                 success: false,
                 message: "Unauthorized"
@@ -47,7 +47,7 @@ module.exports = {
     },
     getTaskData: async (req, res, next) => {
         const resourceRequester = req.user;
-        if (!resourceRequester.isAdmin && !resourceRequester.isTeachingAssistant) {
+        if (!resourceRequester.isAdmin() && !resourceRequester.isTeachingAssistant()) {
             res.status(401).json({
                 success: false,
                 message: "Unauthorized"
@@ -59,7 +59,7 @@ module.exports = {
     },
     deleteTask: async (req, res, next) => {
         const resourceRequester = req.user;
-        if (!resourceRequester.isAdmin) {
+        if (!resourceRequester.isAdmin()) {
             res.status(401).json({
                 success: false,
                 message: "Unauthorized"
@@ -74,7 +74,7 @@ module.exports = {
     },
     getTaskSubmissions: async (req, res, next) => {
         const resourceRequester = req.user;
-        if (!resourceRequester.isAdmin) {
+        if (!resourceRequester.isAdmin()) {
             res.status(401).json({
                 success: false,
                 message: "Unauthorised"
@@ -94,7 +94,7 @@ module.exports = {
 
         usersActivityLogger.info({id: resourceRequester.identityNumber, message: "attempted submission", mode: mode, task: task.title});
         // validate student is registered for course
-        if (!resourceRequester.isAdmin){
+        if (!resourceRequester.isAdmin()){
             if(!course.studentIsRegisteredForCourse(resourceRequester._id)){
                 // student is not registered for this course
                 logger.debug(`student ${resourceRequester.fullName} is not registered for course ${course.title}. Can not preform task submission.`);
@@ -163,7 +163,7 @@ module.exports = {
         const { taskId } = req.value.params;
         const task = await Task.findById(taskId).populate('course'); // validate task exists
         const course = task.course;
-        if (!resourceRequester.isAdmin && !resourceRequester.isTeachingAssistant) {
+        if (!resourceRequester.isAdmin() && !resourceRequester.isTeachingAssistant()) {
             if(!course.studentIsRegisteredForCourse(resourceRequester._id)){
                 // student is not registered for this course
                 console.log(`student ${resourceRequester.fullName} is not registered for course ${course.title}. Can not supply exercise file fo this task.`);
@@ -188,7 +188,7 @@ module.exports = {
         const { taskId } = req.value.params;
         const task = await Task.findById(taskId).populate('course'); // validate task exists
         const course = task.course;
-        if (!resourceRequester.isAdmin){
+        if (!resourceRequester.isAdmin()){
             if(!course.studentIsRegisteredForCourse(resourceRequester._id)){
                 // student is not registered for this course
                 console.log(`student ${resourceRequester.fullName} is not registered for course ${course.title}. Can not supply exercise file fo this task.`);
@@ -204,7 +204,7 @@ module.exports = {
                     message: "Solution file not found"
                 })
         } else{
-            if (task.deadline < new Date() || resourceRequester.isAdmin){
+            if (task.deadline < new Date() || resourceRequester.isAdmin()){
                 const files = solution.files.map(file => {
                     return {
                         path: file.path,
@@ -224,7 +224,7 @@ module.exports = {
     },
     uploadSolution: async (req, res, next) => {
         const resourceRequester = req.user;
-        if (!resourceRequester.isAdmin && !resourceRequester.isTeachingAssistant) {
+        if (!resourceRequester.isAdmin() && !resourceRequester.isTeachingAssistant()) {
             res.status(401).json({
                 success: false,
                 message: "Unauthorized"

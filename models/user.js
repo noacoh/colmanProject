@@ -57,17 +57,18 @@ userSchema.methods.isValidPassword = async function(newPassword) {
     }
 };
 
-userSchema.virtual.isAdmin = function() {
+userSchema.methods.isAdmin = function() {
+    logger.info(`isAdmin ${this.permission === PERMISSION.ADMIN}`)
     return this.permission === PERMISSION.ADMIN;
 };
 
-userSchema.virtual.isTeachingAssistant = function() {
+userSchema.methods.isTeachingAssistant = function() {
     return this.permission === PERMISSION.TEACHING_ASSISTANT;
 };
 
-userSchema.virtual.fullName = function() {
+userSchema.virtual("fullName").get(function() {
     return this.firstName + ' ' + this.lastName;
-};
+});
 
 const User = mongoose.model('user', userSchema);
 module.exports = {
