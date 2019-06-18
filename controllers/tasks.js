@@ -174,7 +174,7 @@ module.exports = {
                 })
             }
         }
-        const files = exercise.files.map(file => {
+        const files = task.exercise.files.map(file => {
             return {
                 path: file.path,
                 name: file.name
