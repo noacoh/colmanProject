@@ -65,7 +65,7 @@ winston.loggers.add('usersactivity', {
 });
 
 const logger = winston.loggers.get('winston');
-const usersActivityLogger = winston.loggers.get('winston');
+const usersActivityLogger = winston.loggers.get('usersactivity');
 
 // create a stream object with a 'write' function that will be used by `morgan`
 logger.stream = {
