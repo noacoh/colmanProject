@@ -12,7 +12,7 @@ module.exports = {
     },
     newCourse: async (req, res, next) => {
         const resourceRequester = req.user;
-        if (!resourceRequester.admin) {
+        if (!resourceRequester.isAdmin()) {
             res.status(401).json({
                 success: false,
                 message: "Unauthorised"
@@ -24,7 +24,7 @@ module.exports = {
     },
     getCourse: async (req, res, next) => {
         const resourceRequester = req.user;
-        if (!resourceRequester.admin) {
+        if (!resourceRequester.isAdmin() && !resourceRequester.isTeachingAssistant()) {
             res.status(401).json({
                 success: false,
                 message: "Unauthorised"
@@ -36,7 +36,7 @@ module.exports = {
     },
     getCourseTasks: async (req, res, next) => {
         const resourceRequester = req.user;
-        if (!resourceRequester.admin) {
+        if (!resourceRequester.isAdmin() && !resourceRequester.isTeachingAssistant()) {
             res.status(401).json({
                 success: false,
                 message: "Unauthorised"
@@ -48,7 +48,7 @@ module.exports = {
     },
     replaceCourse: async (req, res, next) => {
         const resourceRequester = req.user;
-        if (!resourceRequester.admin) {
+        if (!resourceRequester.isAdmin()) {
             res.status(401).json({
                 success: false,
                 message: "Unauthorised"
@@ -61,7 +61,7 @@ module.exports = {
     },
     updateCourse: async (req, res, next) => {
         const resourceRequester = req.user;
-        if (!resourceRequester.admin) {
+        if (!resourceRequester.isAdmin()) {
             res.status(401).json({
                 success: false,
                 message: "Unauthorised"
@@ -78,7 +78,7 @@ module.exports = {
     },
     getStudentsEnlisted: async (req, res, next) => {
         const resourceRequester = req.user;
-        if (!resourceRequester.admin) {
+        if (!resourceRequester.isAdmin() && !resourceRequester.isTeachingAssistant()) {
             res.status(401).json({
                 success: false,
                 message: "Unauthorised"
@@ -91,7 +91,7 @@ module.exports = {
     },
     enlistStudentToCourse: async (req, res, next) => {
         const resourceRequester = req.user;
-        if (!resourceRequester.admin) {
+        if (!resourceRequester.isAdmin()) {
             res.status(401).json({
                 success: false,
                 message: 'Unauthorised'
@@ -114,7 +114,7 @@ module.exports = {
     },
         enlistStudentsToCourse: async (req, res, next) => {
         const resourceRequester = req.user;
-        if (!resourceRequester.admin) {
+        if (!resourceRequester.isAdmin()) {
             res.status(401).json({
                 success: false,
                 message: 'Unauthorised'
