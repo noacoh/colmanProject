@@ -33,8 +33,7 @@ router.route('/')
     .post(upload.fields([{name: OUTPUT_FILES, maxCount: MAX_UPLOADS}, {name: INPUT_FILES, maxCount: MAX_UPLOADS}]),
         validateBody(schemas.testSchema),
         passportJWT,
-        testController.addTest
-    );
+        testController.addTest);
 
 module.exports = router;
 

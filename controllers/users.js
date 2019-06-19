@@ -178,15 +178,15 @@ module.exports = {
         });
     },
     confirmEmail: async (req, res, next) => {
-        const { tokenParam } = req.value.params;
-        const token = await Token.findOne({token: tokenParam});
-        if (!token) {
+        const { token } = req.value.params;
+        const tokenParam = await Token.findOne({token: token});
+        if (!tokenParam) {
             res.status(400).json({
                 success: false,
                 message: 'Unable to verify email. The link my have expired'
             })
         }
-        const user = await User.findById(token._userId);
+        const user = await User.findById(tokenParam._userId);
         if (!user) {
             res.status(400).json({
                 success: false,
