@@ -29,12 +29,12 @@ router.route('/')
     .get(passportJWT,
         testUnitController.index);
 
-router.route('/:taskId')
+router.route('/units/:taskId')
     .get(validateParam(schemas.idSchema, 'taskId'),
         passportJWT,
         testUnitController.getTaskUTs);
 
-router.route('/genericTests')
+router.route('/units')
     .get(passportJWT,
         testUnitController.getGenericUTs);
 
