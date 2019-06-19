@@ -280,7 +280,7 @@ module.exports = {
             })
         }
         const { userId } = req.value.params;
-        const newUser = new User(req.value.body);
+        const newUser = req.value.body;
         await User.findByIdAndUpdate(userId, newUser);
         res.status(200).json({
             success: true,

@@ -102,19 +102,19 @@ module.exports = {
             title: joi.string().required(),
             description: joi.string(),
             compilationLine: joi.string().required(),
-            task: joi.string().regex(/^[0-9]{9}$/),
+            task: joi.string().regex(/^[0-9a-fA-F]{24}$/),
             type: joi.string().regex(new RegExp(`^(${UNIT_TYPE.IO}|${UNIT_TYPE.MAIN})$`)).required()
         }),
         testSchema: joi.object().keys({
             mainTests: joi.array().items(joi.object().keys({
-                    test: joi.string().regex(/^[0-9]{9}$/).required(),
+                    test: joi.string().regex(/^[0-9a-fA-F]{24}$/).required(),
                     visibility: joi.string().regex(new RegExp(`^(${VISIBILITY.EXPOSED}|${VISIBILITY.HIDDEN})$`)).required(),
                     weight: joi.number().required(),
                     timeout: joi.number()
                 })
             ),
             ioTests: joi.array().items(joi.object().keys({
-                    test: joi.string().regex(/^[0-9]{9}$/).required(),
+                    test: joi.string().regex(/^[0-9a-fA-F]{24}$/).required(),
                     visibility: joi.string().regex(new RegExp(`^(${VISIBILITY.EXPOSED}|${VISIBILITY.HIDDEN})$`)).required(),
                     weight: joi.number().required(),
                     timeout: joi.number(),

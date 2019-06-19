@@ -53,8 +53,7 @@ testUnitSchema.methods.getTestTask = async function() {
     if (this.isGeneric()) {
         return null;
     }
-    const task = await Task.findById(this.task);
-    return task;
+    return await Task.findById(this.task);
 };
 
 const TestUnit = mongoose.model('testUnit', testUnitSchema);

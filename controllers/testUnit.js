@@ -1,4 +1,4 @@
-const TestUnit = require('../models/testUnit');
+const { TestUnit } = require('../models/testUnit');
 
 module.exports = {
     index: async (req, res, next) => {
@@ -32,8 +32,13 @@ module.exports = {
                 message: 'Unauthorized'
             })
         }
-        const { taskId } = req.value.params;
         const uts = await TestUnit.find({ task: null});
+        if (!uts){
+            res.status(400).json({
+                success: false,
+                message: 'No tests were found'
+            });
+        }
         res.status(200).json(uts);
     },
     uploadExeUnitTest: async (req, res, next) => {
