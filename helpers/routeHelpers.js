@@ -126,7 +126,7 @@ module.exports = {
             mode: joi.string().regex(new RegExp(`^(${MODE.FINAL}|${MODE.PRACTICE})$`)).required()
         }),
         confirmationSchema: joi.object().keys({
-            token: joi.string().required()
+            param: joi.string().required()
         }),
         resendTokenSchema: joi.object().keys({
             email: joi.string().email({ minDomainSegments: 2 }).required()
