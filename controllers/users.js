@@ -3,9 +3,20 @@ const { User, PERMISSION } = require('../models/user');
 const Student = require('../models/student');
 const { JWT_SECRET, TOKEN_EXPIRATION } = require('../configuration');
 const { usersActivityLogger } = require('../configuration/winston');
-const { Token } = require('../models/verificartionToken');
+const Token = require('../models/verificartionToken');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
+const {logger} = require('../configuration/winston');
+
+const smtpConfig = {
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true, // use SSL
+    auth: {
+        user: 'colman.noreply@gmail.com',
+        pass: 'Colman2314'
+    }
+};
 
 signToken = user => {
     return JWT.sign({
@@ -35,7 +46,8 @@ module.exports = {
     signUp: async (req, res, next) => {
         const { firstName, lastName, identityNumber, password, permission, email } = req.value.body;
         const existingUser = await User.findOne({email});
-        if (existingUser) {
+        if (existingUser !== null) {
+            logger.debug(`${JSON.stringify(existingUser)}`);
             res.status(400).json({
                 success: false,
                 message: 'The email address you have entered is already associated with another account'
@@ -82,21 +94,26 @@ module.exports = {
                 error: err.toString()
             });
         }
+        // TODO replace with real account
         // send verification email
-        const transporter = nodemailer.createTransport({
-            service: 'Sendgrid',
-            auth: {
-                user: process.env.SENDGRID_USERNAME,
-                pass: process.env.SENDGRID_PASSWORD
-            }
-        });
+        const transporter = nodemailer.createTransport(smtpConfig);
         try {
-            await transporter.sendMail({
-                from: 'no-reply@colman.com',
+            await transporter.verify();
+        } catch (err) {
+            res.status(500).json({
+                success: false,
+                message: 'Failed to verify SMTP transport',
+                error: err.toString()
+            });
+        }
+        try {
+            const info = await transporter.sendMail({
+                from: 'colman.noreply@gmail.com',
                 to: user.email,
                 subject: 'סיום הרשמה למערכת ההגשה',
                 text: `Please verify your account by clicking the link:\nhttp:\/\/${req.headers.host}\/users\/confirmation\/${token.token}.\n`
-            })
+            });
+            logger.info(`Message sent: ${info.messageId}`);
         } catch (err) {
             res.status(500).json({
                 success: false,
