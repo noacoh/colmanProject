@@ -17,6 +17,7 @@ const smtpConfig = {
         pass: 'Colman2314'
     }
 };
+const transporter = nodemailer.createTransport(smtpConfig);
 
 signToken = user => {
     return JWT.sign({
@@ -96,7 +97,6 @@ module.exports = {
         }
         // TODO replace with real account
         // send verification email
-        const transporter = nodemailer.createTransport(smtpConfig);
         try {
             await transporter.verify();
         } catch (err) {
@@ -241,14 +241,16 @@ module.exports = {
                 error: err.toString()
             });
         }
+        try {
+            await transporter.verify();
+        } catch (err) {
+            res.status(500).json({
+                success: false,
+                message: 'Failed to verify SMTP transport',
+                error: err.toString()
+            });
+        }
         // send verification email
-        const transporter = nodemailer.createTransport({
-            service: 'Sendgrid',
-            auth: {
-                user: process.env.SENDGRID_USERNAME,
-                pass: process.env.SENDGRID_PASSWORD
-            }
-        });
         try {
             await transporter.sendMail({
                 from: 'no-reply@colman.com',
