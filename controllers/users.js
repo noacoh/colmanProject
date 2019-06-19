@@ -34,7 +34,7 @@ module.exports = {
     },
     signUp: async (req, res, next) => {
         const { firstName, lastName, identityNumber, password, permission, email } = req.value.body;
-        const existingUser = User.findOne({email});
+        const existingUser = await User.findOne({email});
         if (existingUser) {
             res.status(400).json({
                 success: false,
