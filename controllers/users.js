@@ -5,6 +5,7 @@ const { JWT_SECRET, TOKEN_EXPIRATION } = require('../configuration');
 const { usersActivityLogger } = require('../configuration/winston');
 const { Token } = require('../models/verificartionToken');
 const nodemailer = require('nodemailer');
+const crypto = require('crypto');
 
 signToken = user => {
     return JWT.sign({
