@@ -55,7 +55,7 @@ module.exports = {
             size: req.file.size,
         };
         const ut = new TestUnit(req.value.body);
-        await TestUnit.save(ut);
+        await ut.save(ut);
         res.status(201).json({
             success: true,
             message: 'Test was saved successfully'

@@ -14,7 +14,7 @@ module.exports = {
       root: appRoot + '/resources/submissions',
     },
     students_list: appRoot + '/resources/temp/students',
-    test_units: appRoot + '/resources/test units',
+    test_units: appRoot + '/resources/testUnits',
     ios: appRoot + '/resources/ios',
     logs: {
       app: appRoot + '/resources/logs/app.log',
