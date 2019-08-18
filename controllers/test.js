@@ -25,22 +25,27 @@ module.exports = {
         const { ioTests, mainTests, taskId, mode } = req.value.body;
         const inputFilesMap = {};
         const outputFilesMap = {};
+        const inputFiles = req.files[INPUT_FILES] || [];
+        const outputFiles = req.files[OUTPUT_FILES] || [];
+        let mainTestsArr;
+        let ioTestsArr ;
+
+
         // map files for test constructor required info
-        req.files[INPUT_FILES].forEach(file => {
+        inputFiles.forEach(file => {
             inputFilesMap[file.originalname] = {
                 path: file.path,
                 name: file.filename,
                 size: file.size
             }
         });
-        req.files[OUTPUT_FILES].forEach(file => {
+        outputFiles.forEach(file => {
             outputFilesMap[file.originalname] = {
                 path: file.path,
                 name: file.filename,
                 size: file.size
             }
         });
-        let mainTestsArr;
         if (mainTests){
             mainTestsArr = mainTests.map( unit => {
                 const {test, visibility, weight, timeout} = unit;
@@ -54,7 +59,6 @@ module.exports = {
                 }
             });
         }
-        let ioTestsArr ;
         if (ioTests){
             ioTestsArr = ioTests.map( unit => {
                 const {test, visibility, weight, input, output, timeout } = unit;
