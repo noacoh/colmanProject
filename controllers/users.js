@@ -42,7 +42,7 @@ module.exports = {
     signIn: async (req, res, next) => {
         const token = signToken(req.user);
         usersActivityLogger.info({id: req.user.identityNumber, message: "logged in"});
-        res.status(200).json({ token });
+        res.status(200).json({ token:token, permission: req.user.permission });
     },
     signUp: async (req, res, next) => {
         const { firstName, lastName, identityNumber, password, permission, email } = req.value.body;

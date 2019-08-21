@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const { server } = require('./configuration');
 const { logger } = require('./configuration/winston');
+const cors = require('cors');
 
 const LOG_HTTP_TRAFFIC = server.logs.http;
 
@@ -28,6 +29,7 @@ app.use(bodyParser.json());
 if (LOG_HTTP_TRAFFIC) {
     app.use(morgan('combined', { stream: logger.stream }));
 }
+app.use(cors);
 
 // Routes
 app.use('/courses', courses);
